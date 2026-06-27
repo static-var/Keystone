@@ -15,6 +15,9 @@ Perform initial isolation, start new implementation, bypass review, or treat unv
 ## May call
 `gates/proof.md`, `gates/review.md`, and `gates/ship.md`; `health` for readiness checks.
 
+## Subagents and reasoning
+Default reasoning: `medium`. Use subagents only for bounded release-note or verification assistance; escalate to `high` for multi-host packaging or unresolved release risk. See `helpers/subagents.md`.
+
 ## Handoff
 Provide final status, evidence, unresolved risks, and any human actions needed for integration.
 

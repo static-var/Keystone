@@ -15,6 +15,9 @@ Change code behavior, invent facts, or expand scope into design/implementation w
 ## May call
 `read` for source material; `research` for factual gaps; `review` for critique.
 
+## Subagents and reasoning
+Default reasoning: `low`. Use writer subagents for bounded drafting; escalate to `medium` when technical accuracy, positioning, or factual synthesis matters. See `helpers/subagents.md`.
+
 ## Handoff
 Deliver the written artifact and note any assumptions or source gaps.
 

@@ -15,6 +15,9 @@ Modify files, perform implementation, or expose internal modules as public slash
 ## May call
 One primary module after classification. Gates only if that primary module requires them.
 
+## Subagents and reasoning
+Default reasoning: `low`. Do not deploy subagents for simple routing; ask one clarifying question if a safe single route is not clear. See `helpers/subagents.md`.
+
 ## Handoff
 Name the selected primary module and the reason in one sentence, then continue under that module's contract.
 

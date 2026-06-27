@@ -15,6 +15,9 @@ Edit files, infer beyond evidence, or turn reading into implementation without a
 ## May call
 `research` for missing external context; `health` for broad project condition checks.
 
+## Subagents and reasoning
+Default reasoning: `low`. For large searches, use a read-only scout subagent at `low` or `medium`; do not mutate files. See `helpers/subagents.md`.
+
 ## Handoff
 Summarize evidence, cite files or inputs read, and recommend the next primary module if action is needed.
 

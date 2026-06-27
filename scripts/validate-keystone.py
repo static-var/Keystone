@@ -11,6 +11,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_DIR = ROOT / "skills" / "keystone"
 SKILL = SKILL_DIR / "SKILL.md"
+MODULE_DIR = SKILL_DIR / "modules"
+SUBAGENT_HELPER = MODULE_DIR / "helpers" / "subagents.md"
+TARGET_HARNESSES = ("Pi", "Claude", "Codex", "T3", "OpenCode", "Copilot")
 FORBIDDEN_TRACKED = {
     "docs",
     "plans",
@@ -99,6 +102,37 @@ def check_references(text: str) -> None:
         fail("missing referenced module/gate files: " + ", ".join(sorted(set(missing))))
 
 
+def routing_modules(text: str) -> set[str]:
+    return {
+        match.group(1)
+        for match in re.finditer(r"`modules/([a-z-]+)\.md`", text)
+    }
+
+
+def check_subagent_helper(skill_text: str) -> None:
+    if not SUBAGENT_HELPER.is_file():
+        fail("missing subagent reasoning helper modules/helpers/subagents.md")
+    helper_text = SUBAGENT_HELPER.read_text()
+    missing_harnesses = [name for name in TARGET_HARNESSES if name not in helper_text]
+    if missing_harnesses:
+        fail("subagent helper missing target harnesses: " + ", ".join(missing_harnesses))
+    primary_modules = routing_modules(skill_text)
+    if not primary_modules:
+        fail("no primary modules found in Keystone routing table")
+    missing_modules = [
+        name for name in sorted(primary_modules)
+        if f"modules/{name}.md" not in helper_text
+    ]
+    if missing_modules:
+        fail("subagent helper missing module reasoning rows: " + ", ".join(missing_modules))
+    for name in sorted(primary_modules):
+        module = MODULE_DIR / f"{name}.md"
+        if not module.is_file():
+            fail(f"missing primary module file: modules/{name}.md")
+        if "## Subagents and reasoning" not in module.read_text():
+            fail(f"module missing subagent reasoning section: modules/{name}.md")
+
+
 def check_ignored_not_tracked() -> None:
     bad = []
     for path in tracked_files():
@@ -125,6 +159,7 @@ def main() -> int:
     text = check_skill()
     check_language(text)
     check_references(text)
+    check_subagent_helper(text)
     check_ignored_not_tracked()
     check_package_json()
     print("validate-keystone: ok")

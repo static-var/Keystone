@@ -15,6 +15,9 @@ Guess fixes, conflate symptoms with root cause, or ship the result.
 ## May call
 `read` for context; `build` for scoped fixes; `gates/proof.md` to verify the fix.
 
+## Subagents and reasoning
+Default reasoning: `high`. Use oracle subagents for root-cause analysis; escalate to `xhigh` for intermittent, cross-system, performance, security, or data-loss failures. See `helpers/subagents.md`.
+
 ## Handoff
 State symptom, root cause evidence, fix made or proposed, and verification.
 

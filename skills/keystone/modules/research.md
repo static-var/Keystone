@@ -15,6 +15,9 @@ Implement decisions, present speculation as fact, or omit source quality caveats
 ## May call
 `read` for repository context; `write` for a polished research brief.
 
+## Subagents and reasoning
+Default reasoning: `medium`. Use scout or oracle subagents for independent evidence gathering; escalate to `high` for decisions that affect architecture, safety, market claims, or releases. See `helpers/subagents.md`.
+
 ## Handoff
 Provide findings, confidence, sources or evidence consulted, and recommended next module.
 

@@ -15,6 +15,9 @@ Run as a general user module, expose internal modules as public commands, change
 ## May call
 `read` for current skill state; `review` for contract audit; gates as needed for proof.
 
+## Subagents and reasoning
+Default reasoning: `high`. Use worker subagents only for independent Keystone-maintenance slices and reviewer subagents for contract audits; escalate to `xhigh` when routing, public entrypoint, or packaging semantics change. See `helpers/subagents.md`.
+
 ## Handoff
 List changed skill files, contract decisions, and validation performed.
 

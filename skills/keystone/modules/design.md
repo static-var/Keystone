@@ -15,6 +15,9 @@ Edit source code, perform implementation, or take over UI visual decisions bette
 ## May call
 `research` for external evidence; `ui` for interface-specific decisions; `breakdown` only after the design is approved.
 
+## Subagents and reasoning
+Default reasoning: `high`. Use oracle subagents for architecture or product tradeoffs; escalate to `xhigh` for irreversible scope or platform decisions. See `helpers/subagents.md`.
+
 ## Handoff
 State goal, non-goals, chosen approach, rejected alternatives, constraints, acceptance criteria, and unresolved risks.
 

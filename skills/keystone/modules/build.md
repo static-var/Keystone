@@ -15,6 +15,9 @@ Mutate before passing `gates/isolation.md`, broaden scope, silently alter protec
 ## May call
 `gates/isolation.md` before the first mutation; `gates/red.md` when tests or examples should fail first; `debug` for failures; `review` after changes.
 
+## Subagents and reasoning
+Default reasoning: `medium`. After `gates/isolation.md`, worker subagents may handle independent scoped tasks; use isolated worktrees/workspaces when supported and escalate to `high` for risky changes. See `helpers/subagents.md`.
+
 ## Handoff
 Report files changed, verification performed, and remaining risks or next module.
 

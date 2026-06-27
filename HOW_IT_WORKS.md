@@ -14,6 +14,8 @@ Keystone does five things:
 4. **Loads gates only when needed** to protect mutation, verification, review, and shipping.
 5. **Hands off cleanly** to the next module when the work changes shape.
 
+When the host supports subagents, Keystone can delegate bounded work with the right reasoning level. When the host does not support that control, Keystone treats reasoning level as prompt guidance instead of a guaranteed setting.
+
 This keeps the agent from mixing jobs. Planning stays planning. Building stays building. Review stays read-only. Shipping only happens after proof and review.
 
 ## Why Keystone exists
@@ -100,6 +102,43 @@ Each module has the same shape:
 | `ship` | Finalize completed work | Does not start new implementation |
 | `health` | Assess project/tooling condition | Does not silently fix issues |
 | `skill-engineering` | Maintain Keystone itself | Maintainer-only |
+
+## Subagents and reasoning
+
+Keystone's subagent guidance lives in:
+
+```text
+skills/keystone/modules/helpers/subagents.md
+```
+
+The helper records:
+
+- which target harnesses support subagents
+- whether they can set per-subagent reasoning or only model/prompt hints
+- how to configure each host when support exists
+- default reasoning levels for every Keystone module
+
+### Host capability summary
+
+| Harness | Subagents | Reasoning control |
+|---|---:|---|
+| Pi coding agent with `pi-subagents` | yes | native `thinking`, `model`, and `profile` per agent/invocation |
+| Claude Code | yes | model selection and built-in Explore detail; no general custom-agent reasoning field confirmed |
+| Codex CLI/app | host-dependent | global `model_reasoning_effort`; per-subagent effort not confirmed |
+| T3 Code | not confirmed | not confirmed |
+| OpenCode | yes | partial/provider-dependent: `model` plus provider-specific `variant`; no universal reasoning knob confirmed |
+| GitHub Copilot / VS Code | yes | custom agent `model`; no general reasoning field confirmed |
+
+### Module reasoning defaults
+
+| Module group | Default reasoning |
+|---|---|
+| routing, reading, writing | `low` to `medium` |
+| research, UI, build, health, ship | `medium`, escalating to `high` for risk |
+| design, breakdown, debug, review, skill engineering | `high`, escalating to `xhigh` for hard or irreversible work |
+| gates | `low`, escalating only when evidence is safety-critical |
+
+The rule is simple: use the narrowest subagent role and the lowest reasoning level that can safely complete the task. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.
 
 ## Gates
 
@@ -302,8 +341,10 @@ Keystone is currently a **Pi skill package**, not a Pi extension. A Pi extension
 1. Add `skills/keystone/modules/<name>.md`.
 2. Add a routing row in `skills/keystone/SKILL.md`.
 3. Add routing fixture coverage.
-4. Ensure packaging includes the module directory through `packaging.allowlist`.
-5. Run `make test`.
+4. Add a `Subagents and reasoning` section to the module.
+5. Add a module row to `skills/keystone/modules/helpers/subagents.md`.
+6. Ensure packaging includes the module directory through `packaging.allowlist`.
+7. Run `make test`.
 
 ### Change packaging metadata
 

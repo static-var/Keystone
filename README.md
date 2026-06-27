@@ -12,6 +12,7 @@ Keystone borrows the best parts of Waza-style routing/review/release discipline 
 - **Private internal modules:** read, research, write, UI, design, breakdown, build, debug, review, ship, health, and skill engineering
 - **A renamed planner:** `breakdown`, not `plan`, to avoid `/plan` collisions
 - **Safety gates:** isolation, red, proof, review, and ship
+- **Subagent guidance:** host capability matrix plus recommended reasoning level per module
 - **Package tooling:** generated platform manifests, allowlisted archive builds, validators, and routing tests
 - **Multi-host packaging:** Pi skill package metadata plus Claude/Codex/agents plugin manifests
 
@@ -98,7 +99,7 @@ Everything else under `skills/keystone/modules/` is internal. Internal modules a
 .
 ├── skills/keystone/              # canonical skill source
 │   ├── SKILL.md                  # public /keystone entrypoint
-│   └── modules/                  # internal modules and gates
+│   └── modules/                  # internal modules, helpers, and gates
 ├── scripts/                      # metadata, validation, packaging
 ├── tests/routing/cases.yaml      # routing fixture cases
 ├── tests/test_routing.py         # stdlib routing test runner
@@ -109,6 +110,27 @@ Everything else under `skills/keystone/modules/` is internal. Internal modules a
 ├── Makefile                      # test/package/regenerate targets
 └── HOW_IT_WORKS.md               # human-readable architecture guide
 ```
+
+## Subagent and reasoning support
+
+Keystone documents host-specific subagent support in:
+
+```text
+skills/keystone/modules/helpers/subagents.md
+```
+
+Current summary:
+
+| Harness | Subagents | Per-subagent reasoning |
+|---|---:|---:|
+| Pi with `pi-subagents` | yes | yes: `thinking`, `model`, `profile` |
+| Claude Code | yes | partial: model/detail controls, no general custom-agent reasoning knob |
+| Codex CLI/app | host-dependent | partial/global: use prompt advisory unless host exposes per-agent effort |
+| T3 Code | unconfirmed | unconfirmed |
+| OpenCode | yes | partial/provider-dependent: `model` and provider `variant`; no universal reasoning knob confirmed |
+| GitHub Copilot | yes | partial: custom agent `model`, no general reasoning knob |
+
+Each Keystone module includes a `Subagents and reasoning` section with its default reasoning level.
 
 ## Platform support
 

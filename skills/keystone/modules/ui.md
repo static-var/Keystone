@@ -15,6 +15,9 @@ Own product viability, backend architecture, broad feature scope, or implementat
 ## May call
 `design` for product/architecture decisions; `write` for standalone prose; `build` after UI direction is approved; `debug` if screenshot evidence proves a regression or broken behavior.
 
+## Subagents and reasoning
+Default reasoning: `medium`. Use UI/design-focused subagents for independent screen critiques or alternatives; escalate to `high` for multi-screen flows, accessibility, or design-system impact. See `helpers/subagents.md`.
+
 ## Handoff
 Provide visual thesis, interface states, accessibility constraints, responsive concerns, implementation notes, and next module if build/debug work remains.
 

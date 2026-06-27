@@ -11,6 +11,10 @@ Keystone is a router/orchestrator skill. It selects the right internal module fo
 
 Load exactly one primary module for the current task. Load gates or helper modules only when the primary module explicitly needs them. Do not expose internal modules as public slash commands.
 
+## Subagents and reasoning
+
+When a module may delegate work, consult `modules/helpers/subagents.md` for host capability, safe delegation rules, and the recommended reasoning level for each Keystone module. If the host cannot enforce per-subagent reasoning, include the desired level in the subagent prompt or work inline.
+
 ## Routing table
 
 | User intent | Primary module |
