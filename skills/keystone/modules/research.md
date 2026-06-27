@@ -1,25 +1,81 @@
 # Keystone Research Module
 
-## Intent
-Understand existing material and investigate unknowns. This module combines reading, inspection, summarization, source gathering, comparison, and evidence synthesis.
+## Core principle
+Research is evidence gathering before action. Inspect available material first, preserve source quality, separate facts from assumptions, and do not mutate the project unless the user explicitly asks for a durable research artifact.
 
 ## Load when
-The user asks to read, inspect, summarize, extract, explain, inventory, compare sources, investigate options, perform market/technical research, or gather context before choosing a path.
+Load when the user asks to read, inspect, summarize, inventory, extract, compare, explain, investigate options, gather technical or market context, validate claims, or answer “what is true here?” before a decision.
 
-## Allowed mutation
-None by default. Only write notes or research artifacts when the user explicitly requests a durable artifact.
+## Not for
+- Implementing, refactoring, editing, or fixing code.
+- Shaping product direction beyond evidence-backed options.
+- Broad tooling risk audits; use `health`.
+- Root-cause repair of a failure; use `debug` after initial context.
+- Guessing when evidence can be inspected.
 
-## Must not
-Edit project files, implement decisions, present speculation as fact, or omit source-quality caveats.
+## Outcome contract
+Deliver a research brief that states:
+- question or decision being supported;
+- sources inspected, with file paths, commands, URLs, or other citations;
+- source-quality notes (primary vs secondary, current vs stale, authoritative vs anecdotal);
+- findings separated from assumptions and unknowns;
+- confidence level and why;
+- recommended next module or no-op if no action is warranted.
 
-## May call
-`shape` when findings need to become prose, UI/product direction, or design decisions; `health` for broad repository/tooling condition checks; `review` for critique of research conclusions.
+## Modes
+- **Repository read:** inspect files, history, configs, tests, docs, and existing behavior. Prefer primary project evidence.
+- **External research:** compare outside documentation, standards, issues, market examples, or APIs. Cite URLs and note recency.
+- **Synthesis:** combine several sources into a decision-ready summary with tradeoffs and confidence.
+- **Discovery scout:** map a large unknown area without drawing strong conclusions until evidence is sampled.
+
+## Process
+1. Restate the research question and the decision it informs.
+2. Inspect before asking: search/read the repo, docs, logs, or provided sources before requesting more context.
+3. Prefer primary evidence: source code, tests, product docs, official docs, reproducible commands, direct user-provided material.
+4. Track citations as you go. Every important claim should point to evidence or be labeled as an assumption.
+5. Evaluate source quality: age, authority, completeness, bias, and whether evidence is direct or inferred.
+6. Compare alternatives when relevant, including costs, risks, constraints, and no-op implications.
+7. State unknowns explicitly. Do not fill gaps with confident-sounding speculation.
+8. Recommend the smallest next step: `shape`, `debug`, `health`, `breakdown`, `build`, `review`, or stop.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use read-only scout subagents for large repositories or independent evidence gathering; use `low` for simple file summaries and escalate to `high` when findings affect architecture, safety, market claims, or release decisions. See `helpers/subagents.md`.
+Default reasoning: `medium`. Use read-only scout subagents when the search space is large or evidence can be gathered independently. Use `low` for narrow file summaries. Use `high` when findings affect architecture, security, safety, release decisions, legal/market claims, or irreversible product direction. Subagents must remain read-only unless the user requested an artifact.
 
-## Handoff
-Summarize what was inspected, cite files/sources, separate facts from assumptions, state confidence, and recommend the next primary module if action is needed.
+## Hard rules
+- No mutation by default: do not edit files, run formatters, or alter state except harmless read-only commands.
+- Cite evidence for material claims; if evidence is unavailable, say so.
+- Distinguish facts, interpretations, assumptions, and recommendations.
+- Do not ask for information that can be inspected first.
+- Do not present search results or model knowledge as authoritative without source-quality caveats.
 
-## Exit gate
-Key findings are grounded in inspected material or cited evidence, and unresolved unknowns are named.
+## Failure modes
+- **Context theater:** long summaries without citations or decision relevance.
+- **Source laundering:** treating blogs, stale docs, or guesses as facts.
+- **Premature shaping:** deciding product behavior before evidence is clear.
+- **Mutation creep:** “just fixing” or rewriting while researching.
+- **Hidden uncertainty:** omitting confidence, unknowns, or contradictory evidence.
+
+## Output format
+```markdown
+## Research brief
+Question: ...
+
+### Evidence inspected
+- `path/or/source`: what it shows, quality note
+
+### Findings
+- Fact — citation
+- Interpretation — citation + reasoning
+
+### Assumptions / unknowns
+- ...
+
+### Options or implications
+- ...
+
+### Confidence
+High/Medium/Low — why
+
+### Recommended next step
+Module or no-op, with rationale
+```
