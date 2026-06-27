@@ -8,6 +8,7 @@ scripts/validate-keystone.py
 scripts/validate-package.py
 scripts/package-keystone.sh
 skills/keystone/SKILL.md
+skills/keystone/modules
 .claude-plugin/plugin.json
 .claude-plugin/marketplace.json
 .codex-plugin/plugin.json

@@ -1,5 +1,11 @@
 [
   {
+    "id": "router-meta",
+    "prompt": "Keystone, choose the right Keystone path and route this request without doing the work yet.",
+    "expected": "router",
+    "negative": ["build", "ship"]
+  },
+  {
     "id": "read-url",
     "prompt": "Use keystone to read https://example.com/product-notes and summarize the important claims.",
     "expected": "read",

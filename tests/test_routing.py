@@ -14,6 +14,7 @@ SKILL_PATH = ROOT / "skills" / "keystone" / "SKILL.md"
 
 PUBLIC_SKILL = "keystone"
 INTERNAL_MODULES = {
+    "router",
     "read",
     "research",
     "write",
@@ -29,6 +30,7 @@ INTERNAL_MODULES = {
 }
 
 REQUIRED_COVERAGE = {
+    "router",
     "read",
     "research",
     "write",
@@ -41,6 +43,12 @@ REQUIRED_COVERAGE = {
     "ship",
     "health",
     "skill-engineering",
+}
+
+STOPWORDS = {
+    "a", "an", "and", "are", "as", "before", "by", "for", "from", "if", "in",
+    "into", "is", "it", "of", "on", "or", "the", "this", "to", "when", "with",
+    "work", "works", "user", "request", "module", "primary", "keystone", "design", "internal", "approved", "changing",
 }
 
 
@@ -92,6 +100,38 @@ def token_present(text: str, token: str) -> bool:
     return re.search(rf"(?<![A-Za-z0-9_-]){re.escape(token)}(?![A-Za-z0-9_-])", text) is not None
 
 
+def tokens(text: str) -> set[str]:
+    return {
+        token
+        for token in re.findall(r"[a-z][a-z0-9-]+", text.lower())
+        if len(token) > 2 and token not in STOPWORDS
+    }
+
+
+def skill_routing_rows() -> list[tuple[str, str]]:
+    if not SKILL_PATH.exists():
+        return []
+    rows: list[tuple[str, str]] = []
+    for line in SKILL_PATH.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"\|\s*(.*?)\s*\|\s*`modules/([a-z-]+)\.md`\s*\|", line)
+        if match:
+            intent, module = match.groups()
+            rows.append((module, intent))
+    return rows
+
+
+def route_prompt_from_skill(prompt: str) -> str | None:
+    prompt_tokens = tokens(prompt)
+    for module, intent in skill_routing_rows():
+        if prompt_tokens & tokens(intent):
+            return module
+    return None
+
+
+def skill_routing_modules() -> set[str]:
+    return {module for module, _intent in skill_routing_rows()}
+
+
 class RoutingFixturesTest(unittest.TestCase):
     def test_cases_are_valid_and_cover_all_keystone_modules(self) -> None:
         cases = load_cases()
@@ -115,6 +155,21 @@ class RoutingFixturesTest(unittest.TestCase):
             "include a case showing /plan is not public and breakdown is expected",
         )
         self.assertNotIn('"expected": "plan"', CASES_PATH.read_text(encoding="utf-8"))
+
+    def test_fixture_prompts_route_with_skill_routing_table(self) -> None:
+        if not SKILL_PATH.exists():
+            self.skipTest(f"optional Keystone skill source not present: {SKILL_PATH}")
+        for case in load_cases():
+            self.assertEqual(
+                case["expected"],
+                route_prompt_from_skill(str(case["prompt"])),
+                f"routing table mismatch for {case['id']!r}",
+            )
+
+    def test_skill_routing_table_backs_expected_modules(self) -> None:
+        if not SKILL_PATH.exists():
+            self.skipTest(f"optional Keystone skill source not present: {SKILL_PATH}")
+        self.assertEqual(REQUIRED_COVERAGE, skill_routing_modules())
 
     def test_skill_content_mentions_expected_modules_when_present(self) -> None:
         if not SKILL_PATH.exists():

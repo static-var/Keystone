@@ -1,12 +1,14 @@
 {
-  "description": "Keystone skill packaging metadata and validation tooling.",
+  "description": "Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, health, or skill-maintenance work through its canonical orchestrator.",
   "displayName": "Keystone",
   "keywords": [
+    "pi-package",
+    "agent-skills",
     "keystone",
-    "pi",
-    "skill",
-    "agent",
-    "packaging"
+    "claude-code",
+    "codex",
+    "opencode",
+    "copilot"
   ],
   "license": "MIT",
   "name": "keystone",

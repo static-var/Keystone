@@ -18,6 +18,14 @@
 /.worktrees/
 /worktrees/
 
+# Generated packages
+/dist/
+
+# Python/test caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # OS/editor noise
 .DS_Store
 *.swp

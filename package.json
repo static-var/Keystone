@@ -1,14 +1,16 @@
 {
-  "name": "keystone-skill",
+  "name": "keystone",
   "version": "0.1.0",
-  "description": "Keystone skill packaging metadata and validation tooling.",
+  "description": "Keystone: one-router AI engineering workflow skill system.",
   "license": "MIT",
   "keywords": [
+    "pi-package",
+    "agent-skills",
     "keystone",
-    "pi",
-    "skill",
-    "agent",
-    "packaging"
+    "claude-code",
+    "codex",
+    "opencode",
+    "copilot"
   ],
   "files": [
     "package.json",
@@ -27,8 +29,8 @@
   },
   "scripts": {
     "regenerate": "python3 scripts/build-metadata.py",
-    "validate": "python3 scripts/validate-keystone.py && python3 scripts/validate-package.py dist/keystone.zip",
+    "validate": "make validate",
     "package": "scripts/package-keystone.sh",
-    "test": "make regenerate package validate"
+    "test": "make test"
   }
 }

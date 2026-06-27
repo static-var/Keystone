@@ -16,18 +16,18 @@ Load exactly one primary module for the current task. Load gates or helper modul
 | User intent | Primary module |
 |---|---|
 | Choose the right Keystone path, classify intent, resolve module ambiguity | `modules/router.md` |
-| Read, inspect, summarize, understand existing material | `modules/read.md` |
+| Read, inspect, summarize, extract URL/PDF/source material | `modules/read.md` |
 | Gather external/internal information, compare sources, investigate options | `modules/research.md` |
-| Draft, edit, rewrite, structure prose | `modules/write.md` |
-| UI copy, flows, component behavior, screen-level product UX | `modules/ui.md` |
-| Visual direction, interaction feel, design system choices | `modules/design.md` |
-| Break work into implementable steps, make a plan | `modules/breakdown.md` |
+| Draft, rewrite, structure prose and copy | `modules/write.md` |
+| Interface design, screens, components, visual direction, screenshot aesthetics | `modules/ui.md` |
+| Product decisions, feature scope, architecture, value judgment before build | `modules/design.md` |
+| Breakdown approved design into executable tasks and verification steps | `modules/breakdown.md` |
 | Implement or change files/code/content | `modules/build.md` |
-| Diagnose failures, bugs, regressions, unexpected behavior | `modules/debug.md` |
+| Diagnose failures, failing behavior, errors, bug reports, regressions, unexpected behavior | `modules/debug.md` |
 | Review work without changing it | `modules/review.md` |
 | Finalize completed work for delivery or integration | `modules/ship.md` |
-| Check repository/project condition, risks, readiness | `modules/health.md` |
 | Maintain Keystone skill content itself | `modules/skill-engineering.md` |
+| Agent/tooling health, repository condition, skill drift, context rot, risks | `modules/health.md` |
 
 ## Ambiguity rule
 
