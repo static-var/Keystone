@@ -1,0 +1,34 @@
+{
+  "name": "keystone-skill",
+  "version": "0.1.0",
+  "description": "Keystone skill packaging metadata and validation tooling.",
+  "license": "MIT",
+  "keywords": [
+    "keystone",
+    "pi",
+    "skill",
+    "agent",
+    "packaging"
+  ],
+  "files": [
+    "package.json",
+    "packaging.allowlist",
+    "Makefile",
+    "scripts/",
+    "skills/",
+    ".claude-plugin/",
+    ".codex-plugin/",
+    ".agents/plugins/"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  },
+  "scripts": {
+    "regenerate": "python3 scripts/build-metadata.py",
+    "validate": "python3 scripts/validate-keystone.py && python3 scripts/validate-package.py dist/keystone.zip",
+    "package": "scripts/package-keystone.sh",
+    "test": "make regenerate package validate"
+  }
+}

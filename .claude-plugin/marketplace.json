@@ -1,0 +1,17 @@
+{
+  "description": "Keystone skill packaging metadata and validation tooling.",
+  "displayName": "Keystone",
+  "keywords": [
+    "keystone",
+    "pi",
+    "skill",
+    "agent",
+    "packaging"
+  ],
+  "license": "MIT",
+  "name": "keystone",
+  "skills": [
+    "keystone"
+  ],
+  "version": "0.1.0"
+}
