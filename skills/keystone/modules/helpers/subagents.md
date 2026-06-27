@@ -20,6 +20,26 @@ Do not delegate when:
 - one agent must continuously coordinate shared mutable state
 - the host cannot preserve enough context for safe handoff
 - the subagent would need secrets or permissions the parent should not share
+- delegation setup, context packaging, merge/review effort, or verification overhead is likely greater than doing the task inline
+
+## Delegation cost heuristic
+
+Before spawning a subagent, compare expected benefit with coordination cost.
+
+Delegate when at least one is true:
+- the subtask can run in parallel with other independent work
+- the subtask requires a different role, perspective, or reasoning depth
+- the repository/source search is large enough that a scout can save parent context
+- independent review or root-cause analysis materially reduces release risk
+
+Do not delegate when most of these are true:
+- the task can be done inline in a few minutes
+- the parent would need to explain more context than the subagent can save
+- outputs will require complex merge arbitration
+- the work touches the same mutable files as another active agent without isolation
+- verification cannot be independently stated in the prompt
+
+If uncertain, prefer one narrow read-only scout/reviewer over multiple workers.
 
 ## Host capability matrix
 
@@ -82,8 +102,9 @@ Only override `thinking` when the module table says to escalate or de-escalate.
 2. `build` passes `gates/isolation.md` before any mutation.
 3. If the host supports isolated worktrees, each worker gets a separate worktree or host-isolated workspace.
 4. Each worker reports files changed, tests run, and concerns.
-5. `review` runs as read-only, preferably in a separate reviewer subagent.
-6. `ship` finalizes only after proof and review gates pass.
+5. Parent reconciles outputs before further mutation: accept, reject, or send back with a narrower prompt.
+6. `review` runs as read-only, preferably in a separate reviewer subagent.
+7. `ship` finalizes only after proof and review gates pass.
 
 ## Prompt contract for delegated work
 
@@ -96,5 +117,18 @@ Every subagent prompt should include:
 - reasoning level requested if the host cannot enforce it
 - verification command expected
 - instruction not to broaden scope
+- timeout or stopping condition when the host supports it
 
-For read-only subagents, explicitly say: "Do not edit files." For review subagents, explicitly say: "Return findings only; do not fix." 
+For read-only subagents, explicitly say: "Do not edit files." For review subagents, explicitly say: "Return findings only; do not fix."
+
+## Subagent result handling
+
+Treat subagent output as evidence, not truth. The parent remains responsible for verification and final routing.
+
+- Timeout or no response: mark the subtask incomplete, preserve any partial logs, and either finish inline or re-delegate with a smaller scope if the remaining work is still worth the overhead.
+- Bad output or scope creep: reject the result, record why, and re-delegate only with a tighter prompt, protected-file list, and explicit expected artifact. Otherwise do it inline.
+- Partial completion: accept only independently verified pieces; carry unfinished work in the handoff packet with files touched, tests run, and remaining risks.
+- Conflicting outputs: compare evidence and reproduction/proof commands first. If both are plausible and risk is material, ask an oracle/reviewer for read-only arbitration or route to `debug`; do not merge contradictory fixes blindly.
+- Failed verification: route through the appropriate Keystone module (`debug` for unexplained failures, `build` for contained fixes, `review` for risk assessment) and rerun the original proof before continuing.
+
+Re-delegate only when the next prompt can be narrower than the failed one, the expected artifact is concrete, and the benefit still exceeds coordination cost. Otherwise continue inline and record the reason.

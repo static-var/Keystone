@@ -1,62 +1,86 @@
 # Keystone Ship Module
 
 ## Core principle
-Ship only already-completed work with evidence. Finalization is proof, review, packaging, release notes, branch/PR/handoff, and risk disclosure — not new implementation.
+Ship is deterministic finalization for already-completed work. It proves, reviews, packages, and hands off a release or PR; it never sneaks in new implementation or last-mile fixes.
+
+A ship decision requires three gates:
+1. **Proof gate:** required checks, artifacts, previews, or manual QA are observed and recorded.
+2. **Review gate:** appropriate human/automated review is complete or explicitly pending.
+3. **Ship gate:** release/merge/deploy mechanics, rollback, and handoff are ready.
+
+If any final check fails, abort ship and route to an existing Keystone module: `build` for contained fixes, `debug` for unexplained failures, `review` for unresolved review risk, or `health` for broad release/tooling readiness concerns.
 
 ## Load when
-Load when the user asks to finish a branch, prepare PR or merge notes, package a release, write changelog/release notes, confirm readiness, hand off completed work, tag/version, or decide whether work is shippable.
+Load when the user asks to finish a branch, prepare PR or merge notes, package a release, write changelog/release notes, confirm readiness, hand off completed work, tag/version, prepare deploy notes, validate release candidates, or decide whether work is shippable.
 
 ## Not for
 - Starting new implementation or sneaking in last-minute fixes.
 - Root-cause debugging; use `debug`.
+- Fixing test/build/package failures; use `build` for contained repairs or `debug` when the cause is unclear.
 - General project risk audits; use `health`.
+- Reviewing code quality of a specific change; use `review`.
 - Shaping unfinished requirements; use `shape`.
-- Bypassing proof, review, or human release approvals.
+- Bypassing proof, review, package, deploy, or human release approvals.
 
 ## Outcome contract
-Deliver a shipping packet that includes:
-- current branch/worktree status;
+Deliver a strict shipping packet that includes:
+- current branch/worktree status and cleanliness;
 - scope of completed work and explicit non-scope;
-- proof evidence (tests, builds, manual checks, artifacts) with commands/results;
-- review evidence or required review status;
-- package/release evidence where applicable (versions, artifacts, checksums, dry runs, links);
+- proof gate evidence with commands/artifacts/results;
+- review gate evidence or exact pending review status;
+- ship gate evidence including CI/CD status, deploy preview/staging status when applicable, package/release readiness, rollback plan, and handoff actions;
+- multi-target package/release notes where applicable;
 - changelog/release-note text or summary;
-- unresolved risks and rollback/handoff notes;
+- unresolved risks and go/no-go verdict;
 - exact human actions needed next.
 
 ## Modes
-- **PR handoff:** summarize diff, proof, risks, review status, and reviewer instructions.
-- **Release prep:** verify versioning, changelog, build/package artifacts, environment, and approvals.
-- **Integration finish:** prepare merge guidance, branch cleanup, and post-merge checks.
-- **Delivery packet:** produce final notes for a stakeholder without changing code.
-- **Readiness verdict:** say ship / do not ship / ship with risk, backed by evidence.
+- **PR handoff:** summarize diff, proof, risks, review status, CI status, and reviewer instructions.
+- **Release prep:** verify versioning, changelog, build/package artifacts, environment, approvals, rollback, and release command readiness.
+- **Deploy handoff:** verify CI/CD pipeline state, deploy preview or staging evidence, environment/feature flag notes, monitoring, and rollback path.
+- **Multi-target package/release:** verify each target separately, such as npm/PyPI/GitHub release/Docker/Homebrew/browser extension/mobile artifact, with versions, artifacts, and dry-run evidence.
+- **Integration finish:** prepare merge guidance, branch cleanup, post-merge checks, and follow-up owner actions.
+- **Delivery packet:** produce final stakeholder notes without changing code.
+- **Readiness verdict:** say Ship / Do not ship / Ship with risk, backed by gate evidence.
 
 ## Process
-1. Confirm the work is implementation-complete. If new behavior is still needed, stop and route to `build` or `debug`.
-2. Inspect branch and diff status without modifying unrelated files.
-3. Identify the proof gate required for the change: focused tests, full test suite, build, lint, typecheck, manual QA, screenshots, package dry run, or deploy preview.
-4. Run or cite verification evidence. Do not claim passing checks you did not observe.
-5. Confirm review gate: self-review, code review, security/product/design review, or note what remains pending.
-6. Prepare release evidence layers as applicable: version, changelog, release notes, artifact names, package contents, compatibility notes, migration steps, rollback plan.
-7. Write PR/handoff text that is concise, evidence-backed, and honest about risks.
-8. Avoid implementation. If a gate fails, report failure and route to `debug`/`build`; do not fix under `ship` unless explicitly asked.
-9. End with a clear verdict and next human action.
+1. Confirm implementation is complete. If new behavior, fixes, migrations, or cleanup are still needed, stop and route to `build` or `debug` before shipping.
+2. Inspect branch/worktree state: branch name, base branch, dirty files, untracked files, commits/diff summary, and whether unrelated changes are present.
+3. Define the required gates for this change:
+   - **Proof gate:** focused tests, full tests, build, lint, typecheck, manual QA, screenshots, smoke tests, package dry run, deploy preview, or staging validation.
+   - **Review gate:** self-review, code review, product/design/security review, release approval, or documented pending review.
+   - **Ship gate:** CI/CD state, artifacts, version/changelog, release notes, deploy target, package target, rollback plan, monitoring, and PR/release handoff.
+4. Run or cite verification evidence. Do not claim passing checks you did not observe. Include command, context, result, and timestamp/context when useful.
+5. Check CI/CD awareness: list relevant workflows/pipelines, required checks, latest known status, deploy preview URL or staging environment if available, and any checks not observable locally.
+6. Check package/release readiness when applicable: version, changelog, artifact names, package contents, checksums/digests, dry-run output, target registries/platforms, compatibility notes, migration steps, and signing/notarization needs.
+7. For multi-target releases, create one evidence row per target. A green web build does not prove a CLI package, Docker image, mobile binary, or plugin package is ready.
+8. Confirm rollback and recovery: revert plan, previous version, feature flag/kill switch, database rollback/migration constraints, artifact rollback, owner, and monitoring signals.
+9. Prepare PR handoff or release packet: concise summary, scope/non-scope, proof/review/ship gates, risks, rollout, rollback, and next human actions.
+10. If a gate fails or evidence is missing, abort finalization. Report “Do not ship,” include the failed gate evidence, and route to the correct module. Do not make stealth fixes under Ship.
+11. End with a clear verdict: Ship, Do not ship, or Ship with risk.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use subagents for bounded release-note drafting, checklist verification, artifact inspection, or independent review of the shipping packet. Use `high` for multi-platform packaging, production releases, security-sensitive changes, migrations, or unresolved release risk. Subagents must not introduce new implementation.
+Default reasoning: `medium`. Use subagents for bounded release-note drafting, checklist verification, artifact inspection, CI/CD status inspection, package manifest review, or independent review of the shipping packet. Use `high` for multi-platform packaging, production releases, security-sensitive changes, migrations, deploys with customer impact, or unresolved release risk. Subagents must not introduce new implementation.
 
 ## Hard rules
 - No new implementation in ship mode. Gate failures create a handoff, not stealth fixes.
-- Evidence before assertions: every readiness claim needs command output, artifact proof, or documented review.
+- Enforce proof, review, and ship gates. Do not collapse them into one vague readiness statement.
+- Evidence before assertions: every readiness claim needs command output, artifact proof, CI/CD status, deploy preview/staging proof, or documented review.
+- No stealth fixes: if final checks fail, abort and route to `build`, `debug`, `review`, or `health`.
 - Do not bypass review or package gates because the change “looks small.”
 - Keep changelog/release notes user- or operator-relevant; avoid dumping raw commit noise.
 - State branch name and working tree cleanliness when available.
-- If readiness is uncertain, say “not ready” or “ready with risk,” not “done.”
+- If readiness is uncertain, say “Do not ship” or “Ship with risk,” not “done.”
+- Never publish, deploy, tag, merge, or push unless the user explicitly requested that action and the gates support it.
 
 ## Failure modes
 - **Victory lap without proof:** announcing completion before tests/build/review evidence.
 - **Last-mile coding:** making new fixes under the cover of release prep.
-- **Release-note mush:** vague notes that omit impact, migration, or risk.
+- **Stealth release:** tagging, publishing, deploying, or merging without explicit approval.
+- **CI blindness:** relying only on local checks while required CI/CD, preview, or staging is red or unknown.
+- **Single-target tunnel vision:** treating one package/build target as proof for all targets.
+- **Rollback omission:** shipping without a practical revert, rollback, or recovery path.
+- **Release-note mush:** vague notes that omit impact, migration, rollout, or risk.
 - **Dirty handoff:** leaving untracked files, unclear branch state, or hidden manual steps.
 - **Gate theater:** listing checks without results or timestamps/context.
 
@@ -65,23 +89,42 @@ Default reasoning: `medium`. Use subagents for bounded release-note drafting, ch
 ## Ship packet
 Verdict: Ship / Do not ship / Ship with risk
 Branch/status: ...
+Gate summary: Proof ... / Review ... / Ship ...
 
 ### Scope
 - Completed: ...
 - Not included: ...
 
-### Proof evidence
-- Command/artifact/result: ...
+### Proof gate
+| Evidence | Good/Bad | Result | Notes |
+|---|---|---|---|
+| Good: `npm test` observed exit 0 on this branch | Good | Pass | Include command/output summary |
+| Bad: “tests should pass” without running or CI link | Bad | Missing | Not acceptable evidence |
 
-### Review evidence
-- ...
+### Review gate
+- Good evidence: approved PR review, completed self-review checklist, security/design approval when required.
+- Bad evidence: “looks fine,” assumed approval, or stale review from before major changes.
+- Status: ...
+
+### Ship gate
+- CI/CD: workflow/status/link or not observable and why.
+- Deploy preview/staging: URL/environment/check result or not applicable.
+- Package/release targets: versions, artifacts, checksums/digests, dry runs, compatibility notes.
+- Rollback plan: exact revert/redeploy/unpublish/feature-flag path and owner.
 
 ### Release notes / changelog
 - ...
 
-### Risks and rollback
-- ...
+### Risks and aborts
+- Failed/missing gates:
+- Risks accepted:
+- Route if not shippable: build / debug / review / health
 
-### Next human actions
-- ...
+### PR handoff / release packet
+- Summary:
+- Proof:
+- Review:
+- Rollout:
+- Rollback:
+- Next human actions:
 ```

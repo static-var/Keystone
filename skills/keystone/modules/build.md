@@ -61,6 +61,8 @@ Contract:
 
 Prefer tests that exercise real behavior over tests that only verify mocks, implementation details, or snapshots. If a failing test cannot be created, state why and use the strongest available proof.
 
+TDD exceptions are rare but real. When a red-capable automated test is impractical, state the reason before editing and write an alternative proof plan. Acceptable cases include documentation-only edits, generated files, one-off migrations where rollback is the proof, external systems unavailable in the environment, exploratory spikes that will be thrown away, or emergency config changes. The alternative proof plan must name the observable check, manual verification, diff review, sample input/output, dry run, or rollback validation that will replace red/green.
+
 ### Refactor
 
 Use when preserving behavior while improving structure, names, duplication, readability, or boundaries.
@@ -73,6 +75,8 @@ Contract:
 - keep public contracts stable unless the user requested a contract change
 - run regression checks before and after meaningful refactor steps
 - stop if behavior questions appear; route back to `shape` or `debug` as needed
+
+A characterization test captures what the current system does before you change structure. It is not a claim that current behavior is ideal; it is a tripwire that prevents accidental behavior changes while refactoring. Write it around externally visible behavior, important edge cases, or bug-compatible outputs that must stay stable until the user approves a behavior change.
 
 Refactoring is not a license to redesign everything nearby.
 
@@ -88,6 +92,14 @@ Contract:
 - keep domain rules separate from transport, UI, persistence, and framework glue
 - use patterns only when they remove real pressure, not to decorate simple code
 - validate that the result is pleasant for developers to read, understand, maintain, and look at
+
+SOLID is a pressure-test, not dogma:
+
+- **SRP:** Can this unit change for one clear reason, or are unrelated policies bundled together?
+- **OCP:** Can the next known variation be added without editing fragile existing logic, or is a simpler edit safer for now?
+- **LSP:** Can substitutes honor the same contract without surprising callers?
+- **ISP:** Are callers forced to depend on methods, fields, events, or permissions they do not use?
+- **DIP:** Do high-level policies depend on stable abstractions at real boundaries, or are abstractions hiding one local call?
 
 Examples of appropriate taste:
 
@@ -111,6 +123,17 @@ Contract:
 
 Do not delegate fuzzy architecture judgment without a concrete interface or decision boundary.
 
+Concise subagent brief template:
+
+```markdown
+Goal: one observable outcome
+Scope: allowed files/directories
+Do not edit: protected files/behaviors
+Contract: interfaces, invariants, data shape, or acceptance criteria
+Proof: required tests/checks/manual verification
+Report: files changed, verification output, risks/gaps
+```
+
 ## Process
 
 1. Confirm scope.
@@ -133,7 +156,7 @@ Do not delegate fuzzy architecture judgment without a concrete interface or deci
    - For behavior changes, create or identify a red-capable test/check.
    - Run the focused check and confirm the failure would pass only for the intended change.
    - For refactors, establish characterization or regression coverage.
-   - If proof is impossible in the environment, record the limitation before editing.
+   - If proof is impossible in the environment, record the limitation before editing and use an alternative proof plan.
 
 6. Implement the smallest correct slice.
    - Edit only files in scope.
@@ -154,7 +177,13 @@ Do not delegate fuzzy architecture judgment without a concrete interface or deci
    - Run the most focused relevant suite available.
    - Never replace verification with a summary.
 
-10. Handoff.
+10. Early smell check.
+   - Stop and simplify if the diff introduces god functions, vague `manager`/`helper` names, hidden control flow, stringly APIs, layer violations, or speculative interfaces.
+
+11. Architecture pressure-test.
+   - For architecture-sensitive changes, answer the SOLID questions and remove abstractions that do not survive them.
+
+12. Handoff.
    - Summarize changed files and behavior.
    - Include commands run and results.
    - Disclose unverified areas.
@@ -174,6 +203,8 @@ Use this checklist before accepting the design:
 - Is the simplest path also readable, or has simplicity become cleverness?
 - Is duplication removed only after the repeated concept is real?
 - Are patterns such as Strategy, Repository, Adapter, Observer, MVVM, MVI, or Clean Architecture justified by current pressure?
+- Does the diff pass the SOLID pressure-test questions without adding dogmatic ceremony?
+- Does the diff avoid god functions, vague managers/helpers, hidden control flow, stringly APIs, layer violations, and speculative interfaces?
 
 ## Subagents and reasoning
 
@@ -200,6 +231,7 @@ A delegation brief must include:
 - forbidden files or behaviors
 - relevant interfaces/contracts
 - expected tests/checks
+- report format for files changed, verification, and risks/gaps
 
 Verify delegated work by:
 
@@ -214,7 +246,7 @@ Verify delegated work by:
 - Build must not ship, merge, publish, release, or finalize work.
 - Do not edit files outside the user's scope.
 - Do not claim completion without proof or explicit disclosure of missing proof.
-- Do not skip red/green/refactor for behavior changes unless there is a stated, practical reason.
+- Do not skip red/green/refactor for behavior changes unless there is a stated, practical reason and alternative proof plan.
 - Do not use subagents as a way to avoid understanding the result.
 - Do not introduce architecture that the current domain pressure does not justify.
 
@@ -228,6 +260,12 @@ Watch for these and correct course:
 - **Invented architecture:** factories, managers, providers, repositories, or layers appear without pressure.
 - **Shallow abstraction:** a wrapper hides one call site and makes the code harder to follow.
 - **Brittle hack:** timing sleeps, magic constants, global state, or special cases mask the real issue.
+- **God function:** one routine owns validation, orchestration, persistence, formatting, and error policy.
+- **Vague names:** `manager`, `helper`, `util`, or `common` hide responsibility instead of naming it.
+- **Hidden control flow:** callbacks, observers, magic registration, or framework hooks make execution hard to trace without clear benefit.
+- **Stringly API:** strings encode commands, states, fields, or permissions that should be typed, enumerated, or centralized.
+- **Layer violation:** UI, transport, persistence, or framework code reaches across boundaries into another layer's policy.
+- **Speculative interface:** abstraction exists for imagined future variants, not current pressure.
 - **Ambiguous delegation:** workers receive goals like "improve this" without contracts or boundaries.
 - **Unverified handoff:** delegated changes are accepted from a summary alone.
 - **Finalization leak:** Build says work is shipped, merged, or ready for users instead of ready for review/ship.

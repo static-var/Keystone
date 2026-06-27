@@ -137,7 +137,18 @@ def check_product_modules(skill_text: str) -> None:
 
 
 def check_module_playbooks(skill_text: str) -> None:
-    for name in sorted(routing_modules(skill_text) - {"router"}):
+    primary_modules = routing_modules(skill_text)
+    pseudo_modules = {"tests", "package", "plan"}
+    allowed_terms = {"plan"}  # allowed only as a concept; public /plan remains forbidden elsewhere.
+    for path in MODULE_DIR.glob("*.md"):
+        text = path.read_text()
+        invalid = sorted(
+            token for token in re.findall(r"`([a-z][a-z-]+)`", text)
+            if token in pseudo_modules and token not in primary_modules and token not in allowed_terms
+        )
+        if invalid:
+            fail(f"module {path.stem} references non-shipped pseudo-modules: " + ", ".join(invalid))
+    for name in sorted(primary_modules - {"router"}):
         module = MODULE_DIR / f"{name}.md"
         text = module.read_text()
         required = COMMON_PLAYBOOK_HEADINGS + MODULE_PLAYBOOK_HEADINGS.get(
