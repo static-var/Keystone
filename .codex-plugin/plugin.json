@@ -1,0 +1,12 @@
+{
+  "description": "Keystone skill packaging metadata and validation tooling.",
+  "license": "MIT",
+  "name": "keystone",
+  "skills": [
+    {
+      "name": "keystone",
+      "path": "../skills/keystone/SKILL.md"
+    }
+  ],
+  "version": "0.1.0"
+}

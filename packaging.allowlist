@@ -1,0 +1,14 @@
+# Default-deny shipping allowlist for Keystone packaging.
+# Entries are newline-delimited paths relative to the repository root.
+package.json
+packaging.allowlist
+Makefile
+scripts/build-metadata.py
+scripts/validate-keystone.py
+scripts/validate-package.py
+scripts/package-keystone.sh
+skills/keystone/SKILL.md
+.claude-plugin/plugin.json
+.claude-plugin/marketplace.json
+.codex-plugin/plugin.json
+.agents/plugins/marketplace.json
