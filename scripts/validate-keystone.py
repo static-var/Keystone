@@ -14,6 +14,22 @@ SKILL = SKILL_DIR / "SKILL.md"
 MODULE_DIR = SKILL_DIR / "modules"
 SUBAGENT_HELPER = MODULE_DIR / "helpers" / "subagents.md"
 TARGET_HARNESSES = ("Pi", "Claude", "Codex", "T3", "OpenCode", "Copilot")
+COMMON_PLAYBOOK_HEADINGS = (
+    "## Core principle",
+    "## Load when",
+    "## Not for",
+    "## Outcome contract",
+    "## Subagents and reasoning",
+    "## Hard rules",
+    "## Failure modes",
+    "## Output format",
+)
+MODULE_PLAYBOOK_HEADINGS = {
+    "build": ("## Modes", "## Process", "## Architecture taste checklist"),
+    "review": ("## Review passes", "## Severity rubric", "## Impact tracing", "## Security and regression checklist"),
+    "breakdown": ("## Modes", "## Process", "## Requirements inventory", "## Iteration layering", "## Task quality bar"),
+}
+DEFAULT_PLAYBOOK_HEADINGS = ("## Modes", "## Process")
 FORBIDDEN_TRACKED = {
     "docs",
     "plans",
@@ -120,6 +136,22 @@ def check_product_modules(skill_text: str) -> None:
         fail("routing table modules missing files: " + ", ".join(missing))
 
 
+def check_module_playbooks(skill_text: str) -> None:
+    for name in sorted(routing_modules(skill_text) - {"router"}):
+        module = MODULE_DIR / f"{name}.md"
+        text = module.read_text()
+        required = COMMON_PLAYBOOK_HEADINGS + MODULE_PLAYBOOK_HEADINGS.get(
+            name,
+            DEFAULT_PLAYBOOK_HEADINGS,
+        )
+        missing = [
+            heading for heading in required
+            if re.search(rf"^{re.escape(heading)}\s*$", text, re.M) is None
+        ]
+        if missing:
+            fail(f"module {name} missing playbook headings: " + ", ".join(missing))
+
+
 def check_subagent_helper(skill_text: str) -> None:
     if not SUBAGENT_HELPER.is_file():
         fail("missing subagent reasoning helper modules/helpers/subagents.md")
@@ -171,6 +203,7 @@ def main() -> int:
     check_language(text)
     check_references(text)
     check_product_modules(text)
+    check_module_playbooks(text)
     check_subagent_helper(text)
     check_ignored_not_tracked()
     check_package_json()
