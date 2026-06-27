@@ -13,7 +13,7 @@ None.
 Fix, commit, ship, edit files, or perform finalization. Review reports only.
 
 ## May call
-`read` for evidence; `gates/review.md` for required review criteria; `health` for broader risk context.
+`research` for evidence; `gates/review.md` for required review criteria; `health` for broader risk context.
 
 ## Subagents and reasoning
 Default reasoning: `high`. Prefer read-only reviewer subagents for focused reviews; escalate to `xhigh` for security, migration, release, or public API review. See `helpers/subagents.md`.

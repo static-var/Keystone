@@ -1,25 +1,25 @@
 # Keystone Research Module
 
 ## Intent
-Investigate unknowns, collect evidence, compare options, and synthesize reliable answers.
+Understand existing material and investigate unknowns. This module combines reading, inspection, summarization, source gathering, comparison, and evidence synthesis.
 
 ## Load when
-The user asks for research, source comparison, feasibility investigation, market/technical discovery, or evidence before choosing a path.
+The user asks to read, inspect, summarize, extract, explain, inventory, compare sources, investigate options, perform market/technical research, or gather context before choosing a path.
 
 ## Allowed mutation
-Only notes or research artifacts the user explicitly requests.
+None by default. Only write notes or research artifacts when the user explicitly requests a durable artifact.
 
 ## Must not
-Implement decisions, present speculation as fact, or omit source quality caveats.
+Edit project files, implement decisions, present speculation as fact, or omit source-quality caveats.
 
 ## May call
-`read` for repository context; `write` for a polished research brief.
+`shape` when findings need to become prose, UI/product direction, or design decisions; `health` for broad repository/tooling condition checks; `review` for critique of research conclusions.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use scout or oracle subagents for independent evidence gathering; escalate to `high` for decisions that affect architecture, safety, market claims, or releases. See `helpers/subagents.md`.
+Default reasoning: `medium`. Use read-only scout subagents for large repositories or independent evidence gathering; use `low` for simple file summaries and escalate to `high` when findings affect architecture, safety, market claims, or release decisions. See `helpers/subagents.md`.
 
 ## Handoff
-Provide findings, confidence, sources or evidence consulted, and recommended next module.
+Summarize what was inspected, cite files/sources, separate facts from assumptions, state confidence, and recommend the next primary module if action is needed.
 
 ## Exit gate
-Key claims are supported by cited evidence or clearly marked as assumptions.
+Key findings are grounded in inspected material or cited evidence, and unresolved unknowns are named.

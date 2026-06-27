@@ -52,11 +52,8 @@ If a host uses another vocabulary, map to the nearest equivalent. If no setting 
 | Keystone file | Preferred role | Default reasoning | Escalate when |
 |---|---|---:|---|
 | `modules/router.md` | none or lightweight classifier | `low` | request is ambiguous across several irreversible actions |
-| `modules/read.md` | scout/read-only explorer | `low` | repository is large or source relationships are unclear (`medium`) |
-| `modules/research.md` | scout or oracle | `medium` | claims affect architecture, market, safety, or release decisions (`high`) |
-| `modules/write.md` | writer | `low` | copy depends on complex positioning, legal, or technical accuracy (`medium`) |
-| `modules/ui.md` | UI/design reviewer or worker | `medium` | visual system, accessibility, or multi-screen flows are involved (`high`) |
-| `modules/design.md` | oracle for second opinion | `high` | large architecture/product bets or irreversible scope decisions (`xhigh`) |
+| `modules/research.md` | scout/read-only explorer or oracle | `medium` | repository is large, source relationships are unclear, or claims affect architecture, market, safety, or release decisions (`high`) |
+| `modules/shape.md` | writer, UI/design reviewer, or oracle | `medium` | visual systems, accessibility, complex positioning, architecture, product viability, or irreversible scope decisions are involved (`high`/`xhigh`) |
 | `modules/breakdown.md` | planner plus reviewer | `high` | plan spans multiple independent agents or risky sequencing (`xhigh`) |
 | `modules/build.md` | worker | `medium` | concurrency, migrations, broad refactors, or unfamiliar stack (`high`) |
 | `modules/debug.md` | oracle/root-cause investigator | `high` | intermittent, cross-system, performance, or data-loss failures (`xhigh`) |

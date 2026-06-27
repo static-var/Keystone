@@ -109,9 +109,15 @@ def routing_modules(text: str) -> set[str]:
     }
 
 
-def check_product_modules() -> None:
-    if (MODULE_DIR / "skill-engineering.md").exists():
-        fail("skill-engineering is maintainer-only and must not live under shipped modules/")
+def check_product_modules(skill_text: str) -> None:
+    primary_modules = routing_modules(skill_text)
+    root_modules = {path.stem for path in MODULE_DIR.glob("*.md")}
+    extra = sorted(root_modules - primary_modules)
+    missing = sorted(primary_modules - root_modules)
+    if extra:
+        fail("module files not present in routing table: " + ", ".join(extra))
+    if missing:
+        fail("routing table modules missing files: " + ", ".join(missing))
 
 
 def check_subagent_helper(skill_text: str) -> None:
@@ -164,7 +170,7 @@ def main() -> int:
     text = check_skill()
     check_language(text)
     check_references(text)
-    check_product_modules()
+    check_product_modules(text)
     check_subagent_helper(text)
     check_ignored_not_tracked()
     check_package_json()

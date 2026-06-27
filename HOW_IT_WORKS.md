@@ -92,11 +92,8 @@ Each module has the same shape:
 | Module | Job | Hard boundary |
 |---|---|---|
 | `router` | Choose the right module | Does not do the work itself |
-| `read` | Inspect and summarize existing material | Never edits |
-| `research` | Gather evidence and compare options | Does not present guesses as facts |
-| `write` | Draft or improve prose | Does not change code behavior |
-| `ui` | Shape screens, components, visual hierarchy, and interface states | Does not own product architecture |
-| `design` | Decide product direction, architecture, and scope | Does not implement |
+| `research` | Inspect, summarize, gather evidence, and compare options | Does not edit or present guesses as facts |
+| `shape` | Draft prose, shape product direction, UI/UX, visual direction, and scope | Does not implement or treat a spec as proof |
 | `breakdown` | Convert approved direction into ordered tasks | Is not named `plan` |
 | `build` | Mutate scoped files | Must pass isolation before first mutation |
 | `debug` | Diagnose failures from evidence | Does not guess fixes |
@@ -134,9 +131,9 @@ The helper records:
 
 | Module group | Default reasoning |
 |---|---|
-| routing, reading, writing | `low` to `medium` |
-| research, UI, build, health, ship | `medium`, escalating to `high` for risk |
-| design, breakdown, debug, review | `high`, escalating to `xhigh` for hard or irreversible work |
+| router, simple reading, simple writing | `low` to `medium` |
+| research, shape, build, health, ship | `medium`, escalating to `high` for risk |
+| breakdown, debug, review, high-stakes shape decisions | `high`, escalating to `xhigh` for hard or irreversible work |
 | gates | `low`, escalating only when evidence is safety-critical |
 
 The rule is simple: use the narrowest subagent role and the lowest reasoning level that can safely complete the task. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.

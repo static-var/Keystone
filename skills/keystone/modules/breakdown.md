@@ -13,7 +13,7 @@ Only planning artifacts explicitly requested.
 Implement tasks, rename this module to `plan`, or treat the plan as proof of completion.
 
 ## May call
-`read` for context; `research` for unknowns; `review` to critique the plan.
+`research` for context and unknowns; `review` to critique the plan.
 
 ## Subagents and reasoning
 Default reasoning: `high`. Identify independent tasks that can be delegated, assign expected role/reasoning per task, and request reviewer subagents for risky plans. See `helpers/subagents.md`.

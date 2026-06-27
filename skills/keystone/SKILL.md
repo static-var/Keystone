@@ -20,11 +20,8 @@ When a module may delegate work, consult `modules/helpers/subagents.md` for host
 | User intent | Primary module |
 |---|---|
 | Choose the right Keystone path, classify intent, resolve module ambiguity | `modules/router.md` |
-| Read, inspect, summarize, extract URL/PDF/source material | `modules/read.md` |
-| Gather external/internal information, compare sources, investigate options | `modules/research.md` |
-| Draft, rewrite, structure prose and copy | `modules/write.md` |
-| Interface design, screens, components, visual direction, screenshot aesthetics | `modules/ui.md` |
-| Product decisions, feature scope, architecture, value judgment before build | `modules/design.md` |
+| Read, inspect, summarize, extract, research, compare sources, investigate options | `modules/research.md` |
+| Draft, rewrite, UI/UX, visual direction, product decisions, architecture, feature scope | `modules/shape.md` |
 | Breakdown approved design into executable tasks and verification steps | `modules/breakdown.md` |
 | Implement or change files/code/content | `modules/build.md` |
 | Diagnose failures, failing behavior, errors, bug reports, regressions, unexpected behavior | `modules/debug.md` |

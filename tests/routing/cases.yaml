@@ -8,14 +8,14 @@
   {
     "id": "read-url",
     "prompt": "Use keystone to read https://example.com/product-notes and summarize the important claims.",
-    "expected": "read",
-    "negative": ["research", "write"]
+    "expected": "research",
+    "negative": ["shape", "build"]
   },
   {
     "id": "read-pdf",
     "prompt": "Keystone: extract the main points from this PDF: ./whitepaper.pdf",
-    "expected": "read",
-    "negative": ["research"]
+    "expected": "research",
+    "negative": ["shape"]
   },
   {
     "id": "research-deep",
@@ -26,26 +26,26 @@
   {
     "id": "write-rewrite-copy",
     "prompt": "Rewrite this landing page copy so it is clearer and more persuasive.",
-    "expected": "write",
-    "negative": ["ui", "research"]
+    "expected": "shape",
+    "negative": ["research", "build"]
   },
   {
     "id": "ui-aesthetic",
     "prompt": "Improve the visual aesthetic of this dashboard UI without changing the product behavior.",
-    "expected": "ui",
-    "negative": ["design", "write"]
+    "expected": "shape",
+    "negative": ["research", "build"]
   },
   {
     "id": "design-new-feature",
     "prompt": "Design a new saved-search feature for Keystone before implementation.",
-    "expected": "design",
+    "expected": "shape",
     "negative": ["build", "breakdown"]
   },
   {
     "id": "breakdown-approved-design",
     "prompt": "The design is approved. Break it down into implementation tasks; /plan is not the public command.",
     "expected": "breakdown",
-    "negative": ["plan", "design", "build"]
+    "negative": ["plan", "shape", "build"]
   },
   {
     "id": "breakdown-not-plan-command",
@@ -57,7 +57,7 @@
     "id": "build-implement",
     "prompt": "Implement the approved task list now; do it and update the code.",
     "expected": "build",
-    "negative": ["design", "review"]
+    "negative": ["shape", "review"]
   },
   {
     "id": "debug-failing-test",

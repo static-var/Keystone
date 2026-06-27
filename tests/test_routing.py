@@ -15,11 +15,8 @@ SKILL_PATH = ROOT / "skills" / "keystone" / "SKILL.md"
 PUBLIC_SKILL = "keystone"
 INTERNAL_MODULES = {
     "router",
-    "read",
     "research",
-    "write",
-    "ui",
-    "design",
+    "shape",
     "breakdown",
     "build",
     "debug",
@@ -30,11 +27,8 @@ INTERNAL_MODULES = {
 
 REQUIRED_COVERAGE = {
     "router",
-    "read",
     "research",
-    "write",
-    "ui",
-    "design",
+    "shape",
     "breakdown",
     "build",
     "debug",
@@ -167,7 +161,10 @@ class RoutingFixturesTest(unittest.TestCase):
     def test_skill_routing_table_backs_expected_modules(self) -> None:
         if not SKILL_PATH.exists():
             self.skipTest(f"optional Keystone skill source not present: {SKILL_PATH}")
-        self.assertEqual(REQUIRED_COVERAGE, skill_routing_modules())
+        modules = skill_routing_modules()
+        self.assertEqual(REQUIRED_COVERAGE, modules)
+        self.assertLessEqual(len(modules), 9, "Keystone shipped module surface must stay single-digit")
+        self.assertTrue({"read", "write", "ui", "design"}.isdisjoint(modules))
 
     def test_skill_content_mentions_expected_modules_when_present(self) -> None:
         if not SKILL_PATH.exists():

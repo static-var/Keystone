@@ -13,7 +13,7 @@ None, unless the user explicitly requests a health report file.
 Fix issues, commit, ship, or overstate confidence beyond checked evidence.
 
 ## May call
-`read` for repository inspection; `review` for focused critique; `proof` gate only when verifying claims.
+`research` for repository inspection; `review` for focused critique; `proof` gate only when verifying claims.
 
 ## Subagents and reasoning
 Default reasoning: `medium`. Use scout subagents for broad read-only inventory and reviewer subagents for risk triage; escalate to `high` for release readiness or severe tooling drift. See `helpers/subagents.md`.

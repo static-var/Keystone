@@ -9,7 +9,7 @@ Keystone borrows the best parts of Waza-style routing/review/release discipline 
 ## What Keystone gives you
 
 - **One public entrypoint:** `/keystone`
-- **Private internal modules:** read, research, write, UI, design, breakdown, build, debug, review, ship, and health
+- **Private internal modules:** router, research, shape, breakdown, build, debug, review, ship, and health
 - **A renamed planner:** `breakdown`, not `plan`, to avoid `/plan` collisions
 - **Safety gates:** isolation, red, proof, review, and ship
 - **Subagent guidance:** host capability matrix plus recommended reasoning level per module
@@ -48,7 +48,7 @@ User request
    ▼
 Router chooses exactly one primary module
    │
-   ├─ read / research / write / ui / design / breakdown
+   ├─ router / research / shape / breakdown
    └─ build / debug / review / ship / health
    │
    ▼
@@ -79,11 +79,8 @@ Everything else under `skills/keystone/modules/` is internal. Internal modules a
 | User wants to... | Keystone routes to... |
 |---|---|
 | classify an ambiguous request | `router` |
-| inspect or summarize existing material | `read` |
-| gather evidence or compare options | `research` |
-| draft or improve prose | `write` |
-| design screens, components, or visual UI | `ui` |
-| decide product/architecture direction | `design` |
+| inspect, summarize, research, or compare sources | `research` |
+| draft prose, shape product direction, design UI, or make architecture/scope tradeoffs | `shape` |
 | turn approved direction into tasks | `breakdown` |
 | edit files or implement work | `build` |
 | diagnose bugs or failures | `debug` |
