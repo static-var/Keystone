@@ -1,0 +1,92 @@
+[
+  {
+    "id": "read-url",
+    "prompt": "Use keystone to read https://example.com/product-notes and summarize the important claims.",
+    "expected": "read",
+    "negative": ["research", "write"]
+  },
+  {
+    "id": "read-pdf",
+    "prompt": "Keystone: extract the main points from this PDF: ./whitepaper.pdf",
+    "expected": "read",
+    "negative": ["research"]
+  },
+  {
+    "id": "research-deep",
+    "prompt": "Do deep research across sources on whether this market is viable and cite what you find.",
+    "expected": "research",
+    "negative": ["read", "write"]
+  },
+  {
+    "id": "write-rewrite-copy",
+    "prompt": "Rewrite this landing page copy so it is clearer and more persuasive.",
+    "expected": "write",
+    "negative": ["ui", "research"]
+  },
+  {
+    "id": "ui-aesthetic",
+    "prompt": "Improve the visual aesthetic of this dashboard UI without changing the product behavior.",
+    "expected": "ui",
+    "negative": ["design", "write"]
+  },
+  {
+    "id": "design-new-feature",
+    "prompt": "Design a new saved-search feature for Keystone before implementation.",
+    "expected": "design",
+    "negative": ["build", "breakdown"]
+  },
+  {
+    "id": "breakdown-approved-design",
+    "prompt": "The design is approved. Break it down into implementation tasks; /plan is not the public command.",
+    "expected": "breakdown",
+    "negative": ["plan", "design", "build"]
+  },
+  {
+    "id": "breakdown-not-plan-command",
+    "prompt": "Someone asked for /plan, but Keystone should route approved designs to the internal breakdown planner instead.",
+    "expected": "breakdown",
+    "negative": ["plan"]
+  },
+  {
+    "id": "build-implement",
+    "prompt": "Implement the approved task list now; do it and update the code.",
+    "expected": "build",
+    "negative": ["design", "review"]
+  },
+  {
+    "id": "debug-failing-test",
+    "prompt": "A unit test is failing with an assertion error. Debug the failure and fix the root cause.",
+    "expected": "debug",
+    "negative": ["build", "review"]
+  },
+  {
+    "id": "debug-bug-error",
+    "prompt": "The app throws a TypeError when saving settings; find and fix the bug.",
+    "expected": "debug",
+    "negative": ["health"]
+  },
+  {
+    "id": "review-pr-diff",
+    "prompt": "Review this PR diff for correctness, risks, and missing tests.",
+    "expected": "review",
+    "negative": ["build", "ship"]
+  },
+  {
+    "id": "ship-release",
+    "prompt": "Commit the completed changes, push the branch, and prepare the release notes.",
+    "expected": "ship",
+    "negative": ["build", "review"]
+  },
+  {
+    "id": "health-agent-tooling-rot",
+    "prompt": "Our agent tooling is rotting: commands drifted, skills are stale, and automation keeps breaking.",
+    "expected": "health",
+    "negative": ["debug", "skill-engineering"]
+  },
+  {
+    "id": "skill-engineering-keystone-edit",
+    "prompt": "Edit Keystone itself by changing its skill instructions and internal routing rules.",
+    "expected": "skill-engineering",
+    "negative": ["write", "build"]
+  }
+]
