@@ -1,0 +1,24 @@
+# Local explainer artifacts, not part of Keystone source
+/index.html
+/styles.css
+/preview*.png
+
+# Planning and generated documentation artifacts
+/docs/
+/plans/
+/**/*.plan.md
+/**/*-plan.md
+/**/*.design.md
+/**/*-design.md
+
+# Agent scratch/work products
+/.keystone/plans/
+/.keystone/specs/
+/.keystone/tmp/
+/.worktrees/
+/worktrees/
+
+# OS/editor noise
+.DS_Store
+*.swp
+*.swo
