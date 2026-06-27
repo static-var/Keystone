@@ -1,0 +1,157 @@
+# Keystone
+
+> One public `/keystone` doorway for disciplined AI workflows.
+
+Keystone is a hybrid workflow/skill system for coding agents. It keeps the public surface small, routes each request to one internal module, and uses gates to prevent the common failure modes: editing too early, planning without proof, reviewing while mutating, or shipping unverified work.
+
+Keystone borrows the best parts of Waza-style routing/review/release discipline and Superpowers-style planning, TDD, debugging, and verification habits.
+
+## What Keystone gives you
+
+- **One public entrypoint:** `/keystone`
+- **Private internal modules:** read, research, write, UI, design, breakdown, build, debug, review, ship, health, and skill engineering
+- **A renamed planner:** `breakdown`, not `plan`, to avoid `/plan` collisions
+- **Safety gates:** isolation, red, proof, review, and ship
+- **Package tooling:** generated platform manifests, allowlisted archive builds, validators, and routing tests
+- **Multi-host packaging:** Pi skill package metadata plus Claude/Codex/agents plugin manifests
+
+## Quick start
+
+```bash
+# Validate source, package, routing fixtures, and Python scripts
+make test
+
+# Regenerate host metadata
+make regenerate
+
+# Build the distributable archive
+make package
+```
+
+The package archive is written to:
+
+```text
+dist/keystone.zip
+```
+
+`dist/` is generated and ignored by git.
+
+## How it works in one picture
+
+```text
+User request
+   │
+   ▼
+/keystone public skill
+   │
+   ▼
+Router chooses exactly one primary module
+   │
+   ├─ read / research / write / ui / design / breakdown
+   ├─ build / debug / review / ship / health
+   └─ skill-engineering
+   │
+   ▼
+Module contract decides what is allowed
+   │
+   ▼
+Gate checks when required
+   │
+   ├─ isolation: safe before mutation
+   ├─ red: failing check before implementation when practical
+   ├─ proof: evidence before success claims
+   ├─ review: no blocking review findings
+   └─ ship: verified, reviewed, ready to hand off
+```
+
+## Core rule
+
+Keystone exposes **one public skill**:
+
+```text
+skills/keystone/SKILL.md
+```
+
+Everything else under `skills/keystone/modules/` is internal. Internal modules are not public slash commands.
+
+## Routing map
+
+| User wants to... | Keystone routes to... |
+|---|---|
+| classify an ambiguous request | `router` |
+| inspect or summarize existing material | `read` |
+| gather evidence or compare options | `research` |
+| draft or improve prose | `write` |
+| design screens, components, or visual UI | `ui` |
+| decide product/architecture direction | `design` |
+| turn approved direction into tasks | `breakdown` |
+| edit files or implement work | `build` |
+| diagnose bugs or failures | `debug` |
+| review work without changing it | `review` |
+| finalize completed work | `ship` |
+| assess project/tooling health | `health` |
+| maintain Keystone itself | `skill-engineering` |
+
+## Repository layout
+
+```text
+.
+├── skills/keystone/              # canonical skill source
+│   ├── SKILL.md                  # public /keystone entrypoint
+│   └── modules/                  # internal modules and gates
+├── scripts/                      # metadata, validation, packaging
+├── tests/routing/cases.yaml      # routing fixture cases
+├── tests/test_routing.py         # stdlib routing test runner
+├── .claude-plugin/               # generated Claude plugin metadata
+├── .codex-plugin/                # generated Codex plugin metadata
+├── .agents/plugins/              # generated agents marketplace metadata
+├── packaging.allowlist           # default-deny package contents
+├── Makefile                      # test/package/regenerate targets
+└── HOW_IT_WORKS.md               # human-readable architecture guide
+```
+
+## Platform support
+
+Keystone currently ships as:
+
+- **Pi skill package** via `package.json`:
+  ```json
+  { "pi": { "skills": ["./skills"] } }
+  ```
+- **Claude plugin metadata** in `.claude-plugin/`
+- **Codex plugin metadata** in `.codex-plugin/`
+- **Agents marketplace metadata** in `.agents/plugins/`
+
+It is **not** a Pi extension yet. No `.pi/extensions/*.ts` file is included.
+
+## Maintainer commands
+
+```bash
+make regenerate   # rebuild generated plugin/marketplace metadata
+make validate     # build package, validate source, validate archive
+make routing      # run routing fixture tests
+make package      # write dist/keystone.zip from packaging.allowlist
+make test         # run the full local check suite
+```
+
+## Guardrails
+
+- Do not add public slash commands for internal modules.
+- Do not rename `breakdown` to `plan`.
+- Do not let `build` edit before the isolation gate.
+- Do not let `review` fix, commit, or ship.
+- Do not let `ship` start new implementation.
+- Do not hand-edit generated manifests; update source and run `make regenerate`.
+- Do not package ignored local artifacts such as `index.html`, `styles.css`, `plans/`, `docs/`, `dist/`, or pycache files.
+
+## Read next
+
+For the full mental model, routing lifecycle, packaging flow, and maintainer workflow, read:
+
+```text
+HOW_IT_WORKS.md
+```
+
+## License
+
+MIT

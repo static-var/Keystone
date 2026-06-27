@@ -1,5 +1,7 @@
 # Default-deny shipping allowlist for Keystone packaging.
 # Entries are newline-delimited paths relative to the repository root.
+README.md
+HOW_IT_WORKS.md
 package.json
 packaging.allowlist
 Makefile

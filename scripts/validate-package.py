@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 ALLOWLIST = ROOT / "packaging.allowlist"
 
 REQUIRED = {
+    "README.md",
+    "HOW_IT_WORKS.md",
     "package.json",
     "packaging.allowlist",
     "Makefile",

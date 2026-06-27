@@ -13,6 +13,8 @@
     "copilot"
   ],
   "files": [
+    "README.md",
+    "HOW_IT_WORKS.md",
     "package.json",
     "packaging.allowlist",
     "Makefile",
