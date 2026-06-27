@@ -25,7 +25,7 @@ while IFS= read -r path || [ -n "$path" ]; do
     ''|'#'*) continue ;;
   esac
   case "$path" in
-    docs|docs/*|plans|plans/*|index.html|styles.css|.git|.git/*|dist|dist/*|*.plan.md|*-plan.md|*.design.md|*-design.md|*/__pycache__/*|*.pyc|.DS_Store)
+    docs|docs/*|plans|plans/*|maintainers|maintainers/*|index.html|styles.css|.git|.git/*|dist|dist/*|skill-engineering.md|*/skill-engineering.md|*.plan.md|*-plan.md|*.design.md|*-design.md|*/__pycache__/*|*.pyc|.DS_Store)
       echo "package-keystone: forbidden allowlist entry: $path" >&2
       exit 1
       ;;
@@ -41,6 +41,8 @@ while IFS= read -r path || [ -n "$path" ]; do
       ! -path '*/__pycache__/*' \
       ! -path 'docs/*' \
       ! -path 'plans/*' \
+      ! -path 'maintainers/*' \
+      ! -name 'skill-engineering.md' \
       ! -name '*.plan.md' \
       ! -name '*-plan.md' \
       ! -name '*.design.md' \

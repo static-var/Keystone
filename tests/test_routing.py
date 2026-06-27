@@ -26,7 +26,6 @@ INTERNAL_MODULES = {
     "review",
     "ship",
     "health",
-    "skill-engineering",
 }
 
 REQUIRED_COVERAGE = {
@@ -42,7 +41,6 @@ REQUIRED_COVERAGE = {
     "review",
     "ship",
     "health",
-    "skill-engineering",
 }
 
 STOPWORDS = {

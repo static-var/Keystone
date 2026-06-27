@@ -63,7 +63,6 @@ If a host uses another vocabulary, map to the nearest equivalent. If no setting 
 | `modules/review.md` | reviewer/read-only | `high` | security, release, data migration, or public API review (`xhigh`) |
 | `modules/ship.md` | ship coordinator | `medium` | release has unresolved risk or multi-host packaging (`high`) |
 | `modules/health.md` | scout plus reviewer | `medium` | broad repository/tooling drift or release readiness audit (`high`) |
-| `modules/skill-engineering.md` | worker plus reviewer | `high` | changing routing contracts, public entrypoint, or package semantics (`xhigh`) |
 | `modules/gates/*.md` | none | `low` | evidence is contradictory or safety-critical (`medium`) |
 
 ## Pi role mapping

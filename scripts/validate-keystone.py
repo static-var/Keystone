@@ -109,6 +109,11 @@ def routing_modules(text: str) -> set[str]:
     }
 
 
+def check_product_modules() -> None:
+    if (MODULE_DIR / "skill-engineering.md").exists():
+        fail("skill-engineering is maintainer-only and must not live under shipped modules/")
+
+
 def check_subagent_helper(skill_text: str) -> None:
     if not SUBAGENT_HELPER.is_file():
         fail("missing subagent reasoning helper modules/helpers/subagents.md")
@@ -159,6 +164,7 @@ def main() -> int:
     text = check_skill()
     check_language(text)
     check_references(text)
+    check_product_modules()
     check_subagent_helper(text)
     check_ignored_not_tracked()
     check_package_json()

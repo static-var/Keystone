@@ -9,7 +9,7 @@ Keystone borrows the best parts of Waza-style routing/review/release discipline 
 ## What Keystone gives you
 
 - **One public entrypoint:** `/keystone`
-- **Private internal modules:** read, research, write, UI, design, breakdown, build, debug, review, ship, health, and skill engineering
+- **Private internal modules:** read, research, write, UI, design, breakdown, build, debug, review, ship, and health
 - **A renamed planner:** `breakdown`, not `plan`, to avoid `/plan` collisions
 - **Safety gates:** isolation, red, proof, review, and ship
 - **Subagent guidance:** host capability matrix plus recommended reasoning level per module
@@ -49,8 +49,7 @@ User request
 Router chooses exactly one primary module
    │
    ├─ read / research / write / ui / design / breakdown
-   ├─ build / debug / review / ship / health
-   └─ skill-engineering
+   └─ build / debug / review / ship / health
    │
    ▼
 Module contract decides what is allowed
@@ -91,7 +90,16 @@ Everything else under `skills/keystone/modules/` is internal. Internal modules a
 | review work without changing it | `review` |
 | finalize completed work | `ship` |
 | assess project/tooling health | `health` |
-| maintain Keystone itself | `skill-engineering` |
+
+## Repository-only maintainer notes
+
+Keystone maintainer guidance can live in the repository without shipping as product. Current maintainer-only notes are in:
+
+```text
+maintainers/skill-engineering.md
+```
+
+This file is not included in `dist/keystone.zip` and is not part of `/keystone` routing.
 
 ## Repository layout
 
@@ -103,6 +111,7 @@ Everything else under `skills/keystone/modules/` is internal. Internal modules a
 ├── scripts/                      # metadata, validation, packaging
 ├── tests/routing/cases.yaml      # routing fixture cases
 ├── tests/test_routing.py         # stdlib routing test runner
+├── maintainers/                  # repo-only, not shipped in package
 ├── .claude-plugin/               # generated Claude plugin metadata
 ├── .codex-plugin/                # generated Codex plugin metadata
 ├── .agents/plugins/              # generated agents marketplace metadata

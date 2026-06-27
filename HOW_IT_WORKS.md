@@ -41,7 +41,7 @@ skills/keystone/SKILL.md
 
 That file is the only public entrypoint. Users invoke Keystone with `/keystone` or by asking Keystone to route work.
 
-Everything else is internal:
+Everything else in the shipped skill is internal:
 
 ```text
 skills/keystone/modules/*.md
@@ -49,6 +49,8 @@ skills/keystone/modules/gates/*.md
 ```
 
 Internal modules are named in the public skill, but they are not separate slash commands.
+
+Maintainer-only notes may live elsewhere in the repository, such as `maintainers/skill-engineering.md`. Those files are not part of the shipped product.
 
 ## Request lifecycle
 
@@ -101,7 +103,6 @@ Each module has the same shape:
 | `review` | Evaluate work without changing it | Read-only: no fixes, commits, or shipping |
 | `ship` | Finalize completed work | Does not start new implementation |
 | `health` | Assess project/tooling condition | Does not silently fix issues |
-| `skill-engineering` | Maintain Keystone itself | Maintainer-only |
 
 ## Subagents and reasoning
 
@@ -135,7 +136,7 @@ The helper records:
 |---|---|
 | routing, reading, writing | `low` to `medium` |
 | research, UI, build, health, ship | `medium`, escalating to `high` for risk |
-| design, breakdown, debug, review, skill engineering | `high`, escalating to `xhigh` for hard or irreversible work |
+| design, breakdown, debug, review | `high`, escalating to `xhigh` for hard or irreversible work |
 | gates | `low`, escalating only when evidence is safety-critical |
 
 The rule is simple: use the narrowest subagent role and the lowest reasoning level that can safely complete the task. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.
@@ -336,7 +337,7 @@ Keystone is currently a **Pi skill package**, not a Pi extension. A Pi extension
 2. Update `tests/routing/cases.yaml` if behavior changes.
 3. Run `make test`.
 
-### Add a module
+### Add a shipped module
 
 1. Add `skills/keystone/modules/<name>.md`.
 2. Add a routing row in `skills/keystone/SKILL.md`.
@@ -345,6 +346,13 @@ Keystone is currently a **Pi skill package**, not a Pi extension. A Pi extension
 5. Add a module row to `skills/keystone/modules/helpers/subagents.md`.
 6. Ensure packaging includes the module directory through `packaging.allowlist`.
 7. Run `make test`.
+
+### Add maintainer-only guidance
+
+1. Put it outside `skills/keystone/`, for example under `maintainers/`.
+2. Do not add it to `skills/keystone/SKILL.md` routing.
+3. Do not add it to `packaging.allowlist` unless it is meant to ship.
+4. Run `make test` and inspect `dist/keystone.zip` if packaging changed.
 
 ### Change packaging metadata
 

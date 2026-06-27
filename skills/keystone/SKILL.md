@@ -1,6 +1,6 @@
 ---
 name: keystone
-description: Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, health, or skill-maintenance work through its canonical orchestrator.
+description: Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.
 ---
 
 # Keystone
@@ -30,7 +30,6 @@ When a module may delegate work, consult `modules/helpers/subagents.md` for host
 | Diagnose failures, failing behavior, errors, bug reports, regressions, unexpected behavior | `modules/debug.md` |
 | Review work without changing it | `modules/review.md` |
 | Finalize completed work for delivery or integration | `modules/ship.md` |
-| Maintain Keystone skill content itself | `modules/skill-engineering.md` |
 | Agent/tooling health, repository condition, skill drift, context rot, risks | `modules/health.md` |
 
 ## Ambiguity rule

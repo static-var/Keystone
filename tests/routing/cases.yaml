@@ -87,12 +87,6 @@
     "id": "health-agent-tooling-rot",
     "prompt": "Our agent tooling is rotting: commands drifted, skills are stale, and automation keeps breaking.",
     "expected": "health",
-    "negative": ["debug", "skill-engineering"]
-  },
-  {
-    "id": "skill-engineering-keystone-edit",
-    "prompt": "Edit Keystone itself by changing its skill instructions and internal routing rules.",
-    "expected": "skill-engineering",
-    "negative": ["write", "build"]
+    "negative": ["debug", "build"]
   }
 ]

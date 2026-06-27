@@ -38,11 +38,13 @@ REQUIRED = {
 FORBIDDEN_NAMES = {
     "index.html",
     "styles.css",
+    "skill-engineering.md",
     ".DS_Store",
 }
 FORBIDDEN_PREFIXES = (
     "docs/",
     "plans/",
+    "maintainers/",
     "dist/",
     ".git/",
     ".keystone/plans/",
@@ -81,7 +83,7 @@ def expand_allowlist() -> set[str] | None:
         path = raw.strip()
         if not path or path.startswith("#"):
             continue
-        if forbidden(path) or path in {"dist", "docs", "plans", ".git"}:
+        if forbidden(path) or path in {"dist", "docs", "plans", "maintainers", ".git"}:
             fail(f"forbidden allowlist entry: {path}")
         candidate = ROOT / path
         if not candidate.exists():
