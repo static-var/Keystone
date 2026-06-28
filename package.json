@@ -59,7 +59,8 @@
     ".pi/extensions/keystone.ts"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "pi": {
     "extensions": [

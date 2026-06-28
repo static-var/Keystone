@@ -342,12 +342,12 @@ pi install npm:@static-var/keystone
 
 ### Release Keystone
 
-1. Ensure `NPM_TOKEN` is configured in GitHub Actions with publish rights for `@static-var/keystone`.
+1. In npm package access settings for `@static-var/keystone`, configure Trusted Publisher → GitHub Actions with user `static-var`, repository `Keystone`, workflow filename `release.yml`, no environment, and allowed action `npm publish`.
 2. Bump `package.json` with `npm version <patch|minor|major> --no-git-tag-version`.
 3. Run `npm run typecheck` and `make test`.
 4. Commit `package.json` and `package-lock.json`.
 5. Tag the commit as `v<package.json version>` and push `main` plus tags.
-6. The release workflow publishes npm with provenance and creates a GitHub Release containing the npm tarball plus `dist/keystone.zip`.
+6. The release workflow publishes npm via Trusted Publishing/OIDC with provenance and creates a GitHub Release containing the npm tarball plus `dist/keystone.zip`.
 
 ### Add a shipped module
 

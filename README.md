@@ -183,13 +183,20 @@ Pi package discovery is npm-based. The package name is `@static-var/keystone`; t
 CI/CD:
 
 - `.github/workflows/ci.yml` runs on PRs and `main`: `npm ci`, Pi extension typecheck, `make test`, npm pack dry-run, and uploads `dist/keystone.zip`.
-- `.github/workflows/release.yml` runs on `v*.*.*` tags or manual dispatch: verifies the tag matches `package.json` version, validates, publishes to npm with provenance, and creates a GitHub Release with both `dist/keystone.zip` and the npm tarball.
+- `.github/workflows/release.yml` runs on `v*.*.*` tags or manual dispatch: verifies the tag matches `package.json` version, validates, publishes to npm through Trusted Publishing/OIDC with provenance, and creates a GitHub Release with both `dist/keystone.zip` and the npm tarball.
 
-Required GitHub secret:
+Trusted Publishing setup on npm:
 
-```text
-NPM_TOKEN  # npm token allowed to publish @static-var/keystone
-```
+1. Publish/create the package once if npm has no package settings page yet.
+2. Open `https://www.npmjs.com/package/@static-var/keystone/access`.
+3. In **Trusted Publisher**, choose **GitHub Actions**.
+4. Configure:
+   - Organization or user: `static-var`
+   - Repository: `Keystone`
+   - Workflow filename: `release.yml`
+   - Environment name: leave blank unless you add a GitHub deployment environment
+   - Allowed actions: `npm publish`
+5. Save. No `NPM_TOKEN` secret is needed.
 
 Release:
 
