@@ -8,7 +8,12 @@
     "claude-code",
     "codex",
     "opencode",
-    "copilot"
+    "copilot",
+    "pi-coding-agent",
+    "pi-extension",
+    "workflow",
+    "skills",
+    "agent-workflows"
   ],
   "license": "MIT",
   "name": "keystone",

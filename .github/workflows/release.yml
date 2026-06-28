@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release, e.g. v0.1.0"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish npm and GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve release ref
+        id: ref
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ref.outputs.tag }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Verify tag matches package version
+        id: pkg
+        run: |
+          name="$(node -p "require('./package.json').name")"
+          version="$(node -p "require('./package.json').version")"
+          test "${{ steps.ref.outputs.tag }}" = "v${version}"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Typecheck Pi extension
+        run: npm run typecheck
+
+      - name: Validate Keystone archive and routing
+        run: make test
+
+      - name: Create npm tarball
+        id: pack
+        run: |
+          npm pack --json > npm-pack.json
+          tarball="$(node -p "require('./npm-pack.json')[0].filename")"
+          tar -tf "$tarball" > npm-files.txt
+          if grep -E '(__pycache__|\.pyc$|/node_modules/|package/(index\.html|styles\.css)|package/(plans|dist|docs)/)' npm-files.txt; then
+            echo "Forbidden file leaked into npm package" >&2
+            exit 1
+          fi
+          echo "tarball=${tarball}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm
+        run: |
+          spec="${{ steps.pkg.outputs.name }}@${{ steps.pkg.outputs.version }}"
+          if npm view "$spec" version >/dev/null 2>&1; then
+            echo "$spec already exists on npm; skipping publish."
+          else
+            npm publish "${{ steps.pack.outputs.tarball }}" --access public --provenance
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ steps.ref.outputs.tag }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" \
+              "${{ steps.pack.outputs.tarball }}" \
+              dist/keystone.zip \
+              --clobber
+          else
+            gh release create "$tag" \
+              "${{ steps.pack.outputs.tarball }}" \
+              dist/keystone.zip \
+              --title "Keystone ${{ steps.pkg.outputs.version }}" \
+              --generate-notes
+          fi

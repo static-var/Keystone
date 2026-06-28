@@ -13,6 +13,7 @@ SKILL_DIR = ROOT / "skills" / "keystone"
 SKILL = SKILL_DIR / "SKILL.md"
 MODULE_DIR = SKILL_DIR / "modules"
 PI_EXTENSION = ROOT / ".pi" / "extensions" / "keystone.ts"
+ALLOWLIST = ROOT / "packaging.allowlist"
 SUBAGENT_HELPER = MODULE_DIR / "helpers" / "subagents.md"
 TARGET_HARNESSES = ("Pi", "Claude", "Codex", "T3", "OpenCode", "Copilot")
 COMMON_PLAYBOOK_HEADINGS = (
@@ -198,6 +199,16 @@ def check_ignored_not_tracked() -> None:
         fail("ignored artifacts are tracked: " + ", ".join(bad))
 
 
+def allowlist_entries() -> set[str]:
+    if not ALLOWLIST.is_file():
+        fail("missing packaging.allowlist")
+    return {
+        line.strip()
+        for line in ALLOWLIST.read_text().splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+
+
 def check_package_json() -> None:
     package_path = ROOT / "package.json"
     if not package_path.is_file():
@@ -206,6 +217,15 @@ def check_package_json() -> None:
     for key in ("name", "version", "description", "license", "keywords"):
         if key not in package:
             fail(f"package.json missing {key}")
+    if package.get("name") != "@static-var/keystone":
+        fail('package.json name must be "@static-var/keystone" for npm/pi.dev publishing')
+    keywords = package.get("keywords", [])
+    if not isinstance(keywords, list) or "pi-package" not in keywords:
+        fail('package.json keywords must include "pi-package"')
+    files = package.get("files")
+    expected_files = allowlist_entries()
+    if set(files or []) != expected_files:
+        fail("package.json files must exactly match packaging.allowlist entries")
     pi = package.get("pi", {})
     if pi.get("skills") != ["./skills"]:
         fail('package.json must set pi.skills to ["./skills"]')

@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Typecheck Pi extension
+        run: npm run typecheck
+
+      - name: Validate Keystone archive and routing
+        run: make test
+
+      - name: Verify npm package contents
+        run: |
+          npm pack --json > npm-pack.json
+          tarball="$(node -p "require('./npm-pack.json')[0].filename")"
+          tar -tf "$tarball" > npm-files.txt
+          if grep -E '(__pycache__|\.pyc$|/node_modules/|package/(index\.html|styles\.css)|package/(plans|dist|docs)/)' npm-files.txt; then
+            echo "Forbidden file leaked into npm package" >&2
+            exit 1
+          fi
+
+      - name: Upload Keystone archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: keystone-zip
+          path: dist/keystone.zip
+          if-no-files-found: error

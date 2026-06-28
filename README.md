@@ -37,7 +37,13 @@ dist/keystone.zip
 
 `dist/` is generated and ignored by git.
 
-Install in Pi from GitHub:
+Install in Pi from npm after release:
+
+```bash
+pi install npm:@static-var/keystone
+```
+
+Or install directly from GitHub:
 
 ```bash
 pi install git:github.com/static-var/Keystone
@@ -48,6 +54,8 @@ Then invoke:
 ```text
 /keystone <task>
 ```
+
+Pi package gallery listing: once `@static-var/keystone` is published to npm with the `pi-package` keyword, it appears on `https://pi.dev/packages`.
 
 ## How it works in one picture
 
@@ -168,14 +176,43 @@ Keystone currently ships as:
 - **Codex plugin metadata** in `.codex-plugin/`
 - **Agents marketplace metadata** in `.agents/plugins/`
 
+## Release automation
+
+Pi package discovery is npm-based. The package name is `@static-var/keystone`; the unscoped `keystone` name is already taken on npm.
+
+CI/CD:
+
+- `.github/workflows/ci.yml` runs on PRs and `main`: `npm ci`, Pi extension typecheck, `make test`, npm pack dry-run, and uploads `dist/keystone.zip`.
+- `.github/workflows/release.yml` runs on `v*.*.*` tags or manual dispatch: verifies the tag matches `package.json` version, validates, publishes to npm with provenance, and creates a GitHub Release with both `dist/keystone.zip` and the npm tarball.
+
+Required GitHub secret:
+
+```text
+NPM_TOKEN  # npm token allowed to publish @static-var/keystone
+```
+
+Release:
+
+```bash
+npm version patch --no-git-tag-version  # or minor/major; edit changelog if added later
+make test
+VERSION=$(node -p "require('./package.json').version")
+git add package.json package-lock.json
+git commit -m "chore: release v${VERSION}"
+git tag "v${VERSION}"
+git push origin main --tags
+```
+
 ## Maintainer commands
 
 ```bash
-make regenerate   # rebuild generated plugin/marketplace metadata
-make validate     # build package, validate source, validate archive
-make routing      # run routing fixture tests
-make package      # write dist/keystone.zip from packaging.allowlist
-make test         # run the full local check suite
+make regenerate      # rebuild generated plugin/marketplace metadata
+make validate        # build package, validate source, validate archive
+make routing         # run routing fixture tests
+make package         # write dist/keystone.zip from packaging.allowlist
+make test            # run the full local check suite
+npm run typecheck    # typecheck the Pi extension
+npm run pack:dry-run # preview npm package contents
 ```
 
 ## Guardrails

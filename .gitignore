@@ -20,6 +20,12 @@
 
 # Generated packages
 /dist/
+/*.tgz
+/npm-pack.json
+/npm-files.txt
+
+# Node dependencies
+/node_modules/
 
 # Python/test caches
 __pycache__/

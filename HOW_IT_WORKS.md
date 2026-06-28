@@ -326,6 +326,12 @@ Keystone currently provides:
 
 The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled skills, registers `/keystone` as the public command, and injects a compact Pi-specific bootstrap while keeping internal modules private.
 
+The Pi package gallery at `https://pi.dev/packages` indexes npm packages. Keystone publishes as `@static-var/keystone` with the `pi-package` keyword, so installs use:
+
+```bash
+pi install npm:@static-var/keystone
+```
+
 ## Common maintainer workflows
 
 ### Change routing language
@@ -333,6 +339,15 @@ The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled
 1. Edit `skills/keystone/SKILL.md`.
 2. Update `tests/routing/cases.yaml` if behavior changes.
 3. Run `make test`.
+
+### Release Keystone
+
+1. Ensure `NPM_TOKEN` is configured in GitHub Actions with publish rights for `@static-var/keystone`.
+2. Bump `package.json` with `npm version <patch|minor|major> --no-git-tag-version`.
+3. Run `npm run typecheck` and `make test`.
+4. Commit `package.json` and `package-lock.json`.
+5. Tag the commit as `v<package.json version>` and push `main` plus tags.
+6. The release workflow publishes npm with provenance and creates a GitHub Release containing the npm tarball plus `dist/keystone.zip`.
 
 ### Add a shipped module
 
