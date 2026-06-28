@@ -15,7 +15,7 @@ Use Build when the user asks to:
 - refactor existing code while preserving behavior
 - change architecture, module boundaries, interfaces, or contracts
 - apply an approved plan from `breakdown`
-- delegate independent implementation work to subagents/workers
+- delegate independent implementation work when a subagent tool is available
 - make focused content or configuration changes that require mutation
 
 ## Not for
@@ -220,7 +220,7 @@ Escalate to `high` when:
 - data loss, security, billing, release, or migration risk exists
 - the user asks for broad refactoring or platform-specific architecture judgment
 
-Use subagents/workers when:
+Use subagents when:
 
 - slices can be verified independently
 - files do not overlap, or ownership is explicitly assigned

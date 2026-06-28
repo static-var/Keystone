@@ -127,7 +127,7 @@ Escalation/stuck criteria:
 - Escalation output must include symptom, impact, attempts, disproven hypotheses, missing evidence, requested help/access, and safest next action.
 
 ## Subagents and reasoning
-Default reasoning: `high`. Use oracle/debug subagents for independent root-cause analysis, log review, performance profile interpretation, bisect planning, or hypothesis generation. Use `xhigh` for intermittent, cross-system, security, performance, data-loss, privacy, destructive, or production-impacting failures.
+Default reasoning: `high`. Use subagents for independent root-cause analysis, log review, performance profile interpretation, bisect planning, or hypothesis generation when the active host exposes safe delegation. Use `xhigh` for intermittent, cross-system, security, performance, data-loss, privacy, destructive, or production-impacting failures.
 
 Subagents may inspect and reason independently, but fixes should converge on one evidence-backed root cause. Ask subagents for competing hypotheses and evidence gaps, not broad code review. When subagents disagree, run the smallest test that distinguishes their explanations. Do not let parallel analysis become parallel guess-and-check edits.
 

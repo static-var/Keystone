@@ -57,7 +57,7 @@ Use for new projects, tools, services, apps, packages, or substantial standalone
 Use when behavior should remain stable while internals change. Focus on the current behavior contract, compatibility expectations, affected surfaces, consumers, migration seams, adapters, flags, dual-run paths, rollback strategy, observability, and characterization tests. Prefer strangler-style or seam-first slices over broad rewrites.
 
 ### Subagent-parallel breakdown
-Use when independent workstreams can proceed safely in isolated workspaces. Build the dependency graph before delegation. Name shared files, interfaces, merge-risk hotspots, subagent roles, reasoning levels, context packets, expected artifacts, integration order, and review checkpoints. Only parallelize slices that can be verified independently or integrated behind a clear contract.
+Use when independent workstreams can proceed safely in isolated workspaces. Build the dependency graph before delegation. Name shared files, interfaces, merge-risk hotspots, delegation purpose, desired reasoning intensity, context packets, expected artifacts, integration order, and review checkpoints. Only parallelize slices that can be verified independently or integrated behind a clear contract.
 
 ## Process
 
@@ -137,12 +137,12 @@ Default reasoning: `high`.
 
 Use subagents when planning benefits from independent context gathering, critique, or parallel workstream design:
 
-- researcher subagents for separate code areas, external APIs, or prior art
-- architecture reviewer subagents for greenfield foundations and migrations
-- risk reviewer subagents for security, data loss, compatibility, or release plans
-- worker subagents only after slices are independent and interfaces are stable
+- read-only research on separate code areas, external APIs, or prior art
+- architecture critique for greenfield foundations and migrations
+- risk critique for security, data loss, compatibility, or release plans
+- implementation delegation only after slices are independent and interfaces are stable
 
-For each proposed subagent, specify role, reasoning level, context packet, expected output artifact, files or areas off limits, and integration/review checkpoint. Do not use subagents to bypass ambiguity. Resolve shared interfaces and sequencing first.
+For each proposed delegation, specify purpose, desired reasoning intensity, context packet, expected output artifact, files or areas off limits, and integration/review checkpoint. Do not use subagents to bypass ambiguity. Resolve shared interfaces and sequencing first.
 
 ## Hard rules
 
@@ -230,7 +230,7 @@ Use this structure unless the user requested a different planning artifact:
 - <risk, impact, mitigation>
 
 ## Subagent opportunities
-- <role, reasoning, context packet, expected artifact>
+- <delegation purpose, desired reasoning intensity, context packet, expected artifact>
 
 ## Handoff
 Next module: `<research|build|debug|review|health|ship|shape>` because <reason>.

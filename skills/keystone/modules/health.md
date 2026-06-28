@@ -64,7 +64,7 @@ Health priority rubric:
 9. Stop at reporting unless the user explicitly requested fixes. If repairs are requested, route to the appropriate module instead of silently switching modes.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use read-only scout subagents for broad inventory and reviewer subagents for independent risk triage. Use `high` for release readiness, security-sensitive audits, large monorepos, severe tooling drift, instruction drift affecting agent behavior, or when health findings affect go/no-go decisions. Subagents must remain read-only unless repairs are explicitly requested.
+Default reasoning: `medium`. Use read-only subagents for broad inventory or independent risk triage when the active host exposes safe delegation. Use `high` for release readiness, security-sensitive audits, large monorepos, severe tooling drift, instruction drift affecting agent behavior, or when health findings affect go/no-go decisions. Subagents must remain read-only unless repairs are explicitly requested.
 
 ## Hard rules
 - Read-only by default: no fixing, formatting, dependency updates, cleanup, generation, or config changes unless explicitly requested.

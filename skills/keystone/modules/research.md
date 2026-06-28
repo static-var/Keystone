@@ -39,7 +39,7 @@ Deliver a research brief that states:
 8. Recommend the smallest next step: `shape`, `debug`, `health`, `breakdown`, `build`, `review`, or stop.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use read-only scout subagents when the search space is large or evidence can be gathered independently. Use `low` for narrow file summaries. Use `high` when findings affect architecture, security, safety, release decisions, legal/market claims, or irreversible product direction. Subagents must remain read-only unless the user requested an artifact.
+Default reasoning: `medium`. Use read-only subagents when the search space is large or evidence can be gathered independently. Use `low` for narrow file summaries. Use `high` when findings affect architecture, security, safety, release decisions, legal/market claims, or irreversible product direction. Subagents must remain read-only unless the user requested an artifact.
 
 ## Hard rules
 - No mutation by default: do not edit files, run formatters, or alter state except harmless read-only commands.

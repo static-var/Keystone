@@ -202,6 +202,29 @@ def check_inline_subagent_guidance(skill_text: str) -> None:
             fail(f"module missing subagent reasoning section: modules/{name}.md")
         if forbidden in module_text or "helpers/subagents.md" in module_text:
             fail(f"module references removed subagent helper file: modules/{name}.md")
+        for phrase in forbidden_module_subagent_role_claims():
+            if phrase in module_text:
+                fail(f"module advertises named/non-portable subagent role language: modules/{name}.md: {phrase}")
+
+
+def forbidden_module_subagent_role_claims() -> tuple[str, ...]:
+    return (
+        "subagent roles",
+        "researcher subagents",
+        "architecture reviewer subagents",
+        "risk reviewer subagents",
+        "worker subagents",
+        "subagents/workers",
+        "oracle/debug subagents",
+        "oracle subagents",
+        "debug subagents",
+        "scout subagents",
+        "reviewer subagents",
+        "writer subagents",
+        "writer, UI, design, or architecture subagents",
+        "specify role,",
+        "<role, reasoning, context packet, expected artifact>",
+    )
 
 
 def forbidden_pi_subagent_claims(markdown_escaped: bool = False) -> tuple[str, ...]:

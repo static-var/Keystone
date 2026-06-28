@@ -179,7 +179,7 @@ Ask for every non-trivial review:
 ## Subagents and reasoning
 Default reasoning: `high`.
 
-Use read-only reviewer subagents for separable risks: security/privacy, test coverage,
+Use read-only subagents for separable risks: security/privacy, test coverage,
 architecture/API compatibility, persistence/migration, accessibility/user impact,
 performance, concurrency, or release risk. Escalate to `xhigh` for security-sensitive,
 data-loss, billing, permissions, public API, migration, or cross-system reviews.

@@ -50,7 +50,7 @@ Deliver a shaped proposal that includes:
 9. Stop at the spec boundary. If the user asks for design plus build, finish Shape with the spec and recommended handoff to `build`; do not implement code.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use writer, UI, design, or architecture subagents for bounded alternatives, critique, or parallel concepts. Use `high` for multi-screen flows, accessibility-sensitive experiences, design-system impact, pricing/positioning, architecture boundaries, or major scope decisions. Subagents should produce options or critique, not unrequested implementation.
+Default reasoning: `medium`. Use subagents for bounded alternatives, critique, or parallel concepts when the active host exposes safe delegation. Use `high` for multi-screen flows, accessibility-sensitive experiences, design-system impact, pricing/positioning, architecture boundaries, or major scope decisions. Subagents should produce options or critique, not unrequested implementation.
 
 ## Hard rules
 - Shape is not build: do not edit production code or runtime behavior.
