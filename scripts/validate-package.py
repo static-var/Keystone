@@ -12,6 +12,7 @@ ALLOWLIST = ROOT / "packaging.allowlist"
 REQUIRED = {
     "README.md",
     "HOW_IT_WORKS.md",
+    "LICENSE",
     "assets/brand/keystone-icon.png",
     "assets/brand/keystone-icon.svg",
     "assets/brand/keystone-logo.png",

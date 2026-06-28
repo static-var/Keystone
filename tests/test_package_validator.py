@@ -22,6 +22,10 @@ class PackageValidatorTests(unittest.TestCase):
             with self.subTest(gate=gate):
                 self.assertIn(f"skills/keystone/modules/gates/{gate}.md", validator.REQUIRED)
 
+    def test_license_file_is_required(self):
+        validator = load_validate_package()
+        self.assertIn("LICENSE", validator.REQUIRED)
+
     def test_brand_assets_are_required(self):
         validator = load_validate_package()
         for asset in (
