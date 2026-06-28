@@ -13,6 +13,8 @@ SKILL_DIR = ROOT / "skills" / "keystone"
 SKILL = SKILL_DIR / "SKILL.md"
 MODULE_DIR = SKILL_DIR / "modules"
 PI_EXTENSION = ROOT / ".pi" / "extensions" / "keystone.ts"
+CODEX_PLUGIN = ROOT / ".codex-plugin" / "plugin.json"
+CODEX_MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
 ALLOWLIST = ROOT / "packaging.allowlist"
 SUBAGENT_HELPER = MODULE_DIR / "helpers" / "subagents.md"
 TARGET_HARNESSES = ("Pi", "Claude", "Codex", "T3", "OpenCode", "Copilot")
@@ -209,6 +211,32 @@ def allowlist_entries() -> set[str]:
     }
 
 
+def check_codex_metadata() -> None:
+    if not CODEX_PLUGIN.is_file():
+        fail("missing Codex plugin manifest .codex-plugin/plugin.json")
+    plugin = json.loads(CODEX_PLUGIN.read_text())
+    if plugin.get("name") != "keystone":
+        fail("Codex plugin name must be keystone")
+    if plugin.get("skills") != "./skills/":
+        fail('Codex plugin must expose bundled skills with skills: "./skills/"')
+    if not CODEX_MARKETPLACE.is_file():
+        fail("missing Codex marketplace .agents/plugins/marketplace.json")
+    marketplace = json.loads(CODEX_MARKETPLACE.read_text())
+    plugins = marketplace.get("plugins")
+    if not isinstance(plugins, list) or len(plugins) != 1:
+        fail("Codex marketplace must expose exactly one Keystone plugin entry")
+    entry = plugins[0]
+    if entry.get("name") != "keystone":
+        fail("Codex marketplace plugin entry must be named keystone")
+    if entry.get("source") != {"source": "local", "path": "./"}:
+        fail('Codex marketplace plugin source must be {"source": "local", "path": "./"}')
+    policy = entry.get("policy", {})
+    if policy.get("installation") != "AVAILABLE":
+        fail("Codex marketplace plugin must be installable")
+    if policy.get("authentication") not in {"ON_USE", "ON_INSTALL"}:
+        fail("Codex marketplace plugin authentication policy must be ON_USE or ON_INSTALL")
+
+
 def check_package_json() -> None:
     package_path = ROOT / "package.json"
     if not package_path.is_file():
@@ -252,6 +280,7 @@ def main() -> int:
     check_module_playbooks(text)
     check_subagent_helper(text)
     check_ignored_not_tracked()
+    check_codex_metadata()
     check_package_json()
     print("validate-keystone: ok")
     return 0

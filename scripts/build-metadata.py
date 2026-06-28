@@ -76,7 +76,7 @@ def main() -> int:
         "license": license_name,
         "skills": [{"name": NAME, "path": "../skills/keystone/SKILL.md"}],
     }
-    marketplace = {
+    claude_marketplace = {
         "name": NAME,
         "displayName": "Keystone",
         "version": version,
@@ -86,12 +86,33 @@ def main() -> int:
         "skills": [NAME],
     }
     if isinstance(fm.get("author"), str):
-        marketplace["author"] = fm["author"]
+        claude_marketplace["author"] = fm["author"]
+
+    codex_plugin = {
+        "name": NAME,
+        "version": version,
+        "description": description,
+        "skills": "./skills/",
+    }
+    codex_marketplace = {
+        "name": NAME,
+        "interface": {"displayName": "Keystone"},
+        "plugins": [
+            {
+                "name": NAME,
+                "displayName": "Keystone",
+                "source": {"source": "local", "path": "./"},
+                "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"},
+                "category": "Development & Workflow",
+                "description": description,
+            }
+        ],
+    }
 
     write_json(ROOT / ".claude-plugin" / "plugin.json", plugin)
-    write_json(ROOT / ".claude-plugin" / "marketplace.json", marketplace)
-    write_json(ROOT / ".codex-plugin" / "plugin.json", plugin)
-    write_json(ROOT / ".agents" / "plugins" / "marketplace.json", marketplace)
+    write_json(ROOT / ".claude-plugin" / "marketplace.json", claude_marketplace)
+    write_json(ROOT / ".codex-plugin" / "plugin.json", codex_plugin)
+    write_json(ROOT / ".agents" / "plugins" / "marketplace.json", codex_marketplace)
     return 0
 
 

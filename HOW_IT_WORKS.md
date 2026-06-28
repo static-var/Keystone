@@ -321,10 +321,12 @@ Keystone currently provides:
 |---|---|
 | Pi | `.pi/extensions/keystone.ts` plus `package.json` with `pi.extensions` and `pi.skills` |
 | Claude Code | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` |
-| Codex | `.codex-plugin/plugin.json` |
-| Agents/Copilot-style hosts | `.agents/plugins/marketplace.json` |
+| Codex | `.codex-plugin/plugin.json` plus `.agents/plugins/marketplace.json` repo marketplace |
+| Agents/Copilot-style hosts | generated marketplace-compatible metadata where applicable |
 
 The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled skills, registers `/keystone` as the public command, and injects a compact Pi-specific bootstrap while keeping internal modules private.
+
+The Codex plugin path uses the Codex plugin marketplace pattern: `.codex-plugin/plugin.json` declares the bundled skill directory, while `.agents/plugins/marketplace.json` exposes a single installable Keystone entry whose local source is the repository root. Users can add it with `codex plugin marketplace add static-var/Keystone --ref main`, then install Keystone from `codex /plugins` or `codex plugin add keystone --marketplace keystone`.
 
 The Pi package gallery at `https://pi.dev/packages` indexes npm packages. Keystone publishes as `@static-var/keystone` with the `pi-package` keyword, so installs use:
 

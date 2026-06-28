@@ -1,24 +1,22 @@
 {
-  "description": "Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.",
-  "displayName": "Keystone",
-  "keywords": [
-    "pi-package",
-    "agent-skills",
-    "keystone",
-    "claude-code",
-    "codex",
-    "opencode",
-    "copilot",
-    "pi-coding-agent",
-    "pi-extension",
-    "workflow",
-    "skills",
-    "agent-workflows"
-  ],
-  "license": "MIT",
+  "interface": {
+    "displayName": "Keystone"
+  },
   "name": "keystone",
-  "skills": [
-    "keystone"
-  ],
-  "version": "0.1.1"
+  "plugins": [
+    {
+      "category": "Development & Workflow",
+      "description": "Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.",
+      "displayName": "Keystone",
+      "name": "keystone",
+      "policy": {
+        "authentication": "ON_USE",
+        "installation": "AVAILABLE"
+      },
+      "source": {
+        "path": "./",
+        "source": "local"
+      }
+    }
+  ]
 }

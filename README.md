@@ -173,8 +173,31 @@ Keystone currently ships as:
   ```
 - **Pi extension source** in `.pi/extensions/keystone.ts`, which registers `/keystone`, discovers the bundled skill, and adds a small Pi-specific bootstrap.
 - **Claude plugin metadata** in `.claude-plugin/`
-- **Codex plugin metadata** in `.codex-plugin/`
-- **Agents marketplace metadata** in `.agents/plugins/`
+- **Codex plugin manifest** in `.codex-plugin/plugin.json`
+- **Codex repo marketplace** in `.agents/plugins/marketplace.json`
+
+## Codex plugin install
+
+Keystone is also installable as a Codex plugin from this GitHub repo marketplace.
+
+```bash
+codex plugin marketplace add static-var/Keystone --ref main
+```
+
+Then open the plugin browser and install Keystone:
+
+```bash
+codex /plugins
+```
+
+CLI install equivalent:
+
+```bash
+codex plugin add keystone --marketplace keystone
+# or: codex plugin add keystone@keystone
+```
+
+After installation, invoke Keystone explicitly with `@keystone` / `$keystone` depending on your Codex surface, or ask Codex to use Keystone for workflow routing.
 
 ## Release automation
 
