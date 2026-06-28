@@ -12,9 +12,7 @@
 /**/*-design.md
 
 # Agent scratch/work products
-/.keystone/plans/
-/.keystone/specs/
-/.keystone/tmp/
+/.keystone/
 /.worktrees/
 /worktrees/
 

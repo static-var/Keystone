@@ -29,6 +29,7 @@
   "files": [
     "README.md",
     "HOW_IT_WORKS.md",
+    "assets/readme/keystone-routing-kami.png",
     "package.json",
     "packaging.allowlist",
     "Makefile",
