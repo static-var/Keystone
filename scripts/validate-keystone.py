@@ -303,6 +303,33 @@ def allowlist_entries() -> set[str]:
     }
 
 
+def check_github_actions_node24_compatible() -> None:
+    workflows = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
+    if not workflows:
+        fail("missing GitHub Actions workflows")
+    deprecated_refs = (
+        "actions/checkout@v4",
+        "actions/setup-node@v4",
+        "actions/setup-python@v5",
+        "actions/upload-artifact@v4",
+    )
+    for path in workflows:
+        text = path.read_text()
+        for ref in deprecated_refs:
+            if ref in text:
+                fail(f"{path.relative_to(ROOT)} uses deprecated Node 20 action {ref}")
+    combined = "\n".join(path.read_text() for path in workflows)
+    required_refs = (
+        "actions/checkout@v6",
+        "actions/setup-node@v6",
+        "actions/setup-python@v6",
+        "actions/upload-artifact@v6",
+    )
+    for ref in required_refs:
+        if ref not in combined:
+            fail(f"GitHub Actions workflows missing Node 24-compatible action {ref}")
+
+
 def check_skills_sh_docs() -> None:
     readme = ROOT / "README.md"
     if not readme.is_file():
@@ -437,6 +464,7 @@ def main() -> int:
     check_pi_subagent_docs()
     check_pi_subagents_extension_guidance()
     check_ignored_not_tracked()
+    check_github_actions_node24_compatible()
     check_skills_sh_docs()
     check_agents_skill_adapter()
     check_claude_metadata()
