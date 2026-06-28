@@ -18,6 +18,7 @@ Use these common paths unless the user's immediate next action clearly points el
 - Product or feature work: `research -> shape -> breakdown -> build -> review -> ship`.
 - Existing plan or approved design: `breakdown -> build -> review -> ship`.
 - Direct implementation request: `build -> review -> ship`, loading `breakdown` first only when execution order or verification is unclear.
+- Bug fix: `debug -> build -> proof gate -> review -> ship`.
 - Debug loop: `debug -> build -> proof gate -> review`; return to `debug` if proof fails or new symptoms appear.
 - Health finding that needs repair: `health -> build` for contained fixes, or `health -> review` when the finding needs independent validation before mutation.
 

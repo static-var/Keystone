@@ -124,10 +124,11 @@ This file is not included in `dist/keystone.zip` and is not part of `/keystone` 
 .
 ├── skills/keystone/              # canonical skill source
 │   ├── SKILL.md                  # public /keystone entrypoint
-│   └── modules/                  # internal modules, helpers, and gates
+│   └── modules/                  # internal modules and gates
 ├── scripts/                      # metadata, validation, packaging
 ├── tests/routing/cases.yaml      # routing fixture cases
 ├── tests/test_routing.py         # stdlib routing test runner
+├── tests/test_package_validator.py # package validator unit coverage
 ├── maintainers/                  # repo-only, not shipped in package
 ├── .claude-plugin/               # generated Claude plugin metadata
 ├── .codex-plugin/                # generated Codex plugin metadata

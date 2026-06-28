@@ -1,6 +1,6 @@
-.PHONY: test validate package regenerate routing py-compile
+.PHONY: test validate package regenerate routing unit py-compile
 
-test: validate routing py-compile
+test: validate unit py-compile
 
 validate: package
 	python3 scripts/validate-keystone.py
@@ -9,8 +9,11 @@ validate: package
 routing:
 	python3 -m unittest tests/test_routing.py
 
+unit:
+	python3 -m unittest discover -s tests -p 'test_*.py'
+
 py-compile:
-	python3 -m py_compile scripts/build-metadata.py scripts/validate-keystone.py scripts/validate-package.py tests/test_routing.py
+	python3 -m py_compile scripts/build-metadata.py scripts/validate-keystone.py scripts/validate-package.py tests/test_routing.py tests/test_package_validator.py
 
 package: regenerate
 	scripts/package-keystone.sh
