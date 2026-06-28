@@ -181,12 +181,14 @@ def check_inline_subagent_guidance(skill_text: str) -> None:
         "Agent",
         "get_subagent_result",
         "steer_subagent",
+        "Do not assume named roles, model selection, or thinking controls",
     )
     for phrase in required_skill_phrases:
         if phrase not in skill_text:
             fail(f"Keystone skill missing inline subagent guidance phrase: {phrase}")
-    if "`profile`" in skill_text:
-        fail("Keystone skill must not advertise unsupported pi-subagents profile control")
+    for phrase in forbidden_pi_subagent_claims():
+        if phrase in skill_text:
+            fail(f"Keystone skill advertises non-portable pi-subagents capability: {phrase}")
 
     primary_modules = routing_modules(skill_text)
     if not primary_modules:
@@ -202,6 +204,40 @@ def check_inline_subagent_guidance(skill_text: str) -> None:
             fail(f"module references removed subagent helper file: modules/{name}.md")
 
 
+def forbidden_pi_subagent_claims(markdown_escaped: bool = False) -> tuple[str, ...]:
+    tick = "\\`" if markdown_escaped else "`"
+    return (
+        "Prefer narrow roles",
+        "narrowest subagent role",
+        f"{tick}scout{tick}",
+        f"{tick}worker{tick}",
+        f"{tick}reviewer{tick}",
+        f"{tick}oracle{tick}",
+        f"{tick}writer{tick}",
+        f"{tick}thinking{tick} or {tick}model{tick}",
+        f"{tick}model{tick} or {tick}thinking{tick}",
+        f"{tick}thinking{tick} and {tick}model{tick}",
+        f"{tick}model{tick} and {tick}thinking{tick}",
+        f"{tick}thinking{tick}, {tick}model{tick}",
+        f"{tick}model{tick}, {tick}thinking{tick}",
+        f"{tick}profile{tick}",
+    )
+
+
+def check_pi_subagent_docs() -> None:
+    for path in (ROOT / "README.md", ROOT / "HOW_IT_WORKS.md"):
+        if not path.is_file():
+            fail(f"missing {path.name}")
+        text = path.read_text()
+        if "@tintinweb/pi-subagents" not in text:
+            fail(f"{path.name} missing @tintinweb/pi-subagents install guidance")
+        if "Do not assume named roles" not in text and "does not assume named roles" not in text:
+            fail(f"{path.name} must say not to assume named roles or Pi subagent controls")
+        for phrase in forbidden_pi_subagent_claims():
+            if phrase in text:
+                fail(f"{path.name} advertises non-portable pi-subagents capability: {phrase}")
+
+
 def check_pi_subagents_extension_guidance() -> None:
     if not PI_EXTENSION.is_file():
         fail("missing Pi extension .pi/extensions/keystone.ts")
@@ -212,12 +248,14 @@ def check_pi_subagents_extension_guidance() -> None:
         "get_subagent_result",
         "steer_subagent",
         "Do not invent unsupported subagent tools",
+        "Do not assume named roles, model selection, or thinking controls",
     )
     for phrase in required_phrases:
         if phrase not in extension:
             fail(f"Pi extension missing pi-subagents guidance phrase: {phrase}")
-    if "\\`profile\\`" in extension or "`profile`" in extension:
-        fail("Pi extension must not advertise unsupported pi-subagents profile control")
+    for phrase in forbidden_pi_subagent_claims(markdown_escaped=True) + ("`profile`",):
+        if phrase in extension:
+            fail(f"Pi extension advertises non-portable pi-subagents capability: {phrase}")
     if "modules/helpers/subagents.md" in extension or "helpers/subagents.md" in extension:
         fail("Pi extension must not reference removed subagent helper file")
 
@@ -343,6 +381,7 @@ def main() -> int:
     check_product_modules(text)
     check_module_playbooks(text)
     check_inline_subagent_guidance(text)
+    check_pi_subagent_docs()
     check_pi_subagents_extension_guidance()
     check_ignored_not_tracked()
     check_agents_skill_adapter()

@@ -50,7 +50,7 @@ When a module temporarily routes to another module and then resumes, the returni
 
 Use subagents when the active host exposes them and delegation has a clear boundary, useful artifact, and lower coordination cost than doing the work inline.
 
-For Pi, Keystone is tuned for `@tintinweb/pi-subagents` (https://github.com/tintinweb/pi-subagents). Install it with `pi install npm:@tintinweb/pi-subagents`. When available, use `Agent` for bounded work, `get_subagent_result` for background results, and `steer_subagent` only to redirect live work. Prefer narrow roles such as `scout`, `worker`, `reviewer`, `oracle`, or `writer`; use `thinking` or `model` only when the host supports them.
+For Pi, Keystone is tuned for `@tintinweb/pi-subagents` (https://github.com/tintinweb/pi-subagents). Install it with `pi install npm:@tintinweb/pi-subagents`. When available, use `Agent` for bounded work, `get_subagent_result` for background results, and `steer_subagent` only to redirect live work. Do not assume named roles, model selection, or thinking controls; use only the fields exposed by the active tool schema.
 
 Keep subagents read-only unless mutation is explicitly requested. Use background/parallel agents only for independent tasks with no shared mutable files. Treat subagent output as evidence, not truth; the parent must verify before acting. If the host cannot provide subagents or per-subagent reasoning, include the desired reasoning in the prompt or work inline. Do not invent unsupported subagent tools.
 

@@ -113,13 +113,13 @@ For Pi, Keystone is configured for `@tintinweb/pi-subagents` (https://github.com
 pi install npm:@tintinweb/pi-subagents
 ```
 
-When installed, Keystone may use `Agent`, `get_subagent_result`, and `steer_subagent`; otherwise it works inline.
+When installed, Keystone may use `Agent`, `get_subagent_result`, and `steer_subagent` if the active tool schema exposes them. It does not assume named roles, model selection, or thinking controls from Pi; otherwise it works inline.
 
 ### Host capability summary
 
 | Harness | Subagents | Reasoning control |
 |---|---:|---|
-| Pi coding agent with `@tintinweb/pi-subagents` | yes | native `thinking` and `model` per agent/invocation |
+| Pi coding agent with `@tintinweb/pi-subagents` | yes | use only controls exposed by the active tool schema; do not assume named roles, `model`, or `thinking` |
 | Claude Code | yes | model selection and built-in Explore detail; no general custom-agent reasoning field confirmed |
 | Codex CLI/app | host-dependent | global `model_reasoning_effort`; per-subagent effort not confirmed |
 | T3 Code | not confirmed | not confirmed |
@@ -135,7 +135,7 @@ When installed, Keystone may use `Agent`, `get_subagent_result`, and `steer_suba
 | breakdown, debug, review, high-stakes shape decisions | `high`, escalating to `xhigh` for hard or irreversible work |
 | gates | `low`, escalating only when evidence is safety-critical |
 
-The rule is simple: use the narrowest subagent role and the lowest reasoning level that can safely complete the task. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.
+The rule is simple: delegate the narrowest bounded task and request the lowest reasoning intensity that can safely complete it. Only use role names, model selection, or thinking controls when the active host schema exposes them. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.
 
 ## Gates
 

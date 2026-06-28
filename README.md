@@ -148,7 +148,7 @@ For Pi, install the supported subagent extension:
 pi install npm:@tintinweb/pi-subagents
 ```
 
-Then Keystone can use `Agent`, `get_subagent_result`, and `steer_subagent` with roles such as `scout`, `worker`, `reviewer`, `oracle`, and `writer`. If those tools are unavailable, Keystone works inline and does not invent unsupported subagent tools.
+Then Keystone can use `Agent`, `get_subagent_result`, and `steer_subagent` when the active tool schema exposes them. Keystone does not assume named roles, model selection, or thinking controls from Pi; if those controls are unavailable, it works inline or encodes intent in the prompt instead of inventing unsupported fields.
 
 Each Keystone module includes a `Subagents and reasoning` section with its default reasoning level.
 
