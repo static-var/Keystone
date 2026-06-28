@@ -12,6 +12,11 @@ ALLOWLIST = ROOT / "packaging.allowlist"
 REQUIRED = {
     "README.md",
     "HOW_IT_WORKS.md",
+    "assets/brand/keystone-icon.png",
+    "assets/brand/keystone-icon.svg",
+    "assets/brand/keystone-logo.png",
+    "assets/brand/keystone-logo.svg",
+    "assets/readme/keystone-routing-kami.png",
     "package.json",
     "packaging.allowlist",
     "Makefile",

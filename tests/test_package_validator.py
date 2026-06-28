@@ -22,6 +22,18 @@ class PackageValidatorTests(unittest.TestCase):
             with self.subTest(gate=gate):
                 self.assertIn(f"skills/keystone/modules/gates/{gate}.md", validator.REQUIRED)
 
+    def test_brand_assets_are_required(self):
+        validator = load_validate_package()
+        for asset in (
+            "assets/brand/keystone-icon.png",
+            "assets/brand/keystone-icon.svg",
+            "assets/brand/keystone-logo.png",
+            "assets/brand/keystone-logo.svg",
+            "assets/readme/keystone-routing-kami.png",
+        ):
+            with self.subTest(asset=asset):
+                self.assertIn(asset, validator.REQUIRED)
+
 
 if __name__ == "__main__":
     unittest.main()

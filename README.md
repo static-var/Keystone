@@ -1,5 +1,9 @@
 # Keystone
 
+<p align="center">
+  <img src="assets/brand/keystone-logo.svg" alt="Keystone" width="360">
+</p>
+
 > One doorway for disciplined AI work: route the task, use the right mode, prove the result.
 
 Keystone is a workflow skill for coding agents. Instead of asking your agent to plan, build, debug, review, and ship all at once, you invoke **one public entrypoint** and Keystone routes the work to the right internal module.
