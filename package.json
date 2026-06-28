@@ -1,6 +1,6 @@
 {
   "name": "@static-var/keystone",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Keystone: one-router AI engineering workflow extension and skill system for Pi.",
   "type": "module",
   "license": "MIT",

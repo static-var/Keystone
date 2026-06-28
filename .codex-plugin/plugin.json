@@ -2,5 +2,5 @@
   "description": "Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.",
   "name": "keystone",
   "skills": "./skills/",
-  "version": "0.1.1"
+  "version": "1.0.0"
 }

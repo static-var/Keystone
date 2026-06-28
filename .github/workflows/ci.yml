@@ -42,7 +42,7 @@ jobs:
           npm pack --json > npm-pack.json
           tarball="$(node -p "require('./npm-pack.json')[0].filename")"
           tar -tf "$tarball" > npm-files.txt
-          if grep -E '(__pycache__|\.pyc$|/node_modules/|package/(index\.html|styles\.css)|package/(plans|dist|docs)/)' npm-files.txt; then
+          if grep -E '(__pycache__|\.pyc$|/node_modules/|package/(index\.html|styles\.css)|package/(plans|dist|docs|maintainers)/)' npm-files.txt; then
             echo "Forbidden file leaked into npm package" >&2
             exit 1
           fi
