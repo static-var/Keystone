@@ -107,12 +107,7 @@ Boundary: Health system-condition scan, not Review of a specific change
 | Package/release health | ... | ... | ... |
 | Instruction/skill drift | ... | ... | ... |
 
-### Health priority rubric
-| Severity | Use when | Urgency | Typical next Keystone module |
-|---|---|---|---|
-| Critical | Broken now, release-blocking, security-sensitive, data-loss-prone, or prevents required project operation | Act before `ship` or before relying on the affected subsystem | `debug` for failing behavior; `build` for repairs; `ship` only for post-fix release gates |
-| Watch | Risky, stale, drifting, or likely to become blocking, but not proven broken under current evidence | Schedule investigation/remediation soon | `research`, `breakdown`, or `build` |
-| Info | Healthy signal, minor inconsistency, low-impact cleanup, or explicitly unknown/unchecked area | No immediate action unless priorities change | `no-op`, `review`, or `ship` for validation/final gates |
+Classify findings using the Health priority rubric above: `Critical`, `Watch`, or `Info`.
 
 ### Findings
 1. Critical / Watch / Info — finding

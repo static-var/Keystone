@@ -55,6 +55,11 @@ Default reasoning: `medium`. Use read-only scout subagents when the search space
 - **Mutation creep:** “just fixing” or rewriting while researching.
 - **Hidden uncertainty:** omitting confidence, unknowns, or contradictory evidence.
 
+## Worked example
+Good research finding: “Official Stripe docs show idempotency keys apply per unique key and preserve the first result, including failures; this means retrying payment capture should reuse the original key, not generate a new one. Confidence: High — primary docs, current page.”
+
+Bad research finding: “Stripe probably handles retries safely, so we can just retry the request.”
+
 ## Output format
 ```markdown
 ## Research brief
