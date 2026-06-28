@@ -122,7 +122,6 @@ When installed, Keystone may use `Agent`, `get_subagent_result`, and `steer_suba
 | Pi coding agent with `@tintinweb/pi-subagents` | yes | use only controls exposed by the active tool schema; do not assume named roles, `model`, or `thinking` |
 | Claude Code | yes | model selection and built-in Explore detail; no general custom-agent reasoning field confirmed |
 | Codex CLI/app | host-dependent | global `model_reasoning_effort`; per-subagent effort not confirmed |
-| T3 Code | not confirmed | not confirmed |
 | OpenCode | yes | partial/provider-dependent: `model` plus provider-specific `variant`; no universal reasoning knob confirmed; discovers Keystone through `.agents/skills` or symlinked canonical skill |
 | GitHub Copilot / VS Code | yes | custom agent `model`; no general reasoning field confirmed; discovers Keystone through `.agents/skills`, `.github/skills`, or personal skill dirs |
 
@@ -323,7 +322,6 @@ Keystone currently provides:
 | Claude Code | `.claude-plugin/plugin.json` plus `.claude-plugin/marketplace.json` marketplace |
 | Codex | `.codex-plugin/plugin.json` plus `.agents/plugins/marketplace.json` repo marketplace |
 | OpenCode / GitHub Copilot / VS Code | `.agents/skills/keystone/SKILL.md` adapter plus canonical `skills/keystone/` |
-| T3 Code | use the underlying Codex, Claude Code, or OpenCode install path |
 
 The Claude Code plugin path uses Claude's marketplace pattern: `.claude-plugin/plugin.json` identifies the repository root as a plugin, and `.claude-plugin/marketplace.json` exposes a single installable `keystone` entry with source `./`. Users add it with `/plugin marketplace add static-var/Keystone`, install with `/plugin install keystone@keystone`, then invoke `/keystone:keystone`.
 
