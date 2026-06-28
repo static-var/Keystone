@@ -359,6 +359,21 @@ def check_codex_metadata() -> None:
         fail("Codex plugin name must be keystone")
     if plugin.get("skills") != "./skills/":
         fail('Codex plugin must expose bundled skills with skills: "./skills/"')
+    interface = plugin.get("interface")
+    if not isinstance(interface, dict):
+        fail("Codex plugin must include interface metadata for directory presentation")
+    expected_interface = {
+        "displayName": "Keystone",
+        "brandColor": "#1F2933",
+        "composerIcon": "./assets/brand/keystone-icon.png",
+        "logo": "./assets/brand/keystone-logo.png",
+    }
+    for key, value in expected_interface.items():
+        if interface.get(key) != value:
+            fail(f"Codex plugin interface.{key} must be {value}")
+    for asset in (ROOT / "assets/brand/keystone-icon.png", ROOT / "assets/brand/keystone-logo.png"):
+        if not asset.is_file():
+            fail(f"missing Codex plugin logo asset: {asset.relative_to(ROOT).as_posix()}")
     if not CODEX_MARKETPLACE.is_file():
         fail("missing Codex marketplace .agents/plugins/marketplace.json")
     marketplace = json.loads(CODEX_MARKETPLACE.read_text())

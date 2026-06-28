@@ -1,5 +1,26 @@
 {
   "description": "Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.",
+  "interface": {
+    "brandColor": "#1F2933",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Review",
+      "Workflow"
+    ],
+    "category": "Development & Workflow",
+    "composerIcon": "./assets/brand/keystone-icon.png",
+    "defaultPrompt": [
+      "Use Keystone to route this task before editing.",
+      "Use Keystone to review this branch for blockers.",
+      "Use Keystone to ship this change with proof."
+    ],
+    "developerName": "static-var",
+    "displayName": "Keystone",
+    "logo": "./assets/brand/keystone-logo.png",
+    "longDescription": "Keystone routes AI coding work through one public entrypoint, with internal modules and gates for research, shaping, implementation, debugging, review, and shipping.",
+    "shortDescription": "One doorway for disciplined AI workflows."
+  },
   "name": "keystone",
   "skills": "./skills/",
   "version": "1.0.0"

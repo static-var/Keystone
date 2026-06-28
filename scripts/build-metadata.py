@@ -136,6 +136,22 @@ def main() -> int:
         "version": version,
         "description": description,
         "skills": "./skills/",
+        "interface": {
+            "displayName": "Keystone",
+            "shortDescription": "One doorway for disciplined AI workflows.",
+            "longDescription": "Keystone routes AI coding work through one public entrypoint, with internal modules and gates for research, shaping, implementation, debugging, review, and shipping.",
+            "developerName": "static-var",
+            "category": "Development & Workflow",
+            "capabilities": ["Read", "Write", "Review", "Workflow"],
+            "brandColor": "#1F2933",
+            "composerIcon": "./assets/brand/keystone-icon.png",
+            "logo": "./assets/brand/keystone-logo.png",
+            "defaultPrompt": [
+                "Use Keystone to route this task before editing.",
+                "Use Keystone to review this branch for blockers.",
+                "Use Keystone to ship this change with proof.",
+            ],
+        },
     }
     codex_marketplace = {
         "name": NAME,
