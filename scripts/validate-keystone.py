@@ -303,6 +303,21 @@ def allowlist_entries() -> set[str]:
     }
 
 
+def check_skills_sh_docs() -> None:
+    readme = ROOT / "README.md"
+    if not readme.is_file():
+        fail("missing README.md")
+    text = readme.read_text()
+    required = (
+        "https://skills.sh/static-var/keystone",
+        "npx skills add static-var/keystone --skill keystone",
+        "npx skills add static-var/keystone --list",
+    )
+    for phrase in required:
+        if phrase not in text:
+            fail(f"README.md missing skills.sh guidance: {phrase}")
+
+
 def check_agents_skill_adapter() -> None:
     if not AGENTS_SKILL_ADAPTER.is_file():
         fail("missing .agents/skills/keystone/SKILL.md adapter for OpenCode/Copilot-compatible hosts")
@@ -407,6 +422,7 @@ def main() -> int:
     check_pi_subagent_docs()
     check_pi_subagents_extension_guidance()
     check_ignored_not_tracked()
+    check_skills_sh_docs()
     check_agents_skill_adapter()
     check_claude_metadata()
     check_codex_metadata()

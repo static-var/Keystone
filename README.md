@@ -171,6 +171,27 @@ Keystone currently ships as:
 - **Codex plugin manifest** in `.codex-plugin/plugin.json`
 - **Codex repo marketplace** in `.agents/plugins/marketplace.json`
 - **Agent Skills adapter** in `.agents/skills/keystone/SKILL.md` for OpenCode, GitHub Copilot, VS Code, and other Agent Skills hosts
+- **skills.sh listing** at `https://skills.sh/static-var/keystone`
+
+## skills.sh install
+
+Keystone is available on skills.sh as a standard Agent Skill:
+
+```bash
+npx skills add static-var/keystone --skill keystone
+```
+
+To inspect without installing:
+
+```bash
+npx skills add static-var/keystone --list
+```
+
+skills.sh page:
+
+```text
+https://skills.sh/static-var/keystone
+```
 
 ## Claude Code plugin install
 
