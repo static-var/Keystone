@@ -343,7 +343,7 @@ pi install npm:@static-var/keystone
 ### Release Keystone
 
 1. Confirm the npm scope in `package.json` is owned by the publisher. Keystone currently uses `@static-var/keystone`.
-2. If the npm package does not exist yet, bootstrap it once with `npm login`, `npm run typecheck`, `make test`, and `npm publish --access public`; npm only exposes Trusted Publisher settings after the package exists.
+2. If the npm package does not exist yet, bootstrap it once with `npm login`, `npm run typecheck`, `make test`, and `npm publish --access public --provenance=false`; append `--otp <code>` if npm requires 2FA. npm only exposes Trusted Publisher settings after the package exists.
 3. In npm package access settings for `@static-var/keystone`, configure Trusted Publisher → GitHub Actions with user `static-var`, repository `Keystone`, workflow filename `release.yml`, no environment, and allowed action `npm publish`.
 4. Bump `package.json` with `npm version <patch|minor|major> --no-git-tag-version`.
 5. Run `npm run typecheck` and `make test`.

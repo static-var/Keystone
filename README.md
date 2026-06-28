@@ -193,9 +193,9 @@ Trusted Publishing setup on npm:
    npm login
    npm run typecheck
    make test
-   npm publish --access public
+   npm publish --access public --provenance=false
    ```
-   If npm prompts for 2FA, append `--otp <code>`.
+   If npm requires 2FA, append `--otp <code>`. Local bootstrap disables provenance because provenance is provided by future OIDC releases.
 3. Open `https://www.npmjs.com/package/@static-var/keystone/access`.
 4. In **Trusted Publisher**, choose **GitHub Actions**.
 5. Configure:
