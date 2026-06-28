@@ -30,7 +30,6 @@ REQUIRED = {
     "skills/keystone/modules/review.md",
     "skills/keystone/modules/ship.md",
     "skills/keystone/modules/health.md",
-    "skills/keystone/modules/helpers/subagents.md",
     "skills/keystone/modules/gates/isolation.md",
     "skills/keystone/modules/gates/proof.md",
     ".claude-plugin/plugin.json",

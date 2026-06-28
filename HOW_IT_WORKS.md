@@ -103,24 +103,23 @@ Each module has the same shape:
 
 ## Subagents and reasoning
 
-Keystone's subagent guidance lives in:
+Keystone keeps subagent guidance inline in `skills/keystone/SKILL.md`, the Pi extension bootstrap, and each module's `Subagents and reasoning` section. There is no separate helper file to load.
 
-```text
-skills/keystone/modules/helpers/subagents.md
+Use subagents only when the active host exposes them and delegation has a clear boundary, useful artifact, and lower coordination cost than inline work.
+
+For Pi, Keystone is configured for `@tintinweb/pi-subagents` (https://github.com/tintinweb/pi-subagents):
+
+```bash
+pi install npm:@tintinweb/pi-subagents
 ```
 
-The helper records:
-
-- which target harnesses support subagents
-- whether they can set per-subagent reasoning or only model/prompt hints
-- how to configure each host when support exists
-- default reasoning levels for every Keystone module
+When installed, Keystone may use `Agent`, `get_subagent_result`, and `steer_subagent`; otherwise it works inline.
 
 ### Host capability summary
 
 | Harness | Subagents | Reasoning control |
 |---|---:|---|
-| Pi coding agent with `pi-subagents` | yes | native `thinking`, `model`, and `profile` per agent/invocation |
+| Pi coding agent with `@tintinweb/pi-subagents` | yes | native `thinking` and `model` per agent/invocation |
 | Claude Code | yes | model selection and built-in Explore detail; no general custom-agent reasoning field confirmed |
 | Codex CLI/app | host-dependent | global `model_reasoning_effort`; per-subagent effort not confirmed |
 | T3 Code | not confirmed | not confirmed |
@@ -365,8 +364,7 @@ pi install npm:@static-var/keystone
 2. Add a routing row in `skills/keystone/SKILL.md`.
 3. Add routing fixture coverage.
 4. Add a `Subagents and reasoning` section to the module.
-5. Add a module row to `skills/keystone/modules/helpers/subagents.md`.
-6. Ensure packaging includes the module directory through `packaging.allowlist`.
+5. Ensure packaging includes the module directory through `packaging.allowlist`.
 7. Run `make test`.
 
 ### Add maintainer-only guidance

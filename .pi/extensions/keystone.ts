@@ -145,7 +145,7 @@ Pi has native skills, but Keystone should use this extension's \`/keystone\` com
 
 Pi's built-in coding tools are lowercase: \`read\`, \`write\`, \`edit\`, \`bash\`, plus optional \`grep\`, \`find\`, and \`ls\`. Use those for file inspection, mutation, shell commands, and search.
 
-If \`pi-subagents\` or another subagent tool is available, follow Keystone's \`modules/helpers/subagents.md\` guidance. If no subagent tool is available, do the work in this session and state that delegation was unavailable instead of inventing unsupported tools.`;
+Keystone is configured for \`@tintinweb/pi-subagents\` (https://github.com/tintinweb/pi-subagents). If that extension is installed, use its \`Agent\` tool for bounded delegation, \`get_subagent_result\` for background results, and \`steer_subagent\` only to redirect live work. Prefer narrow roles such as \`scout\`, \`worker\`, \`reviewer\`, \`oracle\`, or \`writer\`; pass \`thinking\` or \`model\` only when useful and supported. Keep read-only work read-only. Use background/parallel subagents only for independent tasks with no shared mutable files. Do not invent unsupported subagent tools. If no subagent tool is available, do the work in this session.`;
 }
 
 function messageContainsBootstrap(message: unknown): boolean {

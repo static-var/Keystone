@@ -140,22 +140,15 @@ This file is not included in `dist/keystone.zip` and is not part of `/keystone` 
 
 ## Subagent and reasoning support
 
-Keystone documents host-specific subagent support in:
+Keystone keeps subagent guidance inline in the root skill and each module. Use subagents only when the active host exposes them and delegation is cheaper than doing the work inline.
 
-```text
-skills/keystone/modules/helpers/subagents.md
+For Pi, install the supported subagent extension:
+
+```bash
+pi install npm:@tintinweb/pi-subagents
 ```
 
-Current summary:
-
-| Harness | Subagents | Per-subagent reasoning |
-|---|---:|---:|
-| Pi with `pi-subagents` | yes | yes: `thinking`, `model`, `profile` |
-| Claude Code | yes | partial: model/detail controls, no general custom-agent reasoning knob |
-| Codex CLI/app | host-dependent | partial/global: use prompt advisory unless host exposes per-agent effort |
-| T3 Code | unconfirmed | unconfirmed |
-| OpenCode | yes | partial/provider-dependent: `model` and provider `variant`; no universal reasoning knob confirmed |
-| GitHub Copilot | yes | partial: custom agent `model`, no general reasoning knob |
+Then Keystone can use `Agent`, `get_subagent_result`, and `steer_subagent` with roles such as `scout`, `worker`, `reviewer`, `oracle`, and `writer`. If those tools are unavailable, Keystone works inline and does not invent unsupported subagent tools.
 
 Each Keystone module includes a `Subagents and reasoning` section with its default reasoning level.
 

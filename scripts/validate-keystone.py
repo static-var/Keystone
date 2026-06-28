@@ -20,7 +20,6 @@ CODEX_MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
 AGENTS_SKILL_ADAPTER = ROOT / ".agents" / "skills" / "keystone" / "SKILL.md"
 ALLOWLIST = ROOT / "packaging.allowlist"
 SUBAGENT_HELPER = MODULE_DIR / "helpers" / "subagents.md"
-TARGET_HARNESSES = ("Pi", "Claude", "Codex", "T3", "OpenCode", "Copilot")
 COMMON_PLAYBOOK_HEADINGS = (
     "## Core principle",
     "## Load when",
@@ -170,28 +169,57 @@ def check_module_playbooks(skill_text: str) -> None:
             fail(f"module {name} missing playbook headings: " + ", ".join(missing))
 
 
-def check_subagent_helper(skill_text: str) -> None:
-    if not SUBAGENT_HELPER.is_file():
-        fail("missing subagent reasoning helper modules/helpers/subagents.md")
-    helper_text = SUBAGENT_HELPER.read_text()
-    missing_harnesses = [name for name in TARGET_HARNESSES if name not in helper_text]
-    if missing_harnesses:
-        fail("subagent helper missing target harnesses: " + ", ".join(missing_harnesses))
+def check_inline_subagent_guidance(skill_text: str) -> None:
+    if SUBAGENT_HELPER.exists():
+        fail("subagent helper file must not be shipped; keep subagent guidance inline")
+    forbidden = "modules/helpers/subagents.md"
+    if forbidden in skill_text:
+        fail("Keystone skill must not reference the removed subagent helper file")
+    required_skill_phrases = (
+        "Use subagents when the active host exposes them",
+        "@tintinweb/pi-subagents",
+        "Agent",
+        "get_subagent_result",
+        "steer_subagent",
+    )
+    for phrase in required_skill_phrases:
+        if phrase not in skill_text:
+            fail(f"Keystone skill missing inline subagent guidance phrase: {phrase}")
+    if "`profile`" in skill_text:
+        fail("Keystone skill must not advertise unsupported pi-subagents profile control")
+
     primary_modules = routing_modules(skill_text)
     if not primary_modules:
         fail("no primary modules found in Keystone routing table")
-    missing_modules = [
-        name for name in sorted(primary_modules)
-        if f"modules/{name}.md" not in helper_text
-    ]
-    if missing_modules:
-        fail("subagent helper missing module reasoning rows: " + ", ".join(missing_modules))
     for name in sorted(primary_modules):
         module = MODULE_DIR / f"{name}.md"
         if not module.is_file():
             fail(f"missing primary module file: modules/{name}.md")
-        if "## Subagents and reasoning" not in module.read_text():
+        module_text = module.read_text()
+        if "## Subagents and reasoning" not in module_text:
             fail(f"module missing subagent reasoning section: modules/{name}.md")
+        if forbidden in module_text or "helpers/subagents.md" in module_text:
+            fail(f"module references removed subagent helper file: modules/{name}.md")
+
+
+def check_pi_subagents_extension_guidance() -> None:
+    if not PI_EXTENSION.is_file():
+        fail("missing Pi extension .pi/extensions/keystone.ts")
+    extension = PI_EXTENSION.read_text()
+    required_phrases = (
+        "@tintinweb/pi-subagents",
+        "Agent",
+        "get_subagent_result",
+        "steer_subagent",
+        "Do not invent unsupported subagent tools",
+    )
+    for phrase in required_phrases:
+        if phrase not in extension:
+            fail(f"Pi extension missing pi-subagents guidance phrase: {phrase}")
+    if "\\`profile\\`" in extension or "`profile`" in extension:
+        fail("Pi extension must not advertise unsupported pi-subagents profile control")
+    if "modules/helpers/subagents.md" in extension or "helpers/subagents.md" in extension:
+        fail("Pi extension must not reference removed subagent helper file")
 
 
 def check_ignored_not_tracked() -> None:
@@ -314,7 +342,8 @@ def main() -> int:
     check_references(text)
     check_product_modules(text)
     check_module_playbooks(text)
-    check_subagent_helper(text)
+    check_inline_subagent_guidance(text)
+    check_pi_subagents_extension_guidance()
     check_ignored_not_tracked()
     check_agents_skill_adapter()
     check_claude_metadata()
