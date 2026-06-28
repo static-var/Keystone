@@ -81,8 +81,10 @@ jobs:
 
       - name: Publish to npm via Trusted Publishing
         run: |
-          spec="${{ steps.pkg.outputs.name }}@${{ steps.pkg.outputs.version }}"
-          if npm view "$spec" version >/dev/null 2>&1; then
+          name="${{ steps.pkg.outputs.name }}"
+          version="${{ steps.pkg.outputs.version }}"
+          spec="${name}@${version}"
+          if npm view "$spec" version >/dev/null 2>&1 || npm dist-tag ls "$name" | grep -Eq "(^|[[:space:]])${version}$"; then
             echo "$spec already exists on npm; skipping publish."
           else
             npm publish "${{ steps.pack.outputs.tarball }}" --access public --provenance
