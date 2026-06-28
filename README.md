@@ -187,16 +187,24 @@ CI/CD:
 
 Trusted Publishing setup on npm:
 
-1. Publish/create the package once if npm has no package settings page yet.
-2. Open `https://www.npmjs.com/package/@static-var/keystone/access`.
-3. In **Trusted Publisher**, choose **GitHub Actions**.
-4. Configure:
+1. Confirm you own the npm scope in `package.json`. Keystone currently publishes as `@static-var/keystone`; if your npm username/org is different, rename the package before publishing.
+2. Bootstrap the package once, because npm only shows the package access / Trusted Publisher UI after the package exists:
+   ```bash
+   npm login
+   npm run typecheck
+   make test
+   npm publish --access public
+   ```
+   If npm prompts for 2FA, append `--otp <code>`.
+3. Open `https://www.npmjs.com/package/@static-var/keystone/access`.
+4. In **Trusted Publisher**, choose **GitHub Actions**.
+5. Configure:
    - Organization or user: `static-var`
    - Repository: `Keystone`
    - Workflow filename: `release.yml`
    - Environment name: leave blank unless you add a GitHub deployment environment
    - Allowed actions: `npm publish`
-5. Save. No `NPM_TOKEN` secret is needed.
+6. Save. Future releases use OIDC; no `NPM_TOKEN` secret is needed.
 
 Release:
 
