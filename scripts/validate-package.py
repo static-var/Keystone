@@ -19,6 +19,7 @@ REQUIRED = {
     "scripts/validate-keystone.py",
     "scripts/validate-package.py",
     "scripts/package-keystone.sh",
+    ".pi/extensions/keystone.ts",
     "skills/keystone/SKILL.md",
     "skills/keystone/modules/router.md",
     "skills/keystone/modules/research.md",

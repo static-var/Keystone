@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILL_DIR = ROOT / "skills" / "keystone"
 SKILL = SKILL_DIR / "SKILL.md"
 MODULE_DIR = SKILL_DIR / "modules"
+PI_EXTENSION = ROOT / ".pi" / "extensions" / "keystone.ts"
 SUBAGENT_HELPER = MODULE_DIR / "helpers" / "subagents.md"
 TARGET_HARNESSES = ("Pi", "Claude", "Codex", "T3", "OpenCode", "Copilot")
 COMMON_PLAYBOOK_HEADINGS = (
@@ -205,8 +206,22 @@ def check_package_json() -> None:
     for key in ("name", "version", "description", "license", "keywords"):
         if key not in package:
             fail(f"package.json missing {key}")
-    if package.get("pi", {}).get("skills") != ["./skills"]:
+    pi = package.get("pi", {})
+    if pi.get("skills") != ["./skills"]:
         fail('package.json must set pi.skills to ["./skills"]')
+    if pi.get("extensions") != ["./.pi/extensions/keystone.ts"]:
+        fail('package.json must set pi.extensions to ["./.pi/extensions/keystone.ts"]')
+    if not PI_EXTENSION.is_file():
+        fail("missing Pi extension .pi/extensions/keystone.ts")
+    extension = PI_EXTENSION.read_text()
+    if 'registerCommand("keystone"' not in extension:
+        fail("Pi extension must register public /keystone command")
+    leaked = sorted(
+        name for name in routing_modules(check_skill())
+        if name != "keystone" and f'registerCommand("{name}"' in extension
+    )
+    if leaked:
+        fail("Pi extension exposes internal modules as slash commands: " + ", ".join(leaked))
 
 
 def main() -> int:

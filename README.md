@@ -14,7 +14,7 @@ Keystone borrows the best parts of Waza-style routing/review/release discipline 
 - **Safety gates:** isolation, red, proof, review, and ship
 - **Subagent guidance:** host capability matrix plus recommended reasoning level per module
 - **Package tooling:** generated platform manifests, allowlisted archive builds, validators, and routing tests
-- **Multi-host packaging:** Pi skill package metadata plus Claude/Codex/agents plugin manifests
+- **Multi-host packaging:** Pi extension + skill package metadata plus Claude/Codex/agents plugin manifests
 
 ## Quick start
 
@@ -36,6 +36,18 @@ dist/keystone.zip
 ```
 
 `dist/` is generated and ignored by git.
+
+Install in Pi from GitHub:
+
+```bash
+pi install git:github.com/static-var/Keystone
+```
+
+Then invoke:
+
+```text
+/keystone <task>
+```
 
 ## How it works in one picture
 
@@ -142,15 +154,19 @@ Each Keystone module includes a `Subagents and reasoning` section with its defau
 
 Keystone currently ships as:
 
-- **Pi skill package** via `package.json`:
+- **Pi extension + skill package** via `package.json`:
   ```json
-  { "pi": { "skills": ["./skills"] } }
+  {
+    "pi": {
+      "extensions": ["./.pi/extensions/keystone.ts"],
+      "skills": ["./skills"]
+    }
+  }
   ```
+- **Pi extension source** in `.pi/extensions/keystone.ts`, which registers `/keystone`, discovers the bundled skill, and adds a small Pi-specific bootstrap.
 - **Claude plugin metadata** in `.claude-plugin/`
 - **Codex plugin metadata** in `.codex-plugin/`
 - **Agents marketplace metadata** in `.agents/plugins/`
-
-It is **not** a Pi extension yet. No `.pi/extensions/*.ts` file is included.
 
 ## Maintainer commands
 

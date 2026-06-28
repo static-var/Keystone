@@ -276,7 +276,7 @@ Checks include:
 - public `/plan` is not introduced
 - referenced modules/gates exist
 - ignored artifacts are not tracked
-- `package.json` has required package and Pi metadata
+- `package.json` has required package and Pi extension/skill metadata
 
 ### Package validation
 
@@ -319,12 +319,12 @@ Keystone currently provides:
 
 | Host | Output |
 |---|---|
-| Pi | `package.json` with `pi.skills: ["./skills"]` |
+| Pi | `.pi/extensions/keystone.ts` plus `package.json` with `pi.extensions` and `pi.skills` |
 | Claude Code | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` |
 | Codex | `.codex-plugin/plugin.json` |
 | Agents/Copilot-style hosts | `.agents/plugins/marketplace.json` |
 
-Keystone is currently a **Pi skill package**, not a Pi extension. A Pi extension would require a `.pi/extensions/*.ts` file, which this repository does not include.
+The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled skills, registers `/keystone` as the public command, and injects a compact Pi-specific bootstrap while keeping internal modules private.
 
 ## Common maintainer workflows
 

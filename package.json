@@ -2,6 +2,7 @@
   "name": "keystone",
   "version": "0.1.0",
   "description": "Keystone: one-router AI engineering workflow skill system.",
+  "type": "module",
   "license": "MIT",
   "keywords": [
     "pi-package",
@@ -22,9 +23,13 @@
     "skills/",
     ".claude-plugin/",
     ".codex-plugin/",
-    ".agents/plugins/"
+    ".agents/plugins/",
+    ".pi/extensions/"
   ],
   "pi": {
+    "extensions": [
+      "./.pi/extensions/keystone.ts"
+    ],
     "skills": [
       "./skills"
     ]

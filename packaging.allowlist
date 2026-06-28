@@ -29,3 +29,4 @@ skills/keystone/modules/gates/ship.md
 .claude-plugin/marketplace.json
 .codex-plugin/plugin.json
 .agents/plugins/marketplace.json
+.pi/extensions/keystone.ts
