@@ -13,8 +13,11 @@ SKILL_DIR = ROOT / "skills" / "keystone"
 SKILL = SKILL_DIR / "SKILL.md"
 MODULE_DIR = SKILL_DIR / "modules"
 PI_EXTENSION = ROOT / ".pi" / "extensions" / "keystone.ts"
+CLAUDE_PLUGIN = ROOT / ".claude-plugin" / "plugin.json"
+CLAUDE_MARKETPLACE = ROOT / ".claude-plugin" / "marketplace.json"
 CODEX_PLUGIN = ROOT / ".codex-plugin" / "plugin.json"
 CODEX_MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
+AGENTS_SKILL_ADAPTER = ROOT / ".agents" / "skills" / "keystone" / "SKILL.md"
 ALLOWLIST = ROOT / "packaging.allowlist"
 SUBAGENT_HELPER = MODULE_DIR / "helpers" / "subagents.md"
 TARGET_HARNESSES = ("Pi", "Claude", "Codex", "T3", "OpenCode", "Copilot")
@@ -211,6 +214,39 @@ def allowlist_entries() -> set[str]:
     }
 
 
+def check_agents_skill_adapter() -> None:
+    if not AGENTS_SKILL_ADAPTER.is_file():
+        fail("missing .agents/skills/keystone/SKILL.md adapter for OpenCode/Copilot-compatible hosts")
+    text = AGENTS_SKILL_ADAPTER.read_text()
+    if "../../../skills/keystone/SKILL.md" not in text:
+        fail(".agents skill adapter must point to canonical skills/keystone/SKILL.md")
+    if "Do not expose internal modules" not in text:
+        fail(".agents skill adapter must preserve one public Keystone surface")
+
+
+def check_claude_metadata() -> None:
+    if not CLAUDE_PLUGIN.is_file():
+        fail("missing Claude plugin manifest .claude-plugin/plugin.json")
+    plugin = json.loads(CLAUDE_PLUGIN.read_text())
+    if plugin.get("name") != "keystone":
+        fail("Claude plugin name must be keystone")
+    if "skills" in plugin:
+        fail("Claude plugin manifest should rely on the bundled skills/ directory, not legacy skills entries")
+    if not CLAUDE_MARKETPLACE.is_file():
+        fail("missing Claude marketplace .claude-plugin/marketplace.json")
+    marketplace = json.loads(CLAUDE_MARKETPLACE.read_text())
+    if marketplace.get("name") != "keystone":
+        fail("Claude marketplace name must be keystone")
+    if not isinstance(marketplace.get("owner"), dict) or not marketplace["owner"].get("name"):
+        fail("Claude marketplace must include owner.name")
+    plugins = marketplace.get("plugins")
+    if not isinstance(plugins, list) or len(plugins) != 1:
+        fail("Claude marketplace must expose exactly one Keystone plugin entry")
+    entry = plugins[0]
+    if entry.get("name") != "keystone" or entry.get("source") != "./":
+        fail('Claude marketplace plugin entry must be keystone with source "./"')
+
+
 def check_codex_metadata() -> None:
     if not CODEX_PLUGIN.is_file():
         fail("missing Codex plugin manifest .codex-plugin/plugin.json")
@@ -280,6 +316,8 @@ def main() -> int:
     check_module_playbooks(text)
     check_subagent_helper(text)
     check_ignored_not_tracked()
+    check_agents_skill_adapter()
+    check_claude_metadata()
     check_codex_metadata()
     check_package_json()
     print("validate-keystone: ok")

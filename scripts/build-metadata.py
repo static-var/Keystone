@@ -12,6 +12,13 @@ PACKAGE = ROOT / "package.json"
 NAME = "keystone"
 
 
+AGENT_SKILL_DESCRIPTION = (
+    "Keystone adapter for Agent Skills hosts such as OpenCode, GitHub Copilot, and VS Code. "
+    "Use when the user asks Keystone to route product, research, writing, UI, design, planning, "
+    "implementation, debugging, review, shipping, or health work."
+)
+
+
 def read_package() -> dict:
     if PACKAGE.exists():
         return json.loads(PACKAGE.read_text())
@@ -60,33 +67,69 @@ def write_json(path: Path, data: dict) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
 
 
+def write_agent_skill_adapter() -> None:
+    path = ROOT / ".agents" / "skills" / "keystone" / "SKILL.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        f"""---
+name: keystone
+description: {AGENT_SKILL_DESCRIPTION}
+---
+
+# Keystone Agent Skills Adapter
+
+This is a thin adapter for hosts that discover skills from `.agents/skills/<name>/SKILL.md`.
+
+The canonical Keystone skill lives at:
+
+```text
+../../../skills/keystone/SKILL.md
+```
+
+When this adapter is loaded:
+
+1. Read `../../../skills/keystone/SKILL.md`.
+2. Follow the canonical Keystone entrypoint exactly.
+3. Resolve Keystone module, gate, and helper paths relative to `skills/keystone/`, not relative to this adapter directory.
+4. Keep the public surface as one Keystone skill. Do not expose internal modules as separate public commands.
+"""
+    )
+
+
 def main() -> int:
     package = read_package()
     skill_text = SKILL.read_text() if SKILL.exists() else ""
-    fm = parse_frontmatter(skill_text)
     description = skill_summary(skill_text) if skill_text else package.get("description", "Keystone skill.")
     version = package.get("version", "0.0.0")
     license_name = package.get("license", "UNLICENSED")
-    keywords = package.get("keywords", ["keystone", "skill"])
 
-    plugin = {
+    claude_plugin = {
+        "$schema": "https://json.schemastore.org/claude-code-plugin.json",
         "name": NAME,
         "version": version,
         "description": description,
+        "author": {"name": "static-var"},
+        "repository": "https://github.com/static-var/Keystone",
         "license": license_name,
-        "skills": [{"name": NAME, "path": "../skills/keystone/SKILL.md"}],
     }
     claude_marketplace = {
+        "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
         "name": NAME,
-        "displayName": "Keystone",
         "version": version,
-        "description": description,
-        "license": license_name,
-        "keywords": keywords,
-        "skills": [NAME],
+        "description": "Keystone plugin marketplace for Claude Code.",
+        "owner": {"name": "static-var"},
+        "plugins": [
+            {
+                "name": NAME,
+                "source": "./",
+                "description": description,
+                "version": version,
+                "author": {"name": "static-var"},
+                "category": "productivity",
+                "tags": ["workflow", "skills", "engineering", "review", "planning"],
+            }
+        ],
     }
-    if isinstance(fm.get("author"), str):
-        claude_marketplace["author"] = fm["author"]
 
     codex_plugin = {
         "name": NAME,
@@ -109,10 +152,11 @@ def main() -> int:
         ],
     }
 
-    write_json(ROOT / ".claude-plugin" / "plugin.json", plugin)
+    write_json(ROOT / ".claude-plugin" / "plugin.json", claude_plugin)
     write_json(ROOT / ".claude-plugin" / "marketplace.json", claude_marketplace)
     write_json(ROOT / ".codex-plugin" / "plugin.json", codex_plugin)
     write_json(ROOT / ".agents" / "plugins" / "marketplace.json", codex_marketplace)
+    write_agent_skill_adapter()
     return 0
 
 

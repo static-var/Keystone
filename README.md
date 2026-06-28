@@ -131,7 +131,8 @@ This file is not included in `dist/keystone.zip` and is not part of `/keystone` 
 ├── maintainers/                  # repo-only, not shipped in package
 ├── .claude-plugin/               # generated Claude plugin metadata
 ├── .codex-plugin/                # generated Codex plugin metadata
-├── .agents/plugins/              # generated agents marketplace metadata
+├── .agents/plugins/              # generated Codex repo marketplace
+├── .agents/skills/               # generated Agent Skills adapter for OpenCode/Copilot-compatible hosts
 ├── packaging.allowlist           # default-deny package contents
 ├── Makefile                      # test/package/regenerate targets
 └── HOW_IT_WORKS.md               # human-readable architecture guide
@@ -172,9 +173,27 @@ Keystone currently ships as:
   }
   ```
 - **Pi extension source** in `.pi/extensions/keystone.ts`, which registers `/keystone`, discovers the bundled skill, and adds a small Pi-specific bootstrap.
-- **Claude plugin metadata** in `.claude-plugin/`
+- **Claude Code plugin manifest + marketplace** in `.claude-plugin/`
 - **Codex plugin manifest** in `.codex-plugin/plugin.json`
 - **Codex repo marketplace** in `.agents/plugins/marketplace.json`
+- **Agent Skills adapter** in `.agents/skills/keystone/SKILL.md` for OpenCode, GitHub Copilot, VS Code, and other Agent Skills hosts
+
+## Claude Code plugin install
+
+Keystone is installable as a Claude Code plugin marketplace from this GitHub repo.
+
+In Claude Code:
+
+```text
+/plugin marketplace add static-var/Keystone
+/plugin install keystone@keystone
+```
+
+Then invoke the namespaced Keystone skill:
+
+```text
+/keystone:keystone <task>
+```
 
 ## Codex plugin install
 
@@ -198,6 +217,37 @@ codex plugin add keystone --marketplace keystone
 ```
 
 After installation, invoke Keystone explicitly with `@keystone` / `$keystone` depending on your Codex surface, or ask Codex to use Keystone for workflow routing.
+
+## OpenCode / Copilot / VS Code skills
+
+Keystone ships a `.agents/skills/keystone` adapter because OpenCode and GitHub Copilot-compatible hosts discover Agent Skills from `.agents/skills`.
+
+Project-local use: clone or vendor this repo into a project and those hosts can discover `.agents/skills/keystone/SKILL.md`.
+
+Personal/global use is best done by linking the canonical skill directory, so module references stay intact:
+
+```bash
+# From a repo checkout
+KS=/path/to/Keystone
+
+# Or from global npm install
+npm install -g @static-var/keystone
+KS="$(npm root -g)/@static-var/keystone"
+
+# OpenCode
+mkdir -p ~/.config/opencode/skills
+ln -s "$KS/skills/keystone" ~/.config/opencode/skills/keystone
+
+# GitHub Copilot / VS Code
+mkdir -p ~/.copilot/skills
+ln -s "$KS/skills/keystone" ~/.copilot/skills/keystone
+
+# Shared Agent Skills path for compatible hosts
+mkdir -p ~/.agents/skills
+ln -s "$KS/skills/keystone" ~/.agents/skills/keystone
+```
+
+T3 Code currently rides on underlying agents. Use the matching Codex, Claude Code, or OpenCode install path for the provider you run inside T3 Code.
 
 ## Release automation
 

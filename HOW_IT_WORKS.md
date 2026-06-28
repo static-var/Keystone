@@ -124,8 +124,8 @@ The helper records:
 | Claude Code | yes | model selection and built-in Explore detail; no general custom-agent reasoning field confirmed |
 | Codex CLI/app | host-dependent | global `model_reasoning_effort`; per-subagent effort not confirmed |
 | T3 Code | not confirmed | not confirmed |
-| OpenCode | yes | partial/provider-dependent: `model` plus provider-specific `variant`; no universal reasoning knob confirmed |
-| GitHub Copilot / VS Code | yes | custom agent `model`; no general reasoning field confirmed |
+| OpenCode | yes | partial/provider-dependent: `model` plus provider-specific `variant`; no universal reasoning knob confirmed; discovers Keystone through `.agents/skills` or symlinked canonical skill |
+| GitHub Copilot / VS Code | yes | custom agent `model`; no general reasoning field confirmed; discovers Keystone through `.agents/skills`, `.github/skills`, or personal skill dirs |
 
 ### Module reasoning defaults
 
@@ -217,7 +217,8 @@ make regenerate
    ├─ .claude-plugin/plugin.json
    ├─ .claude-plugin/marketplace.json
    ├─ .codex-plugin/plugin.json
-   └─ .agents/plugins/marketplace.json
+   ├─ .agents/plugins/marketplace.json
+   └─ .agents/skills/keystone/SKILL.md
    │
    ▼
 make package
@@ -320,13 +321,18 @@ Keystone currently provides:
 | Host | Output |
 |---|---|
 | Pi | `.pi/extensions/keystone.ts` plus `package.json` with `pi.extensions` and `pi.skills` |
-| Claude Code | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` |
+| Claude Code | `.claude-plugin/plugin.json` plus `.claude-plugin/marketplace.json` marketplace |
 | Codex | `.codex-plugin/plugin.json` plus `.agents/plugins/marketplace.json` repo marketplace |
-| Agents/Copilot-style hosts | generated marketplace-compatible metadata where applicable |
+| OpenCode / GitHub Copilot / VS Code | `.agents/skills/keystone/SKILL.md` adapter plus canonical `skills/keystone/` |
+| T3 Code | use the underlying Codex, Claude Code, or OpenCode install path |
+
+The Claude Code plugin path uses Claude's marketplace pattern: `.claude-plugin/plugin.json` identifies the repository root as a plugin, and `.claude-plugin/marketplace.json` exposes a single installable `keystone` entry with source `./`. Users add it with `/plugin marketplace add static-var/Keystone`, install with `/plugin install keystone@keystone`, then invoke `/keystone:keystone`.
 
 The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled skills, registers `/keystone` as the public command, and injects a compact Pi-specific bootstrap while keeping internal modules private.
 
 The Codex plugin path uses the Codex plugin marketplace pattern: `.codex-plugin/plugin.json` declares the bundled skill directory, while `.agents/plugins/marketplace.json` exposes a single installable Keystone entry whose local source is the repository root. Users can add it with `codex plugin marketplace add static-var/Keystone --ref main`, then install Keystone from `codex /plugins` or `codex plugin add keystone --marketplace keystone`.
+
+OpenCode, GitHub Copilot, and VS Code support the Agent Skills standard directly. Keystone ships `.agents/skills/keystone/SKILL.md` as a thin adapter that points those hosts back to the canonical `skills/keystone/SKILL.md`, preserving one source of truth and one public Keystone skill.
 
 The Pi package gallery at `https://pi.dev/packages` indexes npm packages. Keystone publishes as `@static-var/keystone` with the `pi-package` keyword, so installs use:
 

@@ -37,6 +37,7 @@ REQUIRED = {
     ".claude-plugin/marketplace.json",
     ".codex-plugin/plugin.json",
     ".agents/plugins/marketplace.json",
+    ".agents/skills/keystone/SKILL.md",
 }
 FORBIDDEN_NAMES = {
     "index.html",

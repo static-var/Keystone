@@ -1,24 +1,28 @@
 {
-  "description": "Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.",
-  "displayName": "Keystone",
-  "keywords": [
-    "pi-package",
-    "agent-skills",
-    "keystone",
-    "claude-code",
-    "codex",
-    "opencode",
-    "copilot",
-    "pi-coding-agent",
-    "pi-extension",
-    "workflow",
-    "skills",
-    "agent-workflows"
-  ],
-  "license": "MIT",
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "description": "Keystone plugin marketplace for Claude Code.",
   "name": "keystone",
-  "skills": [
-    "keystone"
+  "owner": {
+    "name": "static-var"
+  },
+  "plugins": [
+    {
+      "author": {
+        "name": "static-var"
+      },
+      "category": "productivity",
+      "description": "Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.",
+      "name": "keystone",
+      "source": "./",
+      "tags": [
+        "workflow",
+        "skills",
+        "engineering",
+        "review",
+        "planning"
+      ],
+      "version": "0.1.1"
+    }
   ],
   "version": "0.1.1"
 }
