@@ -83,6 +83,8 @@ Bad copy shape: “Use friendly copy that reduces friction.”
 Good technical shape: “Keep validation in the domain service because API and background import both need it; expose one `createInvite` operation that returns accepted, duplicate, or invalid-email outcomes.”
 Bad technical shape: “Add a helper/manager layer so the architecture is scalable.”
 
+Worked technical shape: “For export retries, keep the queue worker as the owner of retry state, expose `requestExport(accountId, format)` from the API, persist `pending|running|failed|ready` status in `exports`, and surface failures through the existing job status endpoint. Tradeoff: one extra status read, but retry policy stays out of controllers and can be tested without HTTP.”
+
 ## Output format
 ```markdown
 ## Shaped direction

@@ -78,6 +78,8 @@ Contract:
 
 A characterization test captures what the current system does before you change structure. It is not a claim that current behavior is ideal; it is a tripwire that prevents accidental behavior changes while refactoring. Write it around externally visible behavior, important edge cases, or bug-compatible outputs that must stay stable until the user approves a behavior change.
 
+Concise example: before extracting invoice total formatting, add a test that `renderInvoiceSummary({ subtotal: 1000, discount: 125, currency: "USD" })` still returns `"Subtotal $10.00 · Discount $1.25 · Total $8.75"`; then refactor behind that externally visible output.
+
 Refactoring is not a license to redesign everything nearby.
 
 ### Architecture-sensitive build

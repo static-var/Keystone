@@ -3,6 +3,12 @@
 ## Core principle
 Find the root cause before fixing. Debugging is an evidence ladder: observe the failure, reproduce it, minimize it, trace the mechanism, test falsifiable hypotheses, prove the cause, fix narrowly, guard against regression, verify with exact output, and clean up. No guess-and-check, no cargo-cult edits, no shipping/finalization work.
 
+Quick start:
+1. Capture the exact symptom and smallest known failing command/input.
+2. Reproduce or preserve the best available evidence if reproduction is blocked.
+3. Minimize, then test one falsifiable hypothesis at a time.
+4. Prove the mechanism before fixing; add a regression guard and verify with exact output.
+
 ## Load when
 Load when the user reports an error, failing test, broken behavior, regression, flaky result, performance anomaly, unexpected output, integration failure, suspicious logs, silent failure, data corruption, or asks to troubleshoot why something happened.
 

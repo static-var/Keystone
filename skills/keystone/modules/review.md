@@ -215,6 +215,16 @@ Avoid these anti-patterns:
 - **Unowned uncertainty:** failing to state what was not verified.
 
 ## Output format
+Worked finding example:
+```markdown
+### P1
+- Missing tenant check on invoice export
+  - Evidence: `api/exportInvoice.ts:42` accepts `invoiceId` and loads the invoice without comparing `invoice.accountId` to the authenticated account; `/invoices/:id/export` is reachable by any logged-in user.
+  - Impact: A user who guesses another invoice ID can download billing data from a different account, which is a privacy and authorization breach.
+  - Recommendation: Enforce tenant ownership before export and return the existing unauthorized response on mismatch.
+  - Tests needed: Add an integration test where account A requests account B's invoice and receives 403/no file, plus a happy-path same-account export test.
+```
+
 Use this structure:
 ```markdown
 ## Verdict

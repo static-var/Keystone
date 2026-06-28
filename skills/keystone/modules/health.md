@@ -24,9 +24,14 @@ Deliver a health report where every finding maps:
 The report must include:
 - audit scope and evidence inspected;
 - concrete checklist status for tooling/CI drift, docs-vs-reality, config/env rot, dependency health, test health/flakiness, package/release health, and instruction/skill drift;
-- risks ranked by severity and confidence;
+- risks ranked by severity and confidence using the Health priority rubric;
 - checks not run and why;
 - explicit no-fix confirmation unless repairs were requested.
+
+Health priority rubric:
+- **Critical:** Broken now, release-blocking, security-sensitive, data-loss-prone, or prevents required project operation. Urgency: act before `ship` or before depending on the affected subsystem. Next Keystone module: usually `debug` for failing behavior or `build` for repairs; use `ship` only for release gate follow-up after the issue is fixed.
+- **Watch:** Risky, stale, drifting, or likely to become blocking, but not proven broken under current evidence. Urgency: schedule remediation or investigation soon; do not let it become untracked backlog. Next Keystone module: usually `research` to verify unknowns, `breakdown` to plan multi-step remediation, or `build` for contained repairs.
+- **Info:** Healthy signal, minor inconsistency, low-impact cleanup, or explicitly unknown/unchecked area. Urgency: no immediate action unless priorities change. Next Keystone module: `no-op` when informational, or `review`/`ship` when the next step is validation rather than repair.
 
 ## Modes
 - **Project snapshot:** summarize structure, active areas, scripts, tests, CI, docs, and current branch state.
@@ -54,8 +59,8 @@ The report must include:
    - **Instruction/skill drift:** AGENTS/CLAUDE/GEMINI/Codex/plugin docs and Keystone skill docs agree; module boundaries are current; validators and examples match required headings/behavior.
 5. Run safe focused checks when useful and allowed, such as `git status --short`, listing workflow files, reading manifests, `--help`, dry-run validation, or project validators. Avoid install/update/format/fix/publish commands by default.
 6. Detect drift mechanically: documentation pointing to missing scripts, scripts referencing missing files, stale generated assets, inconsistent versions, orphaned configs, CI mismatch, package metadata mismatch, or contradictory instructions.
-7. For each finding, write the required chain: finding, evidence, impact, confidence, and next Keystone module (`research`, `debug`, `shape`, `breakdown`, `build`, `review`, `ship`, or no-op). If the finding is about tests or package metadata, still route to one of those modules, usually `build` for repairs, `debug` for failing behavior, `review` for validation, or `ship` for final package readiness.
-8. Separate statuses: **broken now**, **risky**, **stale**, **unknown**, and **healthy**. Do not convert unknowns into failures.
+7. For each finding, write the required chain: severity, finding, evidence, impact, confidence, and next Keystone module (`research`, `debug`, `shape`, `breakdown`, `build`, `review`, `ship`, or no-op). Assign severity from the Health priority rubric; do not produce unranked findings. If the finding is about tests or package metadata, still route to one of those modules, usually `build` for repairs, `debug` for failing behavior, `review` for validation, or `ship` for final package readiness.
+8. Separate statuses: **broken now**, **risky**, **stale**, **unknown**, and **healthy**. Map broken-now items to Critical unless evidence shows low impact; map risky or stale items to Watch unless release/security impact makes them Critical; map healthy, minor, and unchecked informational notes to Info. Do not convert unknowns into failures.
 9. Stop at reporting unless the user explicitly requested fixes. If repairs are requested, route to the appropriate module instead of silently switching modes.
 
 ## Subagents and reasoning
@@ -64,7 +69,8 @@ Default reasoning: `medium`. Use read-only scout subagents for broad inventory a
 ## Hard rules
 - Read-only by default: no fixing, formatting, dependency updates, cleanup, generation, or config changes unless explicitly requested.
 - Health is whole-project/system condition; Review is a specific change. Do not use Health to approve a PR diff.
-- Every finding must include finding, evidence, impact, confidence, and next Keystone module.
+- Every finding must include severity, finding, evidence, impact, confidence, and next Keystone module.
+- Use only the Health priority rubric for severity (`Critical`, `Watch`, `Info`) unless the user explicitly requests equivalent labels; do not emit unranked dumps.
 - Evidence categories must be named; unchecked areas must be listed with reasons.
 - Do not overstate confidence. Label inferred risks and explain what would verify them.
 - Prefer safe read-only or focused validation commands.
@@ -101,8 +107,15 @@ Boundary: Health system-condition scan, not Review of a specific change
 | Package/release health | ... | ... | ... |
 | Instruction/skill drift | ... | ... | ... |
 
+### Health priority rubric
+| Severity | Use when | Urgency | Typical next Keystone module |
+|---|---|---|---|
+| Critical | Broken now, release-blocking, security-sensitive, data-loss-prone, or prevents required project operation | Act before `ship` or before relying on the affected subsystem | `debug` for failing behavior; `build` for repairs; `ship` only for post-fix release gates |
+| Watch | Risky, stale, drifting, or likely to become blocking, but not proven broken under current evidence | Schedule investigation/remediation soon | `research`, `breakdown`, or `build` |
+| Info | Healthy signal, minor inconsistency, low-impact cleanup, or explicitly unknown/unchecked area | No immediate action unless priorities change | `no-op`, `review`, or `ship` for validation/final gates |
+
 ### Findings
-1. Severity — finding
+1. Critical / Watch / Info — finding
    - Evidence:
    - Impact:
    - Confidence: High / Medium / Low
