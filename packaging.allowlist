@@ -37,3 +37,4 @@ skills/keystone/modules/gates/ship.md
 .agents/plugins/marketplace.json
 .agents/skills/keystone/SKILL.md
 .pi/extensions/keystone.ts
+.pi/extensions/keystone/keystone-models.ts

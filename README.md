@@ -143,6 +143,29 @@ Ask Keystone for the workflow you want, not the internal module name.
 
 Keystone will name the selected module, keep the work inside that module’s contract, and hand off only when the task changes shape.
 
+## Configure per-route model overrides
+
+`/keystone-models` opens a cascade picker that lets you pin a specific LLM model and reasoning effort to a Keystone route, or to the default floor that every route inherits.
+
+```text
+/keystone-models
+```
+
+Scope → key → model → effort. Overrides persist to `~/.config/keystone/models.json` and load on the next session. The scope picker also offers `reset all overrides` (confirm-gated) to clear the file.
+
+Example:
+
+```json
+{
+  "defaults": { "model": "anthropic/claude-sonnet-4-6", "thinking": "low" },
+  "routes": {
+    "research": { "model": "anthropic/claude-opus-4-8", "thinking": "high" }
+  }
+}
+```
+
+v1 scopes: `defaults`, `routes` (the `routes` list is auto-discovered from `skills/keystone/modules/*.md`, so adding a new module shows up in the picker on next extension load).
+
 ## Common workflows
 
 ```text
