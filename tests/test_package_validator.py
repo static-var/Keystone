@@ -18,7 +18,7 @@ def load_validate_package():
 class PackageValidatorTests(unittest.TestCase):
     def test_all_shipped_gates_are_required(self):
         validator = load_validate_package()
-        for gate in ("isolation", "proof", "red", "review", "ship"):
+        for gate in ("checkpoint", "isolation", "proof", "red", "review", "ship"):
             with self.subTest(gate=gate):
                 self.assertIn(f"skills/keystone/modules/gates/{gate}.md", validator.REQUIRED)
 

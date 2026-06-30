@@ -124,4 +124,13 @@ Mode(s): product | UX/UI | copy | technical | alternatives
 
 ### Recommended next step
 Module or `none`, with rationale
+
+### Checkpoint
+- Current module: ...
+- Completed gates/checks: ...
+- Next required: `<module|none>`
+- Next check: ...
+- Action: continue now / ask user / pending pointer / stop
+- Prompt or handoff pointer: ...
+
 ```

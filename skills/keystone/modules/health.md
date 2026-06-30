@@ -121,4 +121,13 @@ Classify findings using the Health priority rubric above: `Critical`, `Watch`, o
 
 ### Overall assessment
 Healthy / Watch / At risk / Blocked — rationale
+
+### Checkpoint
+- Current module: ...
+- Completed gates/checks: ...
+- Next required: `<module|none>`
+- Next check: ...
+- Action: continue now / ask user / pending pointer / stop
+- Prompt or handoff pointer: ...
+
 ```

@@ -157,6 +157,7 @@ Health finding:   health → build or health → review
 
 Keystone includes small gates that stop common agent mistakes:
 
+- **checkpoint gate** — make the next module/event explicit before any final response
 - **isolation gate** — check branch/worktree/scope before mutation
 - **red gate** — establish a failing check when practical
 - **proof gate** — show evidence before success claims

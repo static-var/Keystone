@@ -231,6 +231,15 @@ Use this structure unless the user requested a different artifact. For small con
 
 ## Handoff
 Next module: `<research|build|debug|review|health|ship|shape>` because <reason>.
+
+### Checkpoint
+- Current module: ...
+- Completed gates/checks: ...
+- Next required: `<module|none>`
+- Next check: ...
+- Action: continue now / ask user / pending pointer / stop
+- Prompt or handoff pointer: ...
+
 ```
 
 Keep the output detailed enough to guide implementation and review, but short enough that each slice remains actionable.
