@@ -433,7 +433,7 @@ def check_codex_metadata() -> None:
         "displayName": "Keystone",
         "brandColor": "#1F2933",
         "composerIcon": "./assets/brand/keystone-icon.png",
-        "logo": "./assets/brand/keystone-logo.png",
+        "logo": "./assets/brand/keystone-icon.png",
     }
     for key, value in expected_interface.items():
         if interface.get(key) != value:
