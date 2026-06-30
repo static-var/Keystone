@@ -16,6 +16,8 @@
   --faint:       #f0ebe3;
   --code-bg:     #1F2933;
   --code-text:   #F4EFE6;
+  --code-accent: #c8845e;
+  --code-muted:  #ADA69A;
   --nav-bg:      rgba(250, 247, 242, 0.88);
   --shadow-soft: rgba(31, 41, 51, 0.06);
   --logo-filter: none;
@@ -47,6 +49,8 @@ html[data-theme='dark'] {
   --faint:       #1A2027;
   --code-bg:     #0B1117;
   --code-text:   #F4EFE6;
+  --code-accent: #F0A979;
+  --code-muted:  #B8AFA4;
   --nav-bg:      rgba(17, 21, 26, 0.9);
   --shadow-soft: rgba(0, 0, 0, 0.32);
   --logo-filter: drop-shadow(0 0 4px rgba(244, 239, 230, 0.18));
@@ -575,7 +579,7 @@ html[data-theme='dark'] .theme-icon {
 }
 
 .install-card h3 {
-  color: var(--copper-soft);
+  color: var(--code-accent);
   margin-bottom: 0.6rem;
   font-size: 0.78rem;
   text-transform: uppercase;
@@ -618,7 +622,7 @@ html[data-theme='dark'] .theme-icon {
 }
 
 .install-hero-code .dimmed {
-  color: var(--stone);
+  color: var(--code-muted);
 }
 
 /* ════════════════════════════════════════════
