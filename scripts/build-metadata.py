@@ -144,7 +144,7 @@ def main() -> int:
             "capabilities": ["Read", "Write", "Review", "Workflow"],
             "brandColor": "#1F2933",
             "composerIcon": "./assets/brand/keystone-icon.png",
-            "logo": "./assets/brand/keystone-logo.png",
+            "logo": "./assets/brand/keystone-icon.png",
             "defaultPrompt": [
                 "Use Keystone to route this task before editing.",
                 "Use Keystone to review this branch for blockers.",

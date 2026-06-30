@@ -17,7 +17,7 @@
     ],
     "developerName": "static-var",
     "displayName": "Keystone",
-    "logo": "./assets/brand/keystone-logo.png",
+    "logo": "./assets/brand/keystone-icon.png",
     "longDescription": "Keystone routes AI coding work through one public entrypoint, with internal modules and gates for research, shaping, implementation, debugging, review, and shipping.",
     "shortDescription": "One doorway for disciplined AI workflows."
   },
