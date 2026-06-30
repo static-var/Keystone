@@ -1,6 +1,6 @@
 {
   "name": "@static-var/keystone",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Keystone: one-router AI engineering workflow extension and skill system for Pi.",
   "type": "module",
   "license": "MIT",
@@ -63,7 +63,8 @@
     ".codex-plugin/plugin.json",
     ".agents/plugins/marketplace.json",
     ".agents/skills/keystone/SKILL.md",
-    ".pi/extensions/keystone.ts"
+    ".pi/extensions/keystone.ts",
+    ".pi/extensions/keystone/keystone-models.ts"
   ],
   "publishConfig": {
     "access": "public",
@@ -77,8 +78,11 @@
       "./skills"
     ]
   },
+  "dependencies": {
+    "@earendil-works/pi-ai": "0.80.2",
+    "@earendil-works/pi-coding-agent": "0.80.2"
+  },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "0.80.2",
     "@types/node": "26.0.1",
     "typescript": "6.0.3"
   },
@@ -87,7 +91,7 @@
     "validate": "make validate",
     "package": "scripts/package-keystone.sh",
     "test": "make test",
-    "typecheck": "tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck .pi/extensions/keystone.ts",
+    "typecheck": "tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck .pi/extensions/keystone.ts .pi/extensions/keystone/keystone-models.ts",
     "pack:dry-run": "npm pack --dry-run"
   }
 }

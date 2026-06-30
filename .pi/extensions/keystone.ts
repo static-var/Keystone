@@ -1,7 +1,8 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { registerKeystoneModelsCommand, registerKeystoneModelsApplier, setCurrentRoute } from "./keystone/keystone-models.js";
 
 const EXTREMELY_IMPORTANT_MARKER = "<EXTREMELY_IMPORTANT>";
 const BOOTSTRAP_MARKER = "keystone:bootstrap for pi";
@@ -10,6 +11,18 @@ const extensionDir = dirname(fileURLToPath(import.meta.url));
 const packageRoot = resolve(extensionDir, "../..");
 const skillsDir = resolve(packageRoot, "skills");
 const keystoneSkillPath = resolve(skillsDir, "keystone", "SKILL.md");
+const modulesDir = resolve(skillsDir, "keystone", "modules");
+
+export const ROUTES: readonly string[] = (() => {
+	try {
+		return readdirSync(modulesDir, { withFileTypes: true })
+			.filter((d) => d.isFile() && d.name.endsWith(".md"))
+			.map((d) => d.name.slice(0, -3))
+			.sort();
+	} catch {
+		return [];
+	}
+})();
 
 let cachedSkillBody: string | null | undefined;
 let cachedBootstrap: string | null | undefined;
@@ -56,9 +69,18 @@ export default function keystonePiExtension(pi: ExtensionAPI) {
 		};
 	});
 
+	registerKeystoneModelsCommand(pi);
+	registerKeystoneModelsApplier(pi);
+
 	pi.registerCommand("keystone", {
 		description: "Run the Keystone workflow router on a request",
 		handler: async (args, ctx) => {
+			// Detect explicit route from args (exact match against the known
+			// primary modules). Any other invocation clears the route so
+			// defaults applies for the upcoming turn.
+			const routeName = args.trim();
+			setCurrentRoute((ROUTES as readonly string[]).includes(routeName) ? routeName : undefined);
+
 			const content = getCommandContent(args);
 			if (!content) {
 				ctx.ui.notify("Keystone skill not found in this package.", "error");
