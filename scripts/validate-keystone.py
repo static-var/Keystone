@@ -31,7 +31,7 @@ COMMON_PLAYBOOK_HEADINGS = (
     "## Output format",
 )
 MODULE_PLAYBOOK_HEADINGS = {
-    "build": ("## Modes", "## Process", "## Architecture taste checklist"),
+    "build": ("## Modes", "## Process", "Architecture pressure-test:"),
     "review": ("## Review passes", "## Severity rubric", "## Impact tracing", "## Security and regression checklist"),
     "breakdown": ("## Modes", "## Process", "## Requirements inventory", "## Iteration layering", "## Task quality bar"),
 }
@@ -169,6 +169,39 @@ def check_module_playbooks(skill_text: str) -> None:
             fail(f"module {name} missing playbook headings: " + ", ".join(missing))
 
 
+def check_skill_quality_regressions(skill_text: str) -> None:
+    metadata = parse_frontmatter(skill_text)
+    expected_description = "Use when the user invokes /keystone or explicitly asks Keystone to route work."
+    if metadata.get("description") != expected_description:
+        fail("canonical Keystone description must use the narrow /keystone or explicit routing trigger")
+    if AGENTS_SKILL_ADAPTER.is_file():
+        adapter_metadata = parse_frontmatter(AGENTS_SKILL_ADAPTER.read_text())
+        adapter_description = str(adapter_metadata.get("description", ""))
+        if "Use when the user invokes /keystone or explicitly asks Keystone to route work." not in adapter_description:
+            fail(".agents adapter description must use the narrow /keystone or explicit routing trigger")
+    module_paths = list(MODULE_DIR.glob("*.md")) + list((MODULE_DIR / "gates").glob("*.md"))
+    for path in module_paths:
+        text = path.read_text()
+        rel = path.relative_to(ROOT).as_posix()
+        for phrase in ("Default reasoning:", "`xhigh`", "desired reasoning intensity"):
+            if phrase in text:
+                fail(f"{rel} uses non-portable reasoning-control language: {phrase}")
+    health = MODULE_DIR / "health.md"
+    if "`no-op`" in health.read_text():
+        fail("health module must use `none`, not a non-existent `no-op` module")
+    if "Pending human review" in (MODULE_DIR / "gates" / "ship.md").read_text():
+        fail("ship gate must not present pending review as passing evidence")
+    if "Use a human reviewer, automated reviewer, domain owner, security review, design review, or read-only review pointer" in (MODULE_DIR / "gates" / "review.md").read_text():
+        fail("review gate must not list a review pointer as passing review evidence")
+    extension = PI_EXTENSION.read_text() if PI_EXTENSION.is_file() else ""
+    if "workflow routing" in extension:
+        fail("Pi extension must not broaden Keystone invocation to generic workflow routing")
+    if "says \\`keystone\\`" in extension or "says `keystone`" in extension:
+        fail("Pi bootstrap must not trigger on merely saying keystone")
+    if "${piToolMapping()}\n</EXTREMELY_IMPORTANT>`;" in extension:
+        fail("Pi bootstrap must stay minimal; inject full host mapping only through /keystone command")
+
+
 def check_inline_subagent_guidance(skill_text: str) -> None:
     if SUBAGENT_HELPER.exists():
         fail("subagent helper file must not be shipped; keep subagent guidance inline")
@@ -270,12 +303,19 @@ def check_pi_subagents_extension_guidance() -> None:
         "Agent",
         "get_subagent_result",
         "steer_subagent",
-        "Do not invent unsupported subagent tools",
-        "Do not assume named roles, model selection, or thinking controls",
+        "Follow the canonical Keystone subagent guidance for behavior",
     )
     for phrase in required_phrases:
         if phrase not in extension:
-            fail(f"Pi extension missing pi-subagents guidance phrase: {phrase}")
+            fail(f"Pi extension missing pi-subagents host mapping phrase: {phrase}")
+    behavioral_phrases = (
+        "Do not assume named roles, model selection, or thinking controls",
+        "Do not invent unsupported subagent tools",
+        "Keep read-only work read-only",
+    )
+    for phrase in behavioral_phrases:
+        if phrase in extension:
+            fail(f"Pi extension duplicates canonical subagent behavior: {phrase}")
     for phrase in forbidden_pi_subagent_claims(markdown_escaped=True) + ("`profile`",):
         if phrase in extension:
             fail(f"Pi extension advertises non-portable pi-subagents capability: {phrase}")
@@ -460,6 +500,7 @@ def main() -> int:
     check_references(text)
     check_product_modules(text)
     check_module_playbooks(text)
+    check_skill_quality_regressions(text)
     check_inline_subagent_guidance(text)
     check_pi_subagent_docs()
     check_pi_subagents_extension_guidance()

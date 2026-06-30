@@ -14,7 +14,7 @@ Keystone does five things:
 4. **Loads gates only when needed** to protect mutation, verification, review, and shipping.
 5. **Hands off cleanly** to the next module when the work changes shape.
 
-When the host supports subagents, Keystone can delegate bounded work with the right reasoning level. When the host does not support that control, Keystone treats reasoning level as prompt guidance instead of a guaranteed setting.
+When the host supports subagents, Keystone can delegate bounded work with the right analysis depth. When the host does not support explicit reasoning controls, Keystone encodes the desired depth in the task prompt instead of treating it as a guaranteed setting.
 
 This keeps the agent from mixing jobs. Planning stays planning. Building stays building. Review stays read-only. Shipping only happens after proof and review.
 
@@ -39,7 +39,7 @@ There is one public skill:
 skills/keystone/SKILL.md
 ```
 
-That file is the only public entrypoint. Users invoke Keystone with `/keystone` or by asking Keystone to route work.
+That file is the only public entrypoint. Users invoke Keystone with `/keystone`. In hosts that support model-discovered skills, an explicit natural-language request for Keystone to route work may also discover Keystone, but it is not a separate public entrypoint.
 
 Everything else in the shipped skill is internal:
 
@@ -103,7 +103,7 @@ Each module has the same shape:
 
 ## Subagents and reasoning
 
-Keystone keeps subagent guidance inline in `skills/keystone/SKILL.md`, the Pi extension bootstrap, and each module's `Subagents and reasoning` section. There is no separate helper file to load.
+Keystone keeps authoritative subagent behavior in `skills/keystone/SKILL.md` and each module's `Subagents and reasoning` section. The Pi extension only maps host-specific command, file, and tool names. There is no separate helper file to load.
 
 Use subagents only when the active host exposes them and delegation has a clear boundary, useful artifact, and lower coordination cost than inline work.
 
@@ -125,16 +125,16 @@ When installed, Keystone may use `Agent`, `get_subagent_result`, and `steer_suba
 | OpenCode | yes | partial/provider-dependent: `model` plus provider-specific `variant`; no universal reasoning knob confirmed; discovers Keystone through `.agents/skills` or symlinked canonical skill |
 | GitHub Copilot / VS Code | yes | custom agent `model`; no general reasoning field confirmed; discovers Keystone through `.agents/skills`, `.github/skills`, or personal skill dirs |
 
-### Module reasoning defaults
+### Module analysis depth
 
-| Module group | Default reasoning |
+| Module group | Analysis depth guidance |
 |---|---|
-| router, simple reading, simple writing | `low` to `medium` |
-| research, shape, build, health, ship | `medium`, escalating to `high` for risk |
-| breakdown, debug, review, high-stakes shape decisions | `high`, escalating to `xhigh` for hard or irreversible work |
-| gates | `low`, escalating only when evidence is safety-critical |
+| router, simple reading, simple writing | lightweight; ask one question rather than over-analyzing |
+| research, shape, build, health, ship | normal depth, deeper when risk or ambiguity rises |
+| breakdown, debug, review, high-stakes shape decisions | deeper analysis; require evidence, alternatives, and stop conditions |
+| gates | lightweight unless evidence is safety-critical |
 
-The rule is simple: delegate the narrowest bounded task and request the lowest reasoning intensity that can safely complete it. Only use role names, model selection, or thinking controls when the active host schema exposes them. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.
+The rule is simple: delegate the narrowest bounded task and request only the analysis depth needed to complete it safely. Only use role names, model selection, or thinking controls when the active host schema exposes them; otherwise encode depth and risk in the prompt. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.
 
 ## Gates
 
@@ -299,7 +299,7 @@ Checks include:
 
 - routing fixtures are valid
 - every Keystone module has coverage
-- `/plan` routes to `breakdown`, not a public planner
+- Keystone has no public `/plan`; users invoke `/keystone` for breakdown/decomposition
 - fixture prompts match the routing table in `skills/keystone/SKILL.md`
 
 ## Full verification
@@ -325,7 +325,7 @@ Keystone currently provides:
 
 The Claude Code plugin path uses Claude's marketplace pattern: `.claude-plugin/plugin.json` identifies the repository root as a plugin, and `.claude-plugin/marketplace.json` exposes a single installable `keystone` entry with source `./`. Users add it with `/plugin marketplace add static-var/Keystone`, install with `/plugin install keystone@keystone`, then invoke `/keystone:keystone`.
 
-The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled skills, registers `/keystone` as the public command, and injects a compact Pi-specific bootstrap while keeping internal modules private.
+The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled skills, registers `/keystone` as the public command, and injects only a minimal Pi-specific bootstrap while keeping the full host mapping inside the `/keystone` command payload.
 
 The Codex plugin path uses the Codex plugin marketplace pattern: `.codex-plugin/plugin.json` declares the bundled skill directory, while `.agents/plugins/marketplace.json` exposes a single installable Keystone entry whose local source is the repository root. Users can add it with `codex plugin marketplace add static-var/Keystone --ref main`, then install Keystone from `codex /plugins` or `codex plugin add keystone --marketplace keystone`.
 

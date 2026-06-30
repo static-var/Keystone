@@ -13,12 +13,17 @@ The red signal proves the current system lacks the desired behavior and that the
    - Acceptance example with expected/actual output.
    - UI flow that currently shows the defect.
    - Validator that rejects the current artifact.
-3. Run or document the check before implementation when safe.
-4. Confirm the failure is meaningful:
+3. Run the check before implementation when safe and available.
+4. For observed red, confirm the failure is meaningful:
    - It fails for the right reason.
    - It would pass after the intended behavior exists.
    - It is not only testing mocks, fixtures, snapshots, or implementation details.
-5. Preserve the red evidence in notes, test output, or commit/PR description.
+5. If red is skipped, record why it is unsafe, unavailable, or impractical before using a documented red exception.
+6. For a skipped-red exception, confirm the alternative proof plan is meaningful:
+   - It can verify the intended outcome after implementation.
+   - It names exact commands, manual steps, artifacts, or reviewers.
+   - It is stronger than a vague promise to inspect later.
+7. Preserve the red evidence or exception in notes, test output, or commit/PR description.
 
 ## Good red examples
 - A unit test expects tax to round half-up and currently receives half-even.
@@ -43,8 +48,8 @@ If red is skipped, name the reason and substitute a stronger proof plan:
 
 ## Pass condition
 Pass only when either:
-- a meaningful red-capable signal is documented before implementation, or
-- red is explicitly impractical and an alternative proof plan is concrete enough to verify the outcome later.
+- a meaningful red-capable signal was observed before implementation, or
+- running red was explicitly unsafe/unavailable/impractical, the reason is recorded, and an alternative proof plan is concrete enough to verify the outcome later.
 
 ## Fail action
 Do not proceed as if behavior is proven. Stop or record the exception before implementation.

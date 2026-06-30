@@ -14,7 +14,7 @@ This gate rejects vibe-based completion. Code inspection can support a claim, bu
    - UI: browser/app interaction, screenshots, accessibility checks, visual diff, or manual steps with observed result.
    - Config/build: validation command, dry run, parser/linter, build, deploy preview, or tool output.
    - Docs/content: link/render check, validator, examples that exercise the documented path, or human-readable diff against requirements.
-3. Run the strongest practical verification.
+3. Run the strongest practical verification. Prefer the narrowest check that directly exercises the claim; add broader checks when contracts, integration points, public behavior, or regression risk changed.
 4. Capture concrete output:
    - Command name.
    - Pass/fail result.

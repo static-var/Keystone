@@ -78,8 +78,7 @@ export default function keystonePiExtension(pi: ExtensionAPI) {
 function getBootstrapContent(): string | null {
 	if (cachedBootstrap !== undefined) return cachedBootstrap;
 
-	const body = getSkillBody();
-	if (!body) {
+	if (!getSkillBody()) {
 		cachedBootstrap = null;
 		return null;
 	}
@@ -87,15 +86,7 @@ function getBootstrapContent(): string | null {
 	cachedBootstrap = `${EXTREMELY_IMPORTANT_MARKER}
 ${BOOTSTRAP_MARKER}
 
-Keystone is available in this Pi session.
-
-Use Keystone when the user invokes \`/keystone\` or explicitly asks for Keystone/workflow routing. Otherwise continue normally and do not override user intent.
-
-The Keystone entrypoint is included below. When Keystone applies, follow it and route internally by reading the chosen module files. Do not expose internal modules as public slash commands.
-
-${body}
-
-${piToolMapping()}
+Keystone is available in this Pi session. Public entrypoint: \`/keystone <task>\`. Model discovery may use Keystone only when the user invokes \`/keystone\` or explicitly asks Keystone to route work. Otherwise continue normally and do not override user intent.
 </EXTREMELY_IMPORTANT>`;
 	return cachedBootstrap;
 }
@@ -139,13 +130,13 @@ function stripFrontmatter(content: string): string {
 }
 
 function piToolMapping(): string {
-	return `## Pi tool mapping
+	return `## Pi host mapping
 
-Pi has native skills, but Keystone should use this extension's \`/keystone\` command as the public entrypoint. Internal Keystone modules are Markdown files under \`skills/keystone/modules/\`; read the selected module file instead of inventing \`/shape\`, \`/breakdown\`, \`/build\`, \`/debug\`, \`/review\`, \`/ship\`, \`/health\`, or other public module commands.
+Use this extension's \`/keystone\` command as the public entrypoint. Internal Keystone modules are Markdown files under \`skills/keystone/modules/\`; when the canonical skill selects a module, read that file instead of inventing public module commands.
 
-Pi's built-in coding tools are lowercase: \`read\`, \`write\`, \`edit\`, \`bash\`, plus optional \`grep\`, \`find\`, and \`ls\`. Use those for file inspection, mutation, shell commands, and search.
+Pi's built-in coding tools are lowercase: \`read\`, \`write\`, \`edit\`, \`bash\`, plus optional \`grep\`, \`find\`, and \`ls\`.
 
-Keystone is configured for \`@tintinweb/pi-subagents\` (https://github.com/tintinweb/pi-subagents). If that extension is installed, use its \`Agent\` tool for bounded delegation, \`get_subagent_result\` for background results, and \`steer_subagent\` only to redirect live work. Do not assume named roles, model selection, or thinking controls; use only the fields exposed by the active tool schema. Keep read-only work read-only. Use background/parallel subagents only for independent tasks with no shared mutable files. Do not invent unsupported subagent tools. If no subagent tool is available, do the work in this session.`;
+If \`@tintinweb/pi-subagents\` is installed and the active tool schema exposes them, Pi subagent tool names are \`Agent\`, \`get_subagent_result\`, and \`steer_subagent\`. Follow the canonical Keystone subagent guidance for behavior.`;
 }
 
 function messageContainsBootstrap(message: unknown): boolean {

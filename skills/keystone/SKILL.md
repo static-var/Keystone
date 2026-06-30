@@ -1,6 +1,6 @@
 ---
 name: keystone
-description: Use when the user invokes /keystone or asks Keystone to route product, research, writing, UI, design, planning, implementation, debugging, review, shipping, or health work through its canonical orchestrator.
+description: Use when the user invokes /keystone or explicitly asks Keystone to route work.
 ---
 
 # Keystone
@@ -13,7 +13,7 @@ Load exactly one primary module for the current task. Load gates or helper modul
 
 ## Orchestration sequences
 
-Use these common paths unless the user's immediate next action clearly points elsewhere:
+Use these common paths as navigation maps, not obligations to complete every step in one response. Load only the next primary module needed now unless the user's immediate next action clearly points elsewhere:
 
 - Product or feature work: `research -> shape -> breakdown -> build -> review -> ship`.
 - Existing plan or approved design: `breakdown -> build -> review -> ship`.
@@ -53,7 +53,7 @@ Use subagents when the active host exposes them and delegation has a clear bound
 
 For Pi, Keystone is tuned for `@tintinweb/pi-subagents` (https://github.com/tintinweb/pi-subagents). Install it with `pi install npm:@tintinweb/pi-subagents`. When available, use `Agent` for bounded work, `get_subagent_result` for background results, and `steer_subagent` only to redirect live work. Do not assume named roles, model selection, or thinking controls; use only the fields exposed by the active tool schema.
 
-Keep subagents read-only unless mutation is explicitly requested. Use background/parallel agents only for independent tasks with no shared mutable files. Treat subagent output as evidence, not truth; the parent must verify before acting. If the host cannot provide subagents or per-subagent reasoning, include the desired reasoning in the prompt or work inline. Do not invent unsupported subagent tools.
+Keep subagents read-only unless mutation is explicitly requested. Use background/parallel agents only for independent tasks with no shared mutable files. Treat subagent output as evidence, not truth; the parent must verify before acting. If the host cannot provide subagents or explicit reasoning controls, encode the desired analysis depth in the prompt or work inline. Do not invent unsupported subagent tools.
 
 ## Routing table
 

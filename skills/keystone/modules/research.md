@@ -1,7 +1,7 @@
 # Keystone Research Module
 
 ## Core principle
-Research is evidence gathering before action. Inspect available material first, preserve source quality, separate facts from assumptions, and do not mutate the project unless the user explicitly asks for a durable research artifact.
+Research is evidence gathering before action. Inspect available material first, preserve source quality, separate facts from assumptions, and stay read-only unless the user explicitly asks for a durable research artifact.
 
 ## Load when
 Load when the user asks to read, inspect, summarize, inventory, extract, compare, explain, investigate options, gather technical or market context, validate claims, or answer “what is true here?” before a decision.
@@ -20,7 +20,7 @@ Deliver a research brief that states:
 - source-quality notes (primary vs secondary, current vs stale, authoritative vs anecdotal);
 - findings separated from assumptions and unknowns;
 - confidence level and why;
-- recommended next module or no-op if no action is warranted.
+- recommended next module, or `none` if no Keystone handoff is warranted.
 
 ## Modes
 - **Repository read:** inspect files, history, configs, tests, docs, and existing behavior. Prefer primary project evidence.
@@ -34,15 +34,16 @@ Deliver a research brief that states:
 3. Prefer primary evidence: source code, tests, product docs, official docs, reproducible commands, direct user-provided material.
 4. Track citations as you go. Every important claim should point to evidence or be labeled as an assumption.
 5. Evaluate source quality: age, authority, completeness, bias, and whether evidence is direct or inferred.
-6. Compare alternatives when relevant, including costs, risks, constraints, and no-op implications.
+6. Compare alternatives when relevant, including costs, risks, constraints, and implications of taking no action.
 7. State unknowns explicitly. Do not fill gaps with confident-sounding speculation.
 8. Recommend the smallest next step: `shape`, `debug`, `health`, `breakdown`, `build`, `review`, or stop.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use read-only subagents when the search space is large or evidence can be gathered independently. Use `low` for narrow file summaries. Use `high` when findings affect architecture, security, safety, release decisions, legal/market claims, or irreversible product direction. Subagents must remain read-only unless the user requested an artifact.
+Use read-only subagents when the search space is large or evidence can be gathered independently. Use lightweight analysis for narrow file summaries and deeper analysis when findings affect architecture, security, safety, release decisions, legal/market claims, or irreversible product direction. When delegation is available, encode required evidence depth and risk standard in the prompt. Subagents must remain read-only unless the user requested an artifact.
 
 ## Hard rules
 - No mutation by default: do not edit files, run formatters, or alter state except harmless read-only commands.
+- Durable artifact exception: if the user requests a research artifact, confirm the path and scope before writing; hand off to `build` when the artifact changes product/code behavior or touches broader project structure.
 - Cite evidence for material claims; if evidence is unavailable, say so.
 - Distinguish facts, interpretations, assumptions, and recommendations.
 - Do not ask for information that can be inspected first.
@@ -82,5 +83,5 @@ Question: ...
 High/Medium/Low — why
 
 ### Recommended next step
-Module or no-op, with rationale
+Module or `none`, with rationale
 ```

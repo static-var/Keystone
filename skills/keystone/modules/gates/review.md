@@ -11,7 +11,7 @@ This gate is binary: pass or fail.
 1. Identify required review type:
    - Self-review is sufficient only for docs-only changes, low-risk config, or tiny low-risk refactors with green proof.
    - Independent review is required for security, data, public API, billing/payment, auth/permissions, architecture, migrations, releases, broad refactors, or user-impacting changes.
-   - Use a human reviewer, automated reviewer, domain owner, security review, design review, or read-only review pointer as appropriate.
+   - Use a human reviewer, automated reviewer, domain owner, security review, or design review as appropriate.
 2. Provide review input:
    - Scope summary.
    - Files changed.
@@ -27,8 +27,8 @@ This gate is binary: pass or fail.
    - Non-blockers: style, cleanup, future refactors, optional docs, nice-to-have tests.
 5. Resolve or explicitly accept blockers before shipping.
 
-## Read-only review pointer
-When review cannot be performed by the worker, leave a read-only pointer that lets a reviewer inspect without changing work:
+## Pending review pointer
+A pending review pointer is never pass evidence. When review cannot be performed by the worker, leave a pointer that lets a reviewer inspect without changing work:
 
 ```text
 Review requested for: <branch/worktree/PR/diff>
@@ -40,7 +40,7 @@ Please classify findings as BLOCKER or NON-BLOCKER.
 ```
 
 ## Pass condition
-Pass only when the required review evidence exists and no blocking findings remain unresolved, or the user explicitly accepts the remaining blockers.
+Pass only when required review evidence exists and either no blocking findings remain unresolved, or the user explicitly accepts the remaining blockers.
 
 ## Fail action
 Return to the appropriate module or gate. Do not ship while blockers are open.
@@ -52,5 +52,5 @@ Evidence: <link/output/comment or "none">
 Blockers: <list>
 Non-blockers: <list>
 Required next action: <fix, re-review, user acceptance, or request review>
-Read-only review pointer: <branch/PR/diff path if review is pending>
+Pending review pointer: <branch/PR/diff path if review is pending>
 ```

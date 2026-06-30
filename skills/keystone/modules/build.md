@@ -90,24 +90,23 @@ Contract:
 
 - identify the domain shape before choosing architecture
 - choose the lightest architecture that fits the problem
-- define contracts/interfaces where they reduce coupling or clarify ownership
+- define contracts/interfaces only at real boundaries where they reduce coupling or clarify ownership
 - keep domain rules separate from transport, UI, persistence, and framework glue
-- use patterns only when they remove real pressure, not to decorate simple code
-- validate that the result is pleasant for developers to read, understand, maintain, and look at
+- use patterns only when they remove current pressure, not to decorate simple code
+- validate observable maintainability with the pressure-test below
 
-SOLID is a pressure-test, not dogma:
+Architecture pressure-test:
 
-- **SRP:** Can this unit change for one clear reason, or are unrelated policies bundled together?
-- **OCP:** Can the next known variation be added without editing fragile existing logic, or is a simpler edit safer for now?
-- **LSP:** Can substitutes honor the same contract without surprising callers?
-- **ISP:** Are callers forced to depend on methods, fields, events, or permissions they do not use?
-- **DIP:** Do high-level policies depend on stable abstractions at real boundaries, or are abstractions hiding one local call?
-
-Examples of appropriate taste:
-
-- mobile UI may use MVVM/MVI when state, events, and rendering need separation
-- clean architecture may fit when domain rules must survive UI, database, or API changes
-- SOLID and design patterns are justified only when they relieve current pressure
+- Does the architecture match domain complexity rather than a desire to sound senior?
+- Is each module/class/function responsible for one understandable thing?
+- Are domain concepts named in the user's language?
+- Is state ownership explicit, with side effects isolated enough to test meaningful behavior?
+- Would a developer know where to add the next similar behavior?
+- Is the simplest path readable, or has simplicity become cleverness?
+- Is duplication removed only after the repeated concept is real?
+- Do patterns such as Strategy, Repository, Adapter, Observer, MVVM, MVI, or Clean Architecture relieve current pressure?
+- **SOLID check:** one reason to change; known variation handled safely; substitutes honor contracts; callers avoid unused surface; high-level policies depend on stable abstractions only at real boundaries.
+- Smell stop-list: god functions, vague managers/helpers, hidden control flow, stringly APIs, layer violations, speculative interfaces.
 
 ### Delegated/parallel build
 
@@ -180,10 +179,10 @@ Report: files changed, verification output, risks/gaps
    - Never replace verification with a summary.
 
 10. Early smell check.
-   - Stop and simplify if the diff introduces god functions, vague `manager`/`helper` names, hidden control flow, stringly APIs, layer violations, or speculative interfaces.
+   - Stop and simplify if the diff hits the architecture smell stop-list.
 
 11. Architecture pressure-test.
-   - For architecture-sensitive changes, answer the SOLID questions and remove abstractions that do not survive them.
+   - For architecture-sensitive changes, answer the inline pressure-test and remove abstractions that do not survive it.
 
 12. Handoff.
    - Summarize changed files and behavior.
@@ -191,40 +190,11 @@ Report: files changed, verification output, risks/gaps
    - Disclose unverified areas.
    - Recommend `review` or `ship` as the next module when appropriate.
 
-## Architecture taste checklist
-
-Use this checklist before accepting the design:
-
-- Does the architecture match the domain complexity rather than the agent's desire to sound senior?
-- Is each module/class/function responsible for one understandable thing?
-- Are domain concepts named in the user's language?
-- Are interfaces/contracts placed at real boundaries, not between every pair of functions?
-- Is state ownership explicit?
-- Are side effects isolated enough to test meaningful behavior?
-- Would a developer know where to add the next similar behavior?
-- Is the simplest path also readable, or has simplicity become cleverness?
-- Is duplication removed only after the repeated concept is real?
-- Are patterns such as Strategy, Repository, Adapter, Observer, MVVM, MVI, or Clean Architecture justified by current pressure?
-- Does the diff pass the SOLID pressure-test questions without adding dogmatic ceremony?
-- Does the diff avoid god functions, vague managers/helpers, hidden control flow, stringly APIs, layer violations, and speculative interfaces?
-
 ## Subagents and reasoning
 
-Default reasoning: `medium`.
+Use deeper analysis when architecture boundaries are being changed, tests fail for unclear reasons, multiple agents must coordinate through contracts, data loss/security/billing/release/migration risk exists, or the user asks for broad refactoring or platform-specific architecture judgment. When delegation is available, encode required evidence depth and risk standard in the prompt.
 
-Escalate to `high` when:
-
-- architecture boundaries are being changed
-- tests are failing for unclear reasons
-- multiple agents must coordinate through contracts
-- data loss, security, billing, release, or migration risk exists
-- the user asks for broad refactoring or platform-specific architecture judgment
-
-Use subagents when:
-
-- slices can be verified independently
-- files do not overlap, or ownership is explicitly assigned
-- exploration can happen without mutation
+Use read-only exploration subagents when independent inspection can reduce uncertainty without mutation. Use implementation subagents only when the user requested mutation, isolation has passed, allowed files are scoped, each slice can be verified independently, and file overlaps are prevented by ownership or explicit handoff.
 
 A delegation brief must include:
 
