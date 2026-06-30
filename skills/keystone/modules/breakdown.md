@@ -233,12 +233,7 @@ Use this structure unless the user requested a different artifact. For small con
 Next module: `<research|build|debug|review|health|ship|shape>` because <reason>.
 
 ### Checkpoint
-- Current module: ...
-- Completed gates/checks: ...
-- Next required: `<module|none>`
-- Next check: ...
-- Action: continue now / ask user / pending pointer / stop
-- Prompt or handoff pointer: ...
+Use the required fields from `gates/checkpoint.md`.
 
 ```
 

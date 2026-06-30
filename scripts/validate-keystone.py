@@ -208,7 +208,7 @@ def check_checkpoint_guidance(skill_text: str) -> None:
         fail("missing checkpoint gate: modules/gates/checkpoint.md")
     required_skill_phrases = (
         "modules/gates/checkpoint.md",
-        "Checkpoint ledger",
+        "single source of truth",
         "continue now",
         "pending pointer",
         "Never end a build/change with only",

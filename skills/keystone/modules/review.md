@@ -266,12 +266,7 @@ None
 - Suggested owner module: build, debug, research, ship, or human
 
 ### Checkpoint
-- Current module: ...
-- Completed gates/checks: ...
-- Next required: `<module|none>`
-- Next check: ...
-- Action: continue now / ask user / pending pointer / stop
-- Prompt or handoff pointer: ...
+Use the required fields from `gates/checkpoint.md`.
 
 ```
 

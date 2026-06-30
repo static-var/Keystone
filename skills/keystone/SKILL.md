@@ -26,18 +26,9 @@ Use these common paths as navigation maps plus checkpoint defaults. Load only th
 
 Do not add these as shipped modules; they are routing sequences over the existing nine modules.
 
-## Checkpoint ledger
+## Checkpoint gate
 
-Maintain a lightweight checkpoint ledger during every Keystone run:
-
-- `active sequence`: the path currently implied by the user request, or `single module` when no sequence applies
-- `current module`: the loaded primary module
-- `completed`: evidence-backed gates/checks already satisfied
-- `next required`: target module or `none`
-- `next check`: first gate, command, review, or question for that target
-- `action`: `continue now`, `ask user`, `pending pointer`, or `stop`
-
-Before any final answer, run the checkpoint gate. If `action` is `continue now`, load the next primary module instead of ending the turn. If Keystone cannot continue safely, the final answer must make the next event explicit with a question or pending review/ship pointer. Never end a build/change with only “done,” “implemented,” or a buried “Next” line when review or ship remains.
+Before any final answer, load `modules/gates/checkpoint.md`; it is the single source of truth for checkpoint fields and actions. If the checkpoint action is `continue now`, load the next primary module instead of ending the turn. If Keystone cannot continue safely, the final answer must make the next event explicit with a question or pending review/ship pointer. Never end a build/change with only “done,” “implemented,” or a buried “Next” line when review or ship remains.
 
 ## Handoff packet contract
 
