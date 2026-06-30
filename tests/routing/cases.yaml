@@ -43,13 +43,13 @@
   },
   {
     "id": "breakdown-approved-design",
-    "prompt": "The design is approved. Break it down into implementation tasks; /plan is not the public command.",
+    "prompt": "Keystone: the design is approved. Break it down into implementation tasks; Keystone has no public /plan command.",
     "expected": "breakdown",
     "negative": ["plan", "shape", "build"]
   },
   {
     "id": "breakdown-not-plan-command",
-    "prompt": "Someone asked for /plan, but Keystone should route approved designs to the internal breakdown planner instead.",
+    "prompt": "A user wants decomposition. Keystone should use /keystone and the internal breakdown module, not a public /plan alias.",
     "expected": "breakdown",
     "negative": ["plan"]
   },

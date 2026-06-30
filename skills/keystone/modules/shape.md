@@ -21,7 +21,7 @@ Deliver a shaped proposal that includes:
 - architecture and scope tradeoffs at the level needed for planning, not implementation;
 - alternatives considered and why one direction is preferred;
 - acceptance criteria and non-goals;
-- recommended next module (`breakdown`, `build`, `review`, `research`, or no-op).
+- recommended next module (`breakdown`, `build`, `review`, `research`) or `none` if no Keystone handoff is warranted.
 
 ## Modes
 - **Product shape:** specify the user job, trigger, actor permissions, core flow, business rules, constraints, success metrics, non-goals, and acceptance criteria.
@@ -45,12 +45,12 @@ Deliver a shaped proposal that includes:
    - **Data flow:** name source of truth, state transitions, sync/async edges, validation points, and where errors surface.
    - **Architectural tradeoffs:** state what becomes simpler, harder, slower, safer, more testable, or more coupled.
 6. Ban fluffy terms unless translated to behavior. Words like “modern,” “clean,” “intuitive,” “delightful,” “seamless,” or “user-friendly” must become observable rules.
-7. Offer alternatives when the direction is not obvious. Include the no-op option if legitimate.
+7. Offer alternatives when the direction is not obvious. Include the “do nothing / decide later” option if legitimate.
 8. Convert the chosen direction into acceptance criteria that can be implemented and reviewed.
 9. Stop at the spec boundary. If the user asks for design plus build, finish Shape with the spec and recommended handoff to `build`; do not implement code.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use subagents for bounded alternatives, critique, or parallel concepts when the active host exposes safe delegation. Use `high` for multi-screen flows, accessibility-sensitive experiences, design-system impact, pricing/positioning, architecture boundaries, or major scope decisions. Subagents should produce options or critique, not unrequested implementation.
+Use subagents for bounded alternatives, critique, or parallel concepts when the active host exposes safe delegation. Use lightweight analysis for narrow copy/behavior edits and deeper analysis for multi-screen flows, accessibility-sensitive experiences, design-system impact, pricing/positioning, architecture boundaries, or major scope decisions. When delegation is available, encode required evidence depth, constraints, and risk standard in the prompt. Subagents should produce options or critique, not unrequested implementation.
 
 ## Hard rules
 - Shape is not build: do not edit production code or runtime behavior.
@@ -59,7 +59,7 @@ Default reasoning: `medium`. Use subagents for bounded alternatives, critique, o
 - Always identify user/audience and success criteria for product-facing work.
 - Include acceptance criteria before handing off to implementation.
 - Translate fluffy descriptors into exact behavior; otherwise remove them.
-- Avoid no-op avoidance: if the best answer is “do nothing” or “decide later,” say so with criteria.
+- Avoid action bias: if the best answer is “do nothing” or “decide later,” say so with criteria.
 
 ## Failure modes
 - **Abstract advice:** principles without actors, states, rules, tradeoffs, or acceptance criteria.
@@ -86,6 +86,8 @@ Bad technical shape: “Add a helper/manager layer so the architecture is scalab
 Worked technical shape: “For export retries, keep the queue worker as the owner of retry state, expose `requestExport(accountId, format)` from the API, persist `pending|running|failed|ready` status in `exports`, and surface failures through the existing job status endpoint. Tradeoff: one extra status read, but retry policy stays out of controllers and can be tested without HTTP.”
 
 ## Output format
+Always include goal, audience/user when relevant, mode(s), acceptance criteria, and recommended next step. Include UX/copy/technical/alternatives sections only when they change the decision; omit empty or irrelevant headings.
+
 ```markdown
 ## Shaped direction
 Goal: ...
@@ -96,7 +98,7 @@ Mode(s): product | UX/UI | copy | technical | alternatives
 - Actor/trigger/preconditions: ...
 - Rules/results: ...
 
-### UX states and copy
+### UX states and copy (when relevant)
 - Happy: ...
 - Empty: ...
 - Loading/pending: ...
@@ -104,7 +106,7 @@ Mode(s): product | UX/UI | copy | technical | alternatives
 - Edge/constraint: ...
 - Key copy: ...
 
-### Technical shape
+### Technical shape (when relevant)
 - Boundaries/API/data flow: ...
 - Tradeoffs: ...
 
@@ -113,13 +115,13 @@ Mode(s): product | UX/UI | copy | technical | alternatives
 - Out: ...
 - Tradeoffs: ...
 
-### Alternatives considered
+### Alternatives considered (when relevant)
 - Option A: ...
-- Option B/no-op: ...
+- Option B / do nothing: ...
 
 ### Acceptance criteria
 - ...
 
 ### Recommended next step
-Module and rationale
+Module or `none`, with rationale
 ```

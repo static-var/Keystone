@@ -3,12 +3,6 @@
 ## Core principle
 Find the root cause before fixing. Debugging is an evidence ladder: observe the failure, reproduce it, minimize it, trace the mechanism, test falsifiable hypotheses, prove the cause, fix narrowly, guard against regression, verify with exact output, and clean up. No guess-and-check, no cargo-cult edits, no shipping/finalization work.
 
-Quick start:
-1. Capture the exact symptom and smallest known failing command/input.
-2. Reproduce or preserve the best available evidence if reproduction is blocked.
-3. Minimize, then test one falsifiable hypothesis at a time.
-4. Prove the mechanism before fixing; add a regression guard and verify with exact output.
-
 ## Load when
 Load when the user reports an error, failing test, broken behavior, regression, flaky result, performance anomaly, unexpected output, integration failure, suspicious logs, silent failure, data corruption, or asks to troubleshoot why something happened.
 
@@ -69,39 +63,14 @@ Stop only when one of these is true:
 11. **Verify with exact output.** Run focused verification first, then broader commands if risk warrants. Capture command names and result snippets, not just “tests pass.”
 12. **Clean up.** Remove temporary diagnostics, revert failed experiments, leave useful permanent observability only when justified, and report remaining uncertainty.
 
-Debug decision tree / failure classification:
-- **Cannot reproduce?** Verify environment/input parity, collect logs/traces/state, check recent changes, ask for missing data, and escalate if still blocked.
-- **Reproduces reliably now but worked before?** Treat as historical regression; run targeted history review or bisect.
-- **Fails intermittently?** Treat as flaky/race; run many iterations, fix seed/time/timezone/network where possible, and look for shared state, ordering, async waits, retries, clocks, locks, caches, and resource leaks.
-- **Fails at a service boundary?** Trace request IDs across systems, compare contracts, schemas, auth, serialization, retries, timeouts, idempotency, and partial failure handling.
-- **Slow or resource-heavy?** Measure before changing, identify the bounded bottleneck, compare profiles/plans/metrics, and prove the optimization changes the measured bottleneck.
-- **Only logs show failure or behavior is silent?** Reconstruct timeline from logs, traces, metrics, state transitions, audit records, and exit codes; add diagnostics only to close evidence gaps.
-- **Data is wrong or corrupted?** Freeze destructive actions, preserve samples, identify writer/read path, migration/import history, concurrency, validation gaps, and blast radius before fixing.
-
-Operational playbook:
-- **Reproduce:** exact command/input/environment; note frequency and baseline output.
-- **Minimize:** remove variables until the smallest failing case remains; document removed variables.
-- **Trace/instrument:** observe the suspected mechanism with scoped, reversible diagnostics.
-- **Hypothesize:** write falsifiable mechanism + prediction; test one hypothesis per experiment.
-- **Prove:** connect evidence to cause; show why alternatives fail or are less likely.
-- **Fix narrowly:** edit only the proven mechanism.
-- **Regression guard:** create failing-before/passing-after proof or equivalent guard.
-- **Cleanup:** remove debug litter and failed experiments; keep only justified observability.
-
-Bisect strategy when historical regression is likely:
-- Establish one known-good and one known-bad revision using the same command, data, and environment.
-- Make the reproduction deterministic enough for `git bisect`; if flaky, use a looped script with a clear pass/fail threshold.
-- Keep the bisect command side-effect safe; reset generated files between runs.
-- When bisect identifies a commit, inspect the diff for mechanism and still prove causality in current code.
-- Do not treat the first bad commit as the root cause until the mechanism explains the symptom.
-
-Scenario checklists:
-- **Regression:** What changed? Is there a known-good revision? Can the same command prove good vs bad? Is the failing behavior tied to code, dependency, config, data, or environment?
-- **Flaky test/race:** How often does it fail over 20/50/100 runs? Does order, parallelism, clock, seed, async wait, network, cache, filesystem, or shared state affect it? Does instrumentation change timing?
-- **Multi-system boundary:** What is the correlation/request ID? Which system first diverges from expected state? Are contracts, schemas, auth, encoding, idempotency, retries, timeout budgets, and partial failures aligned?
-- **Performance:** What metric is bad and by how much? What is the baseline? Is the bottleneck CPU, memory, IO, network, DB, lock contention, rendering, bundle size, or algorithmic complexity? Does the fix improve that metric?
-- **Logs/silent failure:** What timeline do logs/traces/metrics imply? Are there swallowed exceptions, ignored return values, missing awaits, nonzero exits, dropped events, sampling gaps, or log-level/config differences?
-- **Data corruption:** What data is affected? Is the source of truth known? Which writer last touched it? Are migrations, backfills, imports, concurrent writes, validation, serialization, timezone/locale, or precision involved? Is rollback/destructive repair safe?
+Branch checklists:
+- **Cannot reproduce:** verify environment/input parity, collect logs/traces/state, check recent changes, ask for missing data, and escalate if blocked.
+- **Historical regression:** establish known-good and known-bad revisions with the same command/data/environment; use side-effect-safe bisect only after reproduction is deterministic enough; prove the mechanism in current code before treating the first bad commit as root cause.
+- **Flaky/race:** run 20/50/100 iterations as risk warrants; vary order, parallelism, clock, seed, async waits, network, cache, filesystem, and shared state; beware instrumentation changing timing.
+- **Service boundary:** trace correlation/request IDs; compare contracts, schemas, auth, encoding, idempotency, retries, timeout budgets, and partial failures; identify the first system that diverges.
+- **Performance:** measure baseline and bad metric; localize CPU, memory, IO, network, DB, lock contention, rendering, bundle size, or algorithmic complexity; prove the fix changes that bottleneck.
+- **Logs/silent failure:** reconstruct a timeline from logs, traces, metrics, state transitions, audit records, and exit codes; check swallowed exceptions, ignored returns, missing awaits, nonzero exits, dropped events, sampling, and log-level/config differences.
+- **Data corruption:** freeze destructive actions, preserve samples, identify source of truth, writer/read path, migrations/backfills/imports, concurrency, validation, serialization, timezone/locale, precision, blast radius, and rollback safety.
 
 Good/bad hypotheses:
 - **Good:** “The checkout total is doubled because retrying `capturePayment` replays a non-idempotent side effect; if true, two calls with the same request ID will create two ledger rows.”
@@ -127,7 +96,7 @@ Escalation/stuck criteria:
 - Escalation output must include symptom, impact, attempts, disproven hypotheses, missing evidence, requested help/access, and safest next action.
 
 ## Subagents and reasoning
-Default reasoning: `high`. Use subagents for independent root-cause analysis, log review, performance profile interpretation, bisect planning, or hypothesis generation when the active host exposes safe delegation. Use `xhigh` for intermittent, cross-system, security, performance, data-loss, privacy, destructive, or production-impacting failures.
+Use subagents for independent root-cause analysis, log review, performance profile interpretation, bisect planning, or hypothesis generation when the active host exposes safe delegation. Use deeper analysis for intermittent, cross-system, security, performance, data-loss, privacy, destructive, or production-impacting failures. When delegation is available, encode required evidence depth and risk standard in the prompt.
 
 Subagents may inspect and reason independently, but fixes should converge on one evidence-backed root cause. Ask subagents for competing hypotheses and evidence gaps, not broad code review. When subagents disagree, run the smallest test that distinguishes their explanations. Do not let parallel analysis become parallel guess-and-check edits.
 

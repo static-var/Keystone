@@ -5,7 +5,7 @@ Breakdown turns a goal into sequenced, reviewable vertical slices of work.
 
 A good breakdown makes implementation easier because every slice has a visible result, clear constraints, and a verification path. It makes review easier because reviewers can compare changes against stated goals, requirements, risks, and acceptance checks.
 
-Breakdown is planning, not execution. A plan is not proof; only inspected changes, tests, demos, or other evidence prove completion.
+Breakdown is sequencing, not execution. A breakdown is not proof; only inspected changes, tests, demos, or other evidence prove completion.
 
 ## Load when
 Use this module when the user asks to:
@@ -13,22 +13,21 @@ Use this module when the user asks to:
 - break down a feature, fix, refactor, migration, tool, system, or project
 - produce milestones, implementation steps, tickets, issues, vertical slices, or phases
 - decide sequencing, dependencies, iterations, scope cuts, or parallelization
-- turn an ambiguous goal into implementable work
+- turn an approved or sufficiently shaped goal into implementable work
 - prepare work for coding agents, reviewers, or subagents
-- plan greenfield architecture before implementation
-- split a large task into reviewable chunks without exposing `/plan`
+- sequence greenfield architecture after the core users, runtime, and tradeoffs are stable enough to slice
+- split a large task into reviewable chunks without exposing another public command
 
-Also load when implementation is requested but the goal is broad enough that coding immediately would hide major product, architecture, or sequencing decisions.
+Also load when implementation is requested but the goal is broad enough that coding immediately would hide major sequencing decisions. If behavior, scope, UX, or architecture tradeoffs are still undecided, route to `shape` first; use Breakdown once the desired outcome is stable enough to sequence.
 
 ## Not for
 Do not use Breakdown for:
 
 - implementation, file edits, refactors, migrations, or generated code
-- debugging a known failure; use `debug` first, then return to Breakdown if a repair plan is needed
+- debugging a known failure; use `debug` first, then return to Breakdown if a repair sequence is needed
 - research-only tasks; use `research` first when facts are missing
 - copy/design shaping as the primary work; use `shape` first when output is prose, UX, or design direction
 - final verification, release readiness, or completion claims; use `review`, `health`, or `ship`
-- renaming this module to `plan`, creating `/plan`, or exposing the internal planner name as a public command
 
 ## Outcome contract
 A Breakdown output must include:
@@ -41,9 +40,9 @@ A Breakdown output must include:
 6. Vertical slices: ordered work items that each deliver an end-to-end outcome.
 7. Verification gates: how each slice can be tested, reviewed, or demonstrated.
 8. Risks and dependencies: what can block, invalidate, or reorder the work.
-9. Handoff: recommended next primary module and any subagent/reasoning suggestions.
+9. Handoff: recommended next primary module and any subagent/analysis-depth suggestions.
 
-If information is missing, state the assumption or ask the smallest set of questions required to avoid a bad plan.
+If information is missing, state the assumption or ask the smallest set of questions required to avoid a bad breakdown.
 
 ## Modes
 
@@ -57,7 +56,7 @@ Use for new projects, tools, services, apps, packages, or substantial standalone
 Use when behavior should remain stable while internals change. Focus on the current behavior contract, compatibility expectations, affected surfaces, consumers, migration seams, adapters, flags, dual-run paths, rollback strategy, observability, and characterization tests. Prefer strangler-style or seam-first slices over broad rewrites.
 
 ### Subagent-parallel breakdown
-Use when independent workstreams can proceed safely in isolated workspaces. Build the dependency graph before delegation. Name shared files, interfaces, merge-risk hotspots, delegation purpose, desired reasoning intensity, context packets, expected artifacts, integration order, and review checkpoints. Only parallelize slices that can be verified independently or integrated behind a clear contract.
+Use when independent workstreams can proceed safely in isolated workspaces. Build the dependency graph before delegation. Name shared files, interfaces, merge-risk hotspots, delegation purpose, required analysis depth, context packets, expected artifacts, integration order, and review checkpoints. Only parallelize slices that can be verified independently or integrated behind a clear contract.
 
 ## Process
 
@@ -84,14 +83,14 @@ Use when independent workstreams can proceed safely in isolated workspaces. Buil
 6. Slice vertically.
    - Each slice should cross needed layers to produce a reviewable result.
    - Include data/model/API/UI/test/docs work inside the slice when needed for that result.
-   - Avoid phase plans that finish entire subsystems before any end-to-end value appears.
+   - Avoid phases that finish entire subsystems before any end-to-end value appears.
 7. Add verification gates.
    - Give each slice an acceptance check, test command, manual review path, or demo criterion.
    - Include regression checks for migrations and refactors.
    - State when review should happen and what reviewers should inspect.
 8. Prepare the handoff.
    - Recommend the next Keystone module.
-   - Identify subagent opportunities, required context, and reasoning level.
+   - Identify subagent opportunities, required context, and analysis depth.
    - Call out risks, dependencies, and open questions that should block implementation if unresolved.
 
 ## Requirements inventory
@@ -133,44 +132,42 @@ Each task or slice must have:
 A weak task says "build backend" or "add tests". A strong slice says "Persist saved searches end-to-end behind the existing search UI, with API validation, storage migration, and regression coverage for loading saved searches."
 
 ## Subagents and reasoning
-Default reasoning: `high`.
-
-Use subagents when planning benefits from independent context gathering, critique, or parallel workstream design:
+Use subagents when sequencing benefits from independent context gathering, critique, or parallel workstream design and the active host exposes safe delegation:
 
 - read-only research on separate code areas, external APIs, or prior art
 - architecture critique for greenfield foundations and migrations
-- risk critique for security, data loss, compatibility, or release plans
+- risk critique for security, data loss, compatibility, or release sequencing
 - implementation delegation only after slices are independent and interfaces are stable
 
-For each proposed delegation, specify purpose, desired reasoning intensity, context packet, expected output artifact, files or areas off limits, and integration/review checkpoint. Do not use subagents to bypass ambiguity. Resolve shared interfaces and sequencing first.
+For each proposed delegation, specify purpose, required analysis depth, context packet, expected output artifact, files or areas off limits, and integration/review checkpoint. When delegation is available, encode required evidence depth and risk standard in the prompt. Do not use subagents to bypass ambiguity. Resolve shared interfaces and sequencing first.
 
 ## Hard rules
 
 - No implementation under Breakdown.
-- No file mutation unless the user explicitly requested a planning artifact and the artifact itself is in scope.
+- No file mutation unless the user explicitly requested a breakdown artifact and the artifact itself is in scope.
 - Do not rename `breakdown` to `plan`.
 - Do not expose `/plan`.
-- Do not claim the plan proves completion.
+- Do not claim the breakdown proves completion.
 - Do not skip goal identification.
 - Do not ask broad clarifying questions before inspecting available context.
-- Do not produce horizontal-only plans.
+- Do not produce horizontal-only breakdowns.
 - Do not hide assumptions, unresolved questions, or conflicts.
-- Do not route risky plans directly to `build` without verification gates and review points.
+- Do not route risky breakdowns directly to `build` without verification gates and review points.
 
 ## Failure modes
 
-- Activity plan: lists actions but never states the outcome.
+- Activity list: names actions but never states the outcome.
 - Horizontal buckets: separates backend/frontend/tests so no slice is independently valuable.
 - Big-bang architecture: designs everything before proving one runnable path.
 - Faux certainty: treats assumptions as facts.
 - Question spam: asks what inspection could answer.
-- Implementation leak: starts coding, editing files, or choosing exact code structure beyond planning needs.
+- Implementation leak: starts coding, editing files, or choosing exact code structure beyond sequencing needs.
 - Review-hostile output: lacks acceptance criteria, test commands, or reviewer focus.
 - Parallelism theater: delegates coupled workstreams that collide on shared files or undefined interfaces.
-- Plan-as-proof: reports success because a plan exists.
+- Breakdown-as-proof: reports success because a breakdown exists.
 
 ## Output format
-Use this structure unless the user requested a different planning artifact:
+Use this structure unless the user requested a different artifact. For small contained tasks, compress sections while preserving goal, assumptions, slices, verification, risks, and handoff:
 
 ```markdown
 # Breakdown: <goal>
@@ -220,7 +217,7 @@ Use this structure unless the user requested a different planning artifact:
 ## Vertical slices
 1. <slice name>
    - Value: <who benefits and how>
-   - Work: <end-to-end changes at a planning level>
+   - Work: <end-to-end changes at a sequencing level>
    - Dependencies: <prior slices or decisions>
    - Acceptance: <observable completion criteria>
    - Verification: <test/review/demo method>
@@ -230,7 +227,7 @@ Use this structure unless the user requested a different planning artifact:
 - <risk, impact, mitigation>
 
 ## Subagent opportunities
-- <delegation purpose, desired reasoning intensity, context packet, expected artifact>
+- <delegation purpose, required analysis depth, context packet, expected artifact>
 
 ## Handoff
 Next module: `<research|build|debug|review|health|ship|shape>` because <reason>.

@@ -5,7 +5,7 @@ Ship is deterministic finalization for already-completed work. It proves, review
 
 A ship decision requires three gates:
 1. **Proof gate:** required checks, artifacts, previews, or manual QA are observed and recorded.
-2. **Review gate:** appropriate human/automated review is complete or explicitly pending.
+2. **Review gate:** appropriate human/automated review is complete. If required review is pending, the verdict cannot be `Ship`.
 3. **Ship gate:** release/merge/deploy mechanics, rollback, and handoff are ready.
 
 If any final check fails, abort ship and route to an existing Keystone module: `build` for contained fixes, `debug` for unexplained failures, `review` for unresolved review risk, or `health` for broad release/tooling readiness concerns.
@@ -60,7 +60,7 @@ Deliver a strict shipping packet that includes:
 11. End with a clear verdict: Ship, Do not ship, or Ship with risk.
 
 ## Subagents and reasoning
-Default reasoning: `medium`. Use subagents for bounded release-note drafting, checklist verification, artifact inspection, CI/CD status inspection, package manifest review, or independent review of the shipping packet. Use `high` for multi-platform packaging, production releases, security-sensitive changes, migrations, deploys with customer impact, or unresolved release risk. Subagents must not introduce new implementation.
+Use subagents for bounded release-note drafting, checklist verification, artifact inspection, CI/CD status inspection, package manifest review, or independent review of the shipping packet when the active host exposes safe delegation. Use deeper analysis for multi-platform packaging, production releases, security-sensitive changes, migrations, deploys with customer impact, or unresolved release risk. When delegation is available, encode required evidence depth and release standard in the prompt. Subagents must not introduce new implementation.
 
 ## Hard rules
 - No new implementation in ship mode. Gate failures create a handoff, not stealth fixes.

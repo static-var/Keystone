@@ -35,10 +35,12 @@ Shipping is a handoff decision. This gate confirms the work can be understood, v
 ```text
 Changed: Expanded five Keystone gate docs into operational pass/fail gates.
 Validation: python3 scripts/validate-keystone.py passed.
-Review: Pending human review; no automated blockers found.
+Review: Completed self-review plus read-only reviewer pass; no blockers, one non-blocking wording follow-up recorded.
 Rollback: Revert this docs-only change; no migration or runtime state.
-Follow-ups: Human reviewer to confirm wording matches Keystone doctrine.
+Follow-ups: Confirm wording matches Keystone doctrine before next release.
 ```
+
+Pending review is not a passing ship note. If required review is pending, fail this gate and route to `gates/review.md` or the Review module first.
 
 ## Pass condition
 Pass only when proof, review, delivery notes, rollback/handoff evidence, and scope compliance are all present.

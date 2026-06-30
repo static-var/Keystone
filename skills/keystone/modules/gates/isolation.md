@@ -24,6 +24,8 @@ This gate protects user work, local experiments, and unrelated files. It is bina
 
 ## Collision matrix
 
+Ownership is known only when it comes from an explicit user statement, a file created by the current task, or prior recorded handoff evidence. Everything else is user-owned or unknown.
+
 | Dirty path | Planned to edit? | Owner known? | Action |
 | --- | --- | --- | --- |
 | No dirty paths | N/A | N/A | Pass |
@@ -37,7 +39,7 @@ Pass only when all are true:
 - Workspace root, branch, and worktree state are known.
 - `git status --porcelain` has been captured.
 - Planned blast radius is explicit.
-- Dirty files are either absent, inside approved scope, or guaranteed untouched.
+- Dirty files are either absent, guaranteed untouched, or planned dirty files with explicit user approval and recorded ownership/decision.
 - No auto-stash, auto-commit, reset, checkout, cleanup, or generated-file deletion is needed.
 
 ## Fail action

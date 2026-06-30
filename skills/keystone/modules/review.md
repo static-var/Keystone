@@ -177,12 +177,10 @@ Ask for every non-trivial review:
 - Do tests cover the affected behavior and important regression paths?
 
 ## Subagents and reasoning
-Default reasoning: `high`.
-
 Use read-only subagents for separable risks: security/privacy, test coverage,
 architecture/API compatibility, persistence/migration, accessibility/user impact,
-performance, concurrency, or release risk. Escalate to `xhigh` for security-sensitive,
-data-loss, billing, permissions, public API, migration, or cross-system reviews.
+performance, concurrency, or release risk. Use deeper analysis for security-sensitive,
+data-loss, billing, permissions, public API, migration, or cross-system reviews. When delegation is available, encode required evidence depth and review standard in the prompt.
 
 Subagents must receive the read-only contract and return evidence-backed findings, not
 patches. Reconcile duplicates and conflicts before reporting. The primary reviewer
