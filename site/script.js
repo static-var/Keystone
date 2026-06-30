@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sections.forEach(s => s.classList.add('fade-in'));
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion || !('IntersectionObserver' in window)) {
     sections.forEach(s => s.classList.add('visible'));
     return;
   }

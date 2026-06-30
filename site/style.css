@@ -7,11 +7,11 @@
 /* ── Tokens ── */
 :root {
   --graphite:    #1F2933;
-  --copper:      #B66A3C;
-  --copper-soft: #c8845e;
+  --copper:      #93491F;
+  --copper-soft: #8B451B;
   --parchment:   #F4EFE6;
   --bone:        #faf7f2;
-  --stone:       #8a8378;
+  --stone:       #6F675D;
   --fog:         #e8e3db;
   --faint:       #f0ebe3;
   --code-bg:     #1F2933;
@@ -20,7 +20,7 @@
   --shadow-soft: rgba(31, 41, 51, 0.06);
   --logo-filter: none;
 
-  --font-display: 'Charter', Georgia, serif;
+  --font-display: 'Libre Baskerville', Charter, Georgia, serif;
   --font-body:    'Inter', system-ui, -apple-system, sans-serif;
   --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, monospace;
 
@@ -587,9 +587,11 @@ html[data-theme='dark'] .theme-icon {
 }
 
 .install-code code {
+  display: block;
   font-size: 0.82rem;
   color: var(--code-text);
   white-space: nowrap;
+  line-height: 1.8;
 }
 
 .install-then {
