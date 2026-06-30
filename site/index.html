@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keystone — Routed workflow for AI coding agents</title>
+  <meta name="description" content="One entrypoint. Routed modules. Hard gates. Keystone gives your AI coding agent structure so it stops guessing and starts proving.">
+  <script>
+    (() => {
+      let saved = null;
+      try {
+        saved = localStorage.getItem('keystone-theme');
+      } catch {
+        saved = null;
+      }
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = saved || (systemDark ? 'dark' : 'light');
+    })();
+  </script>
+  <link rel="icon" href="keystone-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Charter:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ─── Nav ─── -->
+  <nav id="nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="#top" class="nav-logo" aria-label="Keystone home">
+        <img src="keystone-icon.svg" alt="" width="28" height="28">
+        <span>Keystone</span>
+      </a>
+      <div class="nav-actions">
+        <div class="nav-links">
+          <a href="#problem">Why</a>
+          <a href="#how">How</a>
+          <a href="#modules">Modules</a>
+          <a href="#gates">Gates</a>
+          <a href="#install">Install</a>
+        </div>
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <span class="theme-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ─── -->
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Workflow skill for coding agents</p>
+      <h1>One doorway.<br>The right room.<br>Proof at every gate.</h1>
+      <p class="hero-sub">Agents fail when they mix jobs: editing before understanding, reviewing while fixing, shipping without evidence. Keystone routes each task to exactly one module, enforces boundaries, and requires proof before transitions.</p>
+      <div class="hero-invoke">
+        <code>/keystone <span class="hero-task">diagnose why the release workflow fails</span></code>
+      </div>
+    </div>
+
+    <div class="hero-arch" aria-hidden="true">
+      <svg viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg" class="arch-svg">
+        <!-- Outer arch -->
+        <path d="M40 260V140C40 72 100 20 200 20C300 20 360 72 360 140V260" stroke="var(--graphite)" stroke-width="3" fill="none" opacity="0.12"/>
+        <!-- Inner arch -->
+        <path d="M120 260V140C120 108 150 80 200 80C250 80 280 108 280 140V260" stroke="var(--graphite)" stroke-width="2" fill="none" opacity="0.08"/>
+        <!-- Keystone -->
+        <polygon points="180,24 220,24 226,55 200,68 174,55" fill="var(--copper)" opacity="0.15" stroke="var(--copper)" stroke-width="1.5" stroke-opacity="0.3"/>
+        <!-- Route lines fanning out -->
+        <line x1="200" y1="68" x2="120" y2="220" stroke="var(--copper)" stroke-width="1" opacity="0.12"/>
+        <line x1="200" y1="68" x2="160" y2="230" stroke="var(--copper)" stroke-width="1" opacity="0.12"/>
+        <line x1="200" y1="68" x2="200" y2="240" stroke="var(--copper)" stroke-width="1" opacity="0.12"/>
+        <line x1="200" y1="68" x2="240" y2="230" stroke="var(--copper)" stroke-width="1" opacity="0.12"/>
+        <line x1="200" y1="68" x2="280" y2="220" stroke="var(--copper)" stroke-width="1" opacity="0.12"/>
+        <!-- Gate bar -->
+        <rect x="110" y="160" width="180" height="3" rx="1.5" fill="var(--copper)" opacity="0.1"/>
+      </svg>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ─── Problem ─── -->
+    <section class="section" id="problem">
+      <div class="section-head">
+        <p class="eyebrow">The problem</p>
+        <h2>Agents fail in predictable ways</h2>
+      </div>
+      <div class="failures-grid">
+        <div class="failure">
+          <span class="failure-icon" aria-hidden="true"></span>
+          <p>They edit before understanding the repo</p>
+        </div>
+        <div class="failure">
+          <span class="failure-icon" aria-hidden="true"></span>
+          <p>They treat a plan as proof</p>
+        </div>
+        <div class="failure">
+          <span class="failure-icon" aria-hidden="true"></span>
+          <p>They debug by guessing</p>
+        </div>
+        <div class="failure">
+          <span class="failure-icon" aria-hidden="true"></span>
+          <p>They review while changing files</p>
+        </div>
+        <div class="failure">
+          <span class="failure-icon" aria-hidden="true"></span>
+          <p>They ship without evidence</p>
+        </div>
+      </div>
+      <p class="section-coda">Keystone makes each of these structurally impossible.</p>
+    </section>
+
+    <!-- ─── How ─── -->
+    <section class="section" id="how">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2>A building with one front door and many private rooms</h2>
+      </div>
+      <p class="section-lede">You invoke <code>/keystone</code> with whatever you need. Keystone classifies the work, routes to exactly one module, applies that module's contract, loads gates only when needed, and hands off cleanly when the task changes shape.</p>
+
+      <div class="lifecycle">
+        <div class="lifecycle-step">
+          <span class="lifecycle-label">Receive</span>
+          <p>User sends a request</p>
+        </div>
+        <div class="lifecycle-arrow" aria-hidden="true"></div>
+        <div class="lifecycle-step">
+          <span class="lifecycle-label">Route</span>
+          <p>Router selects one primary module</p>
+        </div>
+        <div class="lifecycle-arrow" aria-hidden="true"></div>
+        <div class="lifecycle-step">
+          <span class="lifecycle-label">Contract</span>
+          <p>Module controls what's allowed</p>
+        </div>
+        <div class="lifecycle-arrow" aria-hidden="true"></div>
+        <div class="lifecycle-step">
+          <span class="lifecycle-label">Gate</span>
+          <p>Evidence before transitions</p>
+        </div>
+        <div class="lifecycle-arrow" aria-hidden="true"></div>
+        <div class="lifecycle-step">
+          <span class="lifecycle-label">Result</span>
+          <p>Report or hand off</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Modules ─── -->
+    <section class="section" id="modules">
+      <div class="section-head">
+        <p class="eyebrow">Modules</p>
+        <h2>Nine rooms, each with a clear job</h2>
+      </div>
+      <p class="section-lede">Each module has an intent, allowed mutations, hard boundaries, and an exit gate. Internal modules stay internal — you use one public skill.</p>
+
+      <div class="modules-grid">
+        <article class="module-card" data-module="router">
+          <h3>router</h3>
+          <p>Classify intent, select the right module. Does not do the work itself.</p>
+        </article>
+        <article class="module-card" data-module="research">
+          <h3>research</h3>
+          <p>Inspect, summarize, gather evidence, compare options. Never edits or presents guesses as facts.</p>
+        </article>
+        <article class="module-card" data-module="shape">
+          <h3>shape</h3>
+          <p>Draft prose, shape product direction, UX, visual direction, and scope. Does not implement.</p>
+        </article>
+        <article class="module-card" data-module="breakdown">
+          <h3>breakdown</h3>
+          <p>Convert approved direction into ordered, verifiable tasks. Not named <em>plan</em> — intentionally.</p>
+        </article>
+        <article class="module-card" data-module="build">
+          <h3>build</h3>
+          <p>Mutate scoped files. Must pass isolation before the first edit.</p>
+        </article>
+        <article class="module-card" data-module="debug">
+          <h3>debug</h3>
+          <p>Reproduce and isolate a bug from evidence. Does not guess fixes.</p>
+        </article>
+        <article class="module-card" data-module="review">
+          <h3>review</h3>
+          <p>Critique work without changing it. Read-only: no fixes, no commits, no shipping.</p>
+        </article>
+        <article class="module-card" data-module="ship">
+          <h3>ship</h3>
+          <p>Finalize completed work. Only runs after proof and review are satisfied.</p>
+        </article>
+        <article class="module-card" data-module="health">
+          <h3>health</h3>
+          <p>Scan repo, tooling, and package health. Does not silently fix issues.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─── Workflows ─── -->
+    <section class="section" id="workflows">
+      <div class="section-head">
+        <p class="eyebrow">Common workflows</p>
+        <h2>The routes agents actually travel</h2>
+      </div>
+      <div class="workflow-list">
+        <div class="workflow-row">
+          <span class="workflow-name">Feature work</span>
+          <div class="workflow-chain">
+            <span class="wf-node">research</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">shape</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">breakdown</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">build</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">review</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">ship</span>
+          </div>
+        </div>
+        <div class="workflow-row">
+          <span class="workflow-name">Existing plan</span>
+          <div class="workflow-chain">
+            <span class="wf-node">breakdown</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">build</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">review</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">ship</span>
+          </div>
+        </div>
+        <div class="workflow-row">
+          <span class="workflow-name">Bug fix</span>
+          <div class="workflow-chain">
+            <span class="wf-node">debug</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">build</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node accent">proof</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">review</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">ship</span>
+          </div>
+        </div>
+        <div class="workflow-row">
+          <span class="workflow-name">Health finding</span>
+          <div class="workflow-chain">
+            <span class="wf-node">health</span>
+            <span class="wf-arrow" aria-hidden="true">→</span>
+            <span class="wf-node">build</span>
+            <span class="wf-or">or</span>
+            <span class="wf-node">review</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Gates ─── -->
+    <section class="section" id="gates">
+      <div class="section-head">
+        <p class="eyebrow">Gates</p>
+        <h2>Deliberately boring checkpoints</h2>
+      </div>
+      <p class="section-lede">Their job is to stop common mistakes, not to be clever.</p>
+
+      <div class="gates-strip">
+        <div class="gate-item">
+          <div class="gate-bar" aria-hidden="true"></div>
+          <h3>Isolation</h3>
+          <p>Confirm branch, worktree, and scope before the first mutation</p>
+        </div>
+        <div class="gate-item">
+          <div class="gate-bar" aria-hidden="true"></div>
+          <h3>Red</h3>
+          <p>Establish a failing check or reproduction when practical</p>
+        </div>
+        <div class="gate-item">
+          <div class="gate-bar" aria-hidden="true"></div>
+          <h3>Proof</h3>
+          <p>Verify claims with evidence before success reports</p>
+        </div>
+        <div class="gate-item">
+          <div class="gate-bar" aria-hidden="true"></div>
+          <h3>Review</h3>
+          <p>Confirm required review has no blockers</p>
+        </div>
+        <div class="gate-item">
+          <div class="gate-bar" aria-hidden="true"></div>
+          <h3>Ship</h3>
+          <p>Confirm verified, reviewed work is ready for handoff</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Install ─── -->
+    <section class="section install-section" id="install">
+      <div class="section-head">
+        <p class="eyebrow">Get started</p>
+        <h2>Add Keystone to your agent</h2>
+      </div>
+
+      <div class="install-grid">
+        <div class="install-card">
+          <h3>skills.sh / Agent Skills</h3>
+          <div class="install-code"><code>npx skills add static-var/keystone --skill keystone</code></div>
+        </div>
+        <div class="install-card">
+          <h3>Pi</h3>
+          <div class="install-code"><code>pi install npm:@static-var/keystone</code></div>
+        </div>
+        <div class="install-card">
+          <h3>Claude Code</h3>
+          <div class="install-code"><code>/plugin marketplace add static-var/Keystone</code></div>
+        </div>
+        <div class="install-card">
+          <h3>Codex</h3>
+          <div class="install-code"><code>codex plugin marketplace add static-var/Keystone --ref main</code></div>
+        </div>
+      </div>
+
+      <p class="install-then">Then invoke:</p>
+      <div class="install-hero-code">
+        <code>/keystone <span class="dimmed">your task here</span></code>
+      </div>
+    </section>
+
+    <!-- ─── Principle ─── -->
+    <section class="section closing">
+      <blockquote class="closing-quote">
+        Keystone is not trying to make agents more autonomous by removing structure. It makes agents safer by giving each phase a name, a boundary, and a proof requirement.
+      </blockquote>
+    </section>
+
+  </main>
+
+  <!-- ─── Footer ─── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <img src="keystone-icon.svg" alt="" width="20" height="20">
+        <span>Keystone</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/static-var/Keystone">GitHub</a>
+        <a href="https://www.npmjs.com/package/@static-var/keystone">npm</a>
+        <a href="https://skills.sh/static-var/keystone">skills.sh</a>
+      </div>
+      <span class="footer-license">MIT License</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

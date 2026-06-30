@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="keystoneIconTitle keystoneIconDesc">
+  <title id="keystoneIconTitle">Keystone Graphite Copper Archgate icon</title>
+  <desc id="keystoneIconDesc">An ink-blue arch with a central keystone and routed paths passing through a gate.</desc>
+  <path d="M34 84V52C34 41 41 34 50 34C59 34 66 41 66 52V84Z" fill="#F4EFE6"/>
+  <path d="M14 84V52C14 28 30 12 50 12C70 12 86 28 86 52V84H66V52C66 41 59 34 50 34C41 34 34 41 34 52V84Z" fill="#1F2933" fill-rule="evenodd"/>
+  <path d="M38 76C38 63 46 59 50 47" fill="none" stroke="#1F2933" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M44 76C44 64 48 57 50 47" fill="none" stroke="#1F2933" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M50 76V47" fill="none" stroke="#1F2933" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M56 76C56 64 52 57 50 47" fill="none" stroke="#1F2933" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M62 76C62 63 54 59 50 47" fill="none" stroke="#1F2933" stroke-width="2.4" stroke-linecap="round"/>
+  <rect x="41" y="63" width="18" height="4" rx="2" fill="#B66A3C"/>
+  <circle cx="38" cy="76" r="2.6" fill="#1F2933"/>
+  <circle cx="44" cy="76" r="2.6" fill="#1F2933"/>
+  <circle cx="50" cy="76" r="2.6" fill="#1F2933"/>
+  <circle cx="56" cy="76" r="2.6" fill="#1F2933"/>
+  <circle cx="62" cy="76" r="2.6" fill="#1F2933"/>
+  <polygon points="42,14 58,14 62,33 50,43 38,33" fill="#F4EFE6" stroke="#1F2933" stroke-width="3" stroke-linejoin="round"/>
+</svg>
