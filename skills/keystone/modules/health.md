@@ -121,4 +121,8 @@ Classify findings using the Health priority rubric above: `Critical`, `Watch`, o
 
 ### Overall assessment
 Healthy / Watch / At risk / Blocked — rationale
+
+### Checkpoint
+Use the required fields from `gates/checkpoint.md`.
+
 ```

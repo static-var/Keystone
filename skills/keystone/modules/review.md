@@ -198,6 +198,7 @@ owns final severity and verdict.
 - Do not disguise style preferences as correctness findings.
 - Do not omit needed tests when behavior changed.
 - Do not satisfy `gates/review.md` unless blockers and non-blockers are separated.
+- Run the checkpoint gate before the final response; if review passes and delivery/finalization was requested, route to `ship` or leave an explicit ship prompt.
 
 ## Failure modes
 Avoid these anti-patterns:
@@ -211,6 +212,7 @@ Avoid these anti-patterns:
 - **Severity deflation:** downgrading real user harm because the fix is small.
 - **Patch creep:** fixing, refactoring, or committing instead of reviewing.
 - **Unowned uncertainty:** failing to state what was not verified.
+- **Lost next event:** Review passes but never routes or prompts for `ship` when finalization remains.
 
 ## Output format
 Worked finding example:
@@ -262,6 +264,10 @@ None
 - Blockers:
 - Non-blocking follow-up:
 - Suggested owner module: build, debug, research, ship, or human
+
+### Checkpoint
+Use the required fields from `gates/checkpoint.md`.
+
 ```
 
 If a severity has no findings, write `None`. Recommendations must be actionable but

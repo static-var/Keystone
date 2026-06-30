@@ -202,6 +202,35 @@ def check_skill_quality_regressions(skill_text: str) -> None:
         fail("Pi bootstrap must stay minimal; inject full host mapping only through /keystone command")
 
 
+def check_checkpoint_guidance(skill_text: str) -> None:
+    checkpoint = MODULE_DIR / "gates" / "checkpoint.md"
+    if not checkpoint.is_file():
+        fail("missing checkpoint gate: modules/gates/checkpoint.md")
+    required_skill_phrases = (
+        "modules/gates/checkpoint.md",
+        "single source of truth",
+        "continue now",
+        "pending pointer",
+        "Never end a build/change with only",
+    )
+    for phrase in required_skill_phrases:
+        if phrase not in skill_text:
+            fail(f"Keystone skill missing checkpoint guidance phrase: {phrase}")
+    gate_text = checkpoint.read_text()
+    for phrase in ("Auto-advance rule", "Prompt rule", "build` with mutations -> `review"):
+        if phrase not in gate_text:
+            fail(f"checkpoint gate missing required phrase: {phrase}")
+    primary_modules = routing_modules(skill_text)
+    for name in sorted(primary_modules):
+        module_text = (MODULE_DIR / f"{name}.md").read_text()
+        if "Checkpoint" not in module_text:
+            fail(f"module {name} must include checkpoint guidance")
+    build_text = (MODULE_DIR / "build.md").read_text()
+    for phrase in ("After mutation, Build must not stop", "continue to `review` when safe"):
+        if phrase not in build_text:
+            fail(f"build module missing checkpoint hard rule: {phrase}")
+
+
 def check_inline_subagent_guidance(skill_text: str) -> None:
     if SUBAGENT_HELPER.exists():
         fail("subagent helper file must not be shipped; keep subagent guidance inline")
@@ -501,6 +530,7 @@ def main() -> int:
     check_product_modules(text)
     check_module_playbooks(text)
     check_skill_quality_regressions(text)
+    check_checkpoint_guidance(text)
     check_inline_subagent_guidance(text)
     check_pi_subagent_docs()
     check_pi_subagents_extension_guidance()

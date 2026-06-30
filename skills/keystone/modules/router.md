@@ -13,7 +13,7 @@ None, except writing a short routing decision in the conversation.
 Modify files, perform implementation, or expose internal modules as public slash commands.
 
 ## May call
-One primary module after classification. Gates only if that primary module requires them.
+One primary module after classification. Use the lightweight checkpoint gate before exiting Router; load other gates only if the selected primary module requires them.
 
 ## Subagents and reasoning
 Use lightweight analysis for simple routing. Do not deploy subagents for routing unless the active host exposes safe delegation and classification depends on independent evidence gathering. If a safe single route is not clear, ask one clarifying question.
@@ -32,5 +32,13 @@ Prefer the module indicated by the user's strongest current need, not the first 
 ## Handoff
 Name the selected primary module and the reason in one sentence, read/load that module file, then continue under that module's contract.
 
+## Checkpoint
+Before exiting Router, apply `gates/checkpoint.md` in lightweight form:
+- Current module: `router`
+- Completed gates/checks: classification evidence or ambiguity reason
+- Next required: selected primary module, or `none` only when asking a clarifying question
+- Next check: first check from the selected module, or the exact clarifying question
+- Action: `continue now` when a route is selected; `ask user` when no safe route is clear
+
 ## Exit gate
-Exactly one primary module is selected, or one clarifying question is asked.
+Exactly one primary module is selected and loaded next, or one clarifying question is asked with the checkpoint visible.

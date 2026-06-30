@@ -11,9 +11,11 @@ Keystone is a router/orchestrator skill. It selects the right internal module fo
 
 Load exactly one primary module for the current task. Load gates or helper modules only when the primary module explicitly needs them. Do not expose internal modules as public slash commands. Actively route the work: name the selected module, preserve the current handoff packet, and state the next gate or check before taking irreversible action.
 
+Every Keystone module completion must pass `modules/gates/checkpoint.md` before a user-facing final response. The checkpoint decides whether Keystone continues now, asks the user, leaves a pending pointer, or stops because no handoff remains.
+
 ## Orchestration sequences
 
-Use these common paths as navigation maps, not obligations to complete every step in one response. Load only the next primary module needed now unless the user's immediate next action clearly points elsewhere:
+Use these common paths as navigation maps plus checkpoint defaults. Load only the next primary module needed now unless the user's immediate next action clearly points elsewhere. When a module completes and the next step is required by the sequence or a gate, continue to that module in the same session when safe; otherwise ask or leave a pending pointer:
 
 - Product or feature work: `research -> shape -> breakdown -> build -> review -> ship`.
 - Existing plan or approved design: `breakdown -> build -> review -> ship`.
@@ -23,6 +25,10 @@ Use these common paths as navigation maps, not obligations to complete every ste
 - Health finding that needs repair: `health -> build` for contained fixes, or `health -> review` when the finding needs independent validation before mutation.
 
 Do not add these as shipped modules; they are routing sequences over the existing nine modules.
+
+## Checkpoint gate
+
+Before any final answer, load `modules/gates/checkpoint.md`; it is the single source of truth for checkpoint fields and actions. If the checkpoint action is `continue now`, load the next primary module instead of ending the turn. If Keystone cannot continue safely, the final answer must make the next event explicit with a question or pending review/ship pointer. Never end a build/change with only “done,” “implemented,” or a buried “Next” line when review or ship remains.
 
 ## Handoff packet contract
 

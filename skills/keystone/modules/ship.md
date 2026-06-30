@@ -57,7 +57,7 @@ Deliver a strict shipping packet that includes:
 8. Confirm rollback and recovery: revert plan, previous version, feature flag/kill switch, database rollback/migration constraints, artifact rollback, owner, and monitoring signals.
 9. Prepare PR handoff or release packet: concise summary, scope/non-scope, proof/review/ship gates, risks, rollout, rollback, and next human actions.
 10. If a gate fails or evidence is missing, abort finalization. Report “Do not ship,” include the failed gate evidence, and route to the correct module. Do not make stealth fixes under Ship.
-11. End with a clear verdict: Ship, Do not ship, or Ship with risk.
+11. Run the checkpoint gate and end with a clear verdict: Ship, Do not ship, or Ship with risk. If any gate is missing, the checkpoint action is not `stop`; route or prompt for the next required module/check.
 
 ## Subagents and reasoning
 Use subagents for bounded release-note drafting, checklist verification, artifact inspection, CI/CD status inspection, package manifest review, or independent review of the shipping packet when the active host exposes safe delegation. Use deeper analysis for multi-platform packaging, production releases, security-sensitive changes, migrations, deploys with customer impact, or unresolved release risk. When delegation is available, encode required evidence depth and release standard in the prompt. Subagents must not introduce new implementation.
@@ -72,6 +72,7 @@ Use subagents for bounded release-note drafting, checklist verification, artifac
 - State branch name and working tree cleanliness when available.
 - If readiness is uncertain, say “Do not ship” or “Ship with risk,” not “done.”
 - Never publish, deploy, tag, merge, or push unless the user explicitly requested that action and the gates support it.
+- Run the checkpoint gate before the final response; a ship packet with missing gates must name the next event instead of sounding final.
 
 ## Failure modes
 - **Victory lap without proof:** announcing completion before tests/build/review evidence.
@@ -83,6 +84,7 @@ Use subagents for bounded release-note drafting, checklist verification, artifac
 - **Release-note mush:** vague notes that omit impact, migration, rollout, or risk.
 - **Dirty handoff:** leaving untracked files, unclear branch state, or hidden manual steps.
 - **Gate theater:** listing checks without results or timestamps/context.
+- **Terminal ambiguity:** ending with no clear human action, rollback owner, or next Keystone module when ship is not cleanly complete.
 
 ## Output format
 ```markdown
@@ -127,4 +129,8 @@ Gate summary: Proof ... / Review ... / Ship ...
 - Rollout:
 - Rollback:
 - Next human actions:
+
+### Checkpoint
+Use the required fields from `gates/checkpoint.md`.
+
 ```

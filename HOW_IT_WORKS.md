@@ -26,6 +26,7 @@ Agent workflows often fail for predictable reasons:
 - a plan is treated as proof of completion
 - review turns into implementation
 - shipping happens before verification
+- the agent finishes a build and forgets the review/ship handoff
 - too many public commands overlap and conflict
 - platform-specific packaging drifts away from the real source
 
@@ -70,10 +71,13 @@ Maintainer-only notes may live elsewhere in the repository, such as `maintainers
 5. Gates run only if the module needs them
        │
        ▼
-6. Keystone reports result or hands off to the next module
+6. Checkpoint gate decides continue / ask / pending pointer / stop
+       │
+       ▼
+7. Keystone reports result or hands off to the next module
 ```
 
-The important phrase is **one primary module**. Keystone avoids blending roles unless a module explicitly hands off.
+The important phrase is **one primary module**. Keystone avoids blending roles unless a module explicitly hands off. Before any final response, the checkpoint gate makes the next event explicit so a completed build cannot silently skip review.
 
 ## Modules
 
@@ -142,13 +146,14 @@ Gates are small checks loaded by modules when needed.
 
 | Gate | Purpose | Usually used by |
 |---|---|---|
+| `checkpoint` | Decide continue / ask / pending pointer / stop before final response | all modules at completion |
 | `isolation` | Confirm mutation is safe before editing | `build` |
 | `red` | Establish a failing check or reproduction when practical | `build`, `debug` |
 | `proof` | Verify claims with evidence before success reports | `debug`, `ship`, `health` |
 | `review` | Confirm required review has no blockers | `ship` |
 | `ship` | Confirm verified, reviewed work is ready for handoff | `ship` |
 
-The gates are deliberately boring. Their job is to stop common mistakes, not to be clever.
+The gates are deliberately boring. Their job is to stop common mistakes, not to be clever. The checkpoint gate is the handoff memory: it requires the current module, completed evidence, next required module, next check, and action before Keystone can stop.
 
 ## Why `breakdown`, not `plan`
 
@@ -181,7 +186,7 @@ Keystone separates implementation from finalization.
 - Are there unrelated dirty changes?
 - Is the requested scope clear?
 
-`build` may implement, refactor, edit, or create files. It does not merge, publish, or call the work shippable by itself.
+`build` may implement, refactor, edit, or create files. It does not merge, publish, or call the work shippable by itself. After mutation, `build` must checkpoint to `review` when review is still required, or leave an explicit pending review pointer/question if it cannot continue safely.
 
 ### Ship
 
@@ -413,11 +418,13 @@ Before changing Keystone, ask:
 1. Is `/keystone` still the only public entrypoint?
 2. Did we avoid creating `/plan`?
 3. Does each request still route to one primary module?
-4. Does `build` still check isolation before mutation?
-5. Is `review` still read-only?
-6. Does `ship` only finalize already-completed work?
-7. Are generated manifests regenerated from source?
-8. Does `make test` pass?
+4. Does every module completion pass the checkpoint gate?
+5. Does `build` still check isolation before mutation?
+6. Does `build` route or prompt for review after mutation?
+7. Is `review` still read-only?
+8. Does `ship` only finalize already-completed work?
+9. Are generated manifests regenerated from source?
+10. Does `make test` pass?
 
 If the answer to any question is no, Keystone's contract has drifted.
 

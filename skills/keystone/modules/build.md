@@ -4,7 +4,7 @@
 
 Build changes through evidence, not vibes: isolate first, specify the next observable behavior, prove the test can fail, make the smallest correct change, then refactor without changing behavior.
 
-Build is the mutation module. It may edit scoped project artifacts after the isolation gate passes, but it does not decide that work is shipped. Completion means "implemented with proof and ready for review/ship," not finalized.
+Build is the mutation module. It may edit scoped project artifacts after the isolation gate passes, but it does not decide that work is shipped. Completion means "implemented with proof and handed to a review/ship checkpoint," not finalized.
 
 ## Load when
 
@@ -40,8 +40,9 @@ Before Build exits, it must be able to report:
 - tests, examples, or checks prove the change, or gaps are explicitly disclosed
 - red-capable tests were used for behavior changes whenever practical
 - delegated work, if any, was verified by the parent before acceptance
+- `modules/gates/checkpoint.md` decided the next required event
 
-Build must not claim work is done because code "looks right." Proof is required before completion claims.
+Build must not claim work is done because code "looks right." Proof and an explicit review/ship checkpoint are required before completion claims.
 
 ## Modes
 
@@ -184,11 +185,13 @@ Report: files changed, verification output, risks/gaps
 11. Architecture pressure-test.
    - For architecture-sensitive changes, answer the inline pressure-test and remove abstractions that do not survive it.
 
-12. Handoff.
+12. Checkpoint and handoff.
+   - Load/check `gates/checkpoint.md`.
    - Summarize changed files and behavior.
    - Include commands run and results.
    - Disclose unverified areas.
-   - Recommend `review` or `ship` as the next module when appropriate.
+   - Decide whether `review` is required now, can be satisfied by self-review, or must be left as a pending review pointer.
+   - If review is required and Keystone can safely continue, hand off to `review` before the final response. If not, ask the user or include the pending review pointer from `gates/review.md`.
 
 ## Subagents and reasoning
 
@@ -216,6 +219,8 @@ Verify delegated work by:
 
 - Build must pass `gates/isolation.md` before the first mutation.
 - Build must not ship, merge, publish, release, or finalize work.
+- Build must run the checkpoint gate before any final response.
+- After mutation, Build must not stop at “implemented” when review remains; continue to `review` when safe or leave an explicit review prompt/pending pointer.
 - Do not edit files outside the user's scope.
 - Do not claim completion without proof or explicit disclosure of missing proof.
 - Do not skip red/green/refactor for behavior changes unless there is a stated, practical reason and alternative proof plan.
@@ -241,14 +246,16 @@ Watch for these and correct course:
 - **Ambiguous delegation:** workers receive goals like "improve this" without contracts or boundaries.
 - **Unverified handoff:** delegated changes are accepted from a summary alone.
 - **Finalization leak:** Build says work is shipped, merged, or ready for users instead of ready for review/ship.
+- **Lost next event:** Build ends with “done” or only a passive Next line while review, ship, or a user approval is still required.
 
 ## Output format
 
-When handing back from Build, respond with:
+When handing back from Build, respond with these sections, including `### Checkpoint`:
 
 - `Summary`: what changed, in bullets
 - `Files changed`: exact paths
 - `Verification`: commands/checks run and results
 - `Delegation`: subagents used, contracts passed, and how their work was verified; or `none`
 - `Risks / gaps`: anything unverified, deferred, or worth reviewing
-- `Next`: usually `review` or `ship`, never a claim that Build finalized the work
+- `### Checkpoint`: current module, completed gates, next required module, next check, action (`continue now`, `ask user`, `pending pointer`, or `stop`)
+- `Next`: usually `review` or `ship`, phrased as an action/prompt or already-executed handoff; never a claim that Build finalized the work

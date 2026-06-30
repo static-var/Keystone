@@ -84,4 +84,8 @@ High/Medium/Low — why
 
 ### Recommended next step
 Module or `none`, with rationale
+
+### Checkpoint
+Use the required fields from `gates/checkpoint.md`.
+
 ```

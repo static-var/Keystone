@@ -231,6 +231,10 @@ Use this structure unless the user requested a different artifact. For small con
 
 ## Handoff
 Next module: `<research|build|debug|review|health|ship|shape>` because <reason>.
+
+### Checkpoint
+Use the required fields from `gates/checkpoint.md`.
+
 ```
 
 Keep the output detailed enough to guide implementation and review, but short enough that each slice remains actionable.
