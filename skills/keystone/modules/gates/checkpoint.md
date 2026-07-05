@@ -17,7 +17,8 @@ This gate is binary: pass or fail.
    - `ask user` when the next step needs approval, credentials, destructive action, or scope clarification;
    - `pending pointer` when the next step must be done by a human or unavailable tool;
    - `stop` only when no Keystone handoff remains or the user explicitly requested stopping at this boundary.
-6. If stopping before the normal sequence completes, record why and the risk accepted.
+6. Update the harness todo/checklist ledger when the host exposes one. The last item must always be `Next / upcoming task: <specific next action>`, or `Next / upcoming task: none — sequence complete` when no handoff remains.
+7. If stopping before the normal sequence completes, record why and the risk accepted.
 
 ## Auto-advance rule
 If a module completes and the next step is required by the active Keystone sequence or by a gate, Keystone must continue to that next module in the same session when safe. Do not end with a generic “done” or bury the next step in prose.
@@ -36,6 +37,7 @@ Completed: <evidence-backed gates/checks>
 Blocked by: <approval/tool/scope/human review/none>
 Next check: <first action for the target module>
 Action: continue now / ask user / pending pointer / stop
+Todo tail: Next / upcoming task: <target module + first concrete check/action, or none — sequence complete>
 Prompt: <exact question or handoff pointer, omitted only when Action is stop because target is none>
 ```
 
