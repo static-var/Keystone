@@ -1,92 +1,23 @@
 [
-  {
-    "id": "router-meta",
-    "prompt": "Keystone, choose the right Keystone path and route this request without doing the work yet.",
-    "expected": "router",
-    "negative": ["build", "ship"]
-  },
-  {
-    "id": "read-url",
-    "prompt": "Use keystone to read https://example.com/product-notes and summarize the important claims.",
-    "expected": "research",
-    "negative": ["shape", "build"]
-  },
-  {
-    "id": "read-pdf",
-    "prompt": "Keystone: extract the main points from this PDF: ./whitepaper.pdf",
-    "expected": "research",
-    "negative": ["shape"]
-  },
-  {
-    "id": "research-deep",
-    "prompt": "Do deep research across sources on whether this market is viable and cite what you find.",
-    "expected": "research",
-    "negative": ["read", "write"]
-  },
-  {
-    "id": "write-rewrite-copy",
-    "prompt": "Rewrite this landing page copy so it is clearer and more persuasive.",
-    "expected": "shape",
-    "negative": ["research", "build"]
-  },
-  {
-    "id": "ui-aesthetic",
-    "prompt": "Improve the visual aesthetic of this dashboard UI without changing the product behavior.",
-    "expected": "shape",
-    "negative": ["research", "build"]
-  },
-  {
-    "id": "design-new-feature",
-    "prompt": "Design a new saved-search feature for Keystone before implementation.",
-    "expected": "shape",
-    "negative": ["build", "breakdown"]
-  },
-  {
-    "id": "breakdown-approved-design",
-    "prompt": "Keystone: the design is approved. Break it down into implementation tasks; Keystone has no public /plan command.",
-    "expected": "breakdown",
-    "negative": ["plan", "shape", "build"]
-  },
-  {
-    "id": "breakdown-not-plan-command",
-    "prompt": "A user wants decomposition. Keystone should use /keystone and the internal breakdown module, not a public /plan alias.",
-    "expected": "breakdown",
-    "negative": ["plan"]
-  },
-  {
-    "id": "build-implement",
-    "prompt": "Implement the approved task list now; do it and update the code.",
-    "expected": "build",
-    "negative": ["shape", "review"]
-  },
-  {
-    "id": "debug-failing-test",
-    "prompt": "A unit test is failing with an assertion error. Debug the failure and fix the root cause.",
-    "expected": "debug",
-    "negative": ["build", "review"]
-  },
-  {
-    "id": "debug-bug-error",
-    "prompt": "The app throws a TypeError when saving settings; find and fix the bug.",
-    "expected": "debug",
-    "negative": ["health"]
-  },
-  {
-    "id": "review-pr-diff",
-    "prompt": "Review this PR diff for correctness, risks, and missing tests.",
-    "expected": "review",
-    "negative": ["build", "ship"]
-  },
-  {
-    "id": "ship-release",
-    "prompt": "Commit the completed changes, push the branch, and prepare the release notes.",
-    "expected": "ship",
-    "negative": ["build", "review"]
-  },
-  {
-    "id": "health-agent-tooling-rot",
-    "prompt": "Our agent tooling is rotting: commands drifted, skills are stale, and automation keeps breaking.",
-    "expected": "health",
-    "negative": ["debug", "build"]
-  }
+  {"id":"survey-direct","prompt":"Inspect the repository and report what is currently true with evidence.","expected":"context-survey","kind":"direct"},
+  {"id":"survey-vs-audit","prompt":"Before proposing changes, inventory only the authentication modules touched by this migration and summarize their current behavior.","expected":"context-survey","kind":"boundary"},
+  {"id":"planning-direct","prompt":"Design the UX and acceptance criteria for saved searches.","expected":"product-planning","kind":"direct"},
+  {"id":"planning-vs-tasks","prompt":"We agree on the problem but not the behavior. Explore options and settle the product contract before breaking work down.","expected":"product-planning","kind":"boundary"},
+  {"id":"tasks-direct","prompt":"Turn the approved specification into agent-ready implementation tasks and verification steps.","expected":"task-creation","kind":"direct"},
+  {"id":"tasks-vs-implementation","prompt":"Direction is approved. Produce tickets with dependencies and completion criteria; make no code changes.","expected":"task-creation","kind":"boundary"},
+  {"id":"implementation-direct","prompt":"Implement the approved changes and run the relevant checks.","expected":"implementation","kind":"direct"},
+  {"id":"implementation-vs-shipping","prompt":"Fix the parser bug now and verify it, but do not prepare a commit or release.","expected":"implementation","kind":"boundary"},
+  {"id":"refactor-direct","prompt":"Refactor this module to reduce duplication without changing behavior.","expected":"refactoring","kind":"direct"},
+  {"id":"refactor-vs-implementation","prompt":"Extract the repeated validation flow behind one interface while preserving every observable result.","expected":"refactoring","kind":"boundary"},
+  {"id":"rca-direct","prompt":"Reproduce this failing test and identify the root cause before proposing a fix.","expected":"root-cause-analysis","kind":"direct"},
+  {"id":"rca-vs-audit","prompt":"One production workflow regressed yesterday. Trace the failure from symptom to cause; this is not a broad health review.","expected":"root-cause-analysis","kind":"boundary"},
+  {"id":"review-direct","prompt":"Review the current branch diff for blockers, regressions, and missing tests without editing files.","expected":"change-review","kind":"direct"},
+  {"id":"review-vs-audit","prompt":"Judge whether these uncommitted migration changes are ready; limit the assessment to the change set.","expected":"change-review","kind":"boundary"},
+  {"id":"shipping-direct","prompt":"Ship the completed work: commit it, push the branch, and prepare the pull request.","expected":"shipping","kind":"direct"},
+  {"id":"shipping-vs-review","prompt":"The reviewed implementation is complete. Package and publish the release now.","expected":"shipping","kind":"boundary"},
+  {"id":"audit-direct","prompt":"Audit overall repository health, tooling drift, dependency hygiene, and maintenance risks.","expected":"project-audit","kind":"direct"},
+  {"id":"audit-vs-survey","prompt":"Assess the project broadly for structural smells and prioritized improvement scope, not just describe its current files.","expected":"project-audit","kind":"boundary"},
+  {"id":"none-explanation","prompt":"Explain what a mutex is using a short example.","expected":null,"kind":"no-skill"},
+  {"id":"none-translation","prompt":"Translate ‘good morning’ into Japanese.","expected":null,"kind":"no-skill"},
+  {"id":"none-trivial","prompt":"What is 17 multiplied by 6?","expected":null,"kind":"no-skill"}
 ]

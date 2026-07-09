@@ -6,7 +6,7 @@
   "plugins": [
     {
       "category": "Development & Workflow",
-      "description": "Use when the user invokes /keystone or explicitly asks Keystone to route work.",
+      "description": "Keystone proactive multi-skill AI engineering workflows for planning, implementation, review, shipping, and maintenance.",
       "displayName": "Keystone",
       "name": "keystone",
       "policy": {
