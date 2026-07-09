@@ -3,6 +3,8 @@
 ## Purpose
 Ensure finalization happens only after completed, verified, reviewed work is ready for delivery.
 
+This file owns finalization pass/fail. `shipping` gathers the delivery-specific evidence and executes explicitly authorized mechanics; it does not redefine readiness.
+
 Shipping is a handoff decision. This gate confirms the work can be understood, verified, rolled back, and continued by someone else. It is binary: ready to hand off or not ready.
 
 ## Required checks

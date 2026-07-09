@@ -43,7 +43,8 @@ Before Implementation exits, it must be able to report:
 - the exact user scope and protected files were respected
 - the intended behavior or refactor invariant is stated plainly
 - tests, examples, or checks prove the change, or gaps are explicitly disclosed
-- red-capable tests were used for behavior changes whenever practical
+- `../_shared/gates/red.md` passed for behavior changes
+- `../_shared/gates/proof.md` passed before any success claim
 - delegated work, if any, was verified by the parent before acceptance
 - `../_shared/gates/checkpoint.md` decided the next required event
 
@@ -65,9 +66,7 @@ Contract:
 - run relevant regression checks
 - refactor only while checks stay green
 
-Prefer tests that exercise real behavior over tests that only verify mocks, implementation details, or snapshots. If a failing test cannot be created, state why and use the strongest available proof.
-
-TDD exceptions are rare but real. When a red-capable automated test is impractical, state the reason before editing and write an alternative proof plan. Acceptable cases include documentation-only edits, generated files, one-off migrations where rollback is the proof, external systems unavailable in the environment, exploratory spikes that will be thrown away, or emergency config changes. The alternative proof plan must name the observable check, manual verification, diff review, sample input/output, dry run, or rollback validation that will replace red/green.
+Load and pass `../_shared/gates/red.md` for the red signal or its explicit exception. Prefer checks that exercise real behavior over mocks, implementation details, or snapshots.
 
 ### Refactor
 
@@ -159,11 +158,9 @@ Report: files changed, verification output, risks/gaps
    - Write the smallest observable behavior, invariant, or contract.
    - Avoid "make it better" as an implementation target.
 
-5. Establish proof before code.
-   - For behavior changes, create or identify a red-capable test/check.
-   - Run the focused check and confirm the failure would pass only for the intended change.
+5. Establish the signal before code.
+   - For behavior changes, load and pass `../_shared/gates/red.md` before editing.
    - For refactors, establish characterization or regression coverage.
-   - If proof is impossible in the environment, record the limitation before editing and use an alternative proof plan.
 
 6. Implement the smallest correct slice.
    - Edit only files in scope.
@@ -181,8 +178,7 @@ Report: files changed, verification output, risks/gaps
    - Keep tests green after cleanup.
 
 9. Regression check.
-   - Run the most focused relevant suite available.
-   - Never replace verification with a summary.
+   - Load and pass `../_shared/gates/proof.md` against the intended outcome.
 
 10. Early smell check.
    - Stop and simplify if the diff hits the architecture smell stop-list.

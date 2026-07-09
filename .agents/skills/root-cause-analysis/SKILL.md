@@ -63,9 +63,9 @@ Stop only when one of these is true:
 6. **Trace/instrument narrowly.** Add the smallest temporary diagnostic that can confirm or falsify a hypothesis. Prefer assertions, structured logs, counters, spans, query plans, snapshots, or deterministic seeds over broad logging.
 7. **Form falsifiable hypotheses.** A good hypothesis names a mechanism and prediction. Test one at a time. Record disproven hypotheses instead of silently abandoning them.
 8. **Prove the root cause.** Show that the cause explains the symptom, reproduces or predicts the failure, and that removing/changing the cause removes the failure. Symptoms alone are not proof.
-9. **Fix narrowly.** Change only the code/config/data handling required by the proven cause. Avoid opportunistic refactors, rewrites, or unrelated cleanup.
+9. **Fix narrowly.** When this branch will mutate files, load and pass `../_shared/gates/isolation.md`, then load `../_shared/gates/red.md` and satisfy its observed-red or exception contract before the fix. Change only what the proven cause requires.
 10. **Add a regression guard.** Prefer a failing-before/passing-after test. If impractical, add an assertion, monitor, fixture, replay, seed, contract test, migration check, or documented manual proof.
-11. **Verify with exact output.** Run focused verification first, then broader commands if risk warrants. Capture command names and result snippets, not just “tests pass.”
+11. **Verify with exact output.** For a mutated fix, load and pass `../_shared/gates/proof.md`; run focused verification first, then broader commands if risk warrants.
 12. **Clean up.** Remove temporary diagnostics, revert failed experiments, leave useful permanent observability only when justified, and report remaining uncertainty.
 
 Branch checklists:
@@ -171,6 +171,6 @@ Stop condition: fixed / blocked / escalated ...
 - Escalation needed, if any: ...
 
 ### Checkpoint
-Use the required fields from `_shared/gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```

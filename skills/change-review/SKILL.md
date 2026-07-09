@@ -203,6 +203,7 @@ owns final severity and verdict.
 - Do not disguise style preferences as correctness findings.
 - Do not omit needed tests when behavior changed.
 - Do not satisfy `../_shared/gates/review.md` unless blockers and non-blockers are separated.
+- Load `../_shared/gates/review.md` before the verdict; Change Review owns the review execution and supplies the gate evidence.
 - Run the checkpoint gate before the final response; if review passes and delivery/finalization was requested, route to `shipping` or leave an explicit shipping prompt.
 
 ## Failure modes

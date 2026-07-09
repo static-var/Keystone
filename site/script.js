@@ -18,10 +18,6 @@ const examples = {
 };
 
 const installs = {
-  skills: {
-    command: 'npx skills add static-var/keystone',
-    note: 'Works with OpenCode, GitHub Copilot, VS Code, and other Agent Skills hosts.'
-  },
   codex: {
     command: 'codex plugin add keystone --marketplace keystone',
     note: 'Add the static-var/Keystone marketplace first, then install the plugin.'

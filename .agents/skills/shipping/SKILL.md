@@ -8,10 +8,7 @@ description: Use only when the user explicitly asks to ship, commit, prepare a P
 ## Core principle
 Shipping is deterministic finalization for already-completed work. It proves, reviews, packages, and hands off a release or PR; it never sneaks in new implementation or last-mile fixes.
 
-A shipping decision requires three gates:
-1. **Proof gate:** required checks, artifacts, previews, or manual QA are observed and recorded.
-2. **Change Review gate:** appropriate human/automated review is complete. If required review is pending, the verdict cannot be `Shipping`.
-3. **Shipping gate:** release/merge/deploy mechanics, rollback, and handoff are ready.
+A shipping decision consumes three shared contracts: load `../_shared/gates/proof.md`, `../_shared/gates/review.md`, and `../_shared/gates/ship.md`. Those files own pass/fail; Shipping gathers evidence and performs explicitly authorized delivery mechanics.
 
 If any final check fails, abort shipping and route to an existing Keystone module: `implementation` for contained fixes, `root-cause-analysis` for unexplained failures, `change-review` for unresolved review risk, or `project-audit` for broad release/tooling readiness concerns.
 
@@ -52,16 +49,14 @@ Deliver a strict shipping packet that includes:
 1. Confirm implementation is complete. If new behavior, fixes, migrations, or cleanup are still needed, stop and route to `implementation` or `root-cause-analysis` before shipping.
 2. Inspect branch/worktree state: branch name, base branch, dirty files, untracked files, commits/diff summary, and whether unrelated changes are present.
 3. Define the required gates for this change:
-   - **Proof gate:** focused tests, full tests, build, lint, typecheck, manual QA, screenshots, smoke tests, package dry run, deploy preview, or staging validation.
-   - **Change Review gate:** self-change-review, code review, product/design/security change-review, release approval, or documented pending change-review.
-   - **Shipping gate:** CI/CD state, artifacts, version/changelog, release notes, deploy target, package target, rollback plan, monitoring, and PR/release handoff.
+   - Load the shared proof, review, and ship gates and identify the evidence each requires for this delivery mode.
 4. Run or cite verification evidence. Do not claim passing checks you did not observe. Include command, context, result, and timestamp/context when useful.
 5. Check CI/CD awareness: list relevant workflows/pipelines, required checks, latest known status, deploy preview URL or staging environment if available, and any checks not observable locally.
 6. Check package/release readiness when applicable: version, changelog, artifact names, package contents, checksums/digests, dry-run output, target registries/platforms, compatibility notes, migration steps, and signing/notarization needs.
 7. For multi-target releases, create one evidence row per target. A green web build does not prove a CLI package, Docker image, mobile binary, or plugin package is ready.
 8. Confirm rollback and recovery: revert plan, previous version, feature flag/kill switch, database rollback/migration constraints, artifact rollback, owner, and monitoring signals.
 9. Prepare PR handoff or release packet: concise summary, scope/non-scope, proof/review/shipping gates, risks, rollout, rollback, and next human actions.
-10. If a gate fails or evidence is missing, abort finalization. Report “Do not ship,” include the failed gate evidence, and route to the correct module. Do not make stealth fixes under Shipping.
+10. Evaluate `../_shared/gates/ship.md`. If it or a prerequisite gate fails, abort finalization, include the failed evidence, and route to the correct module.
 11. Run the checkpoint gate and end with a clear verdict: Shipping, Do not ship, or Shipping with risk. If any gate is missing, the checkpoint action is not `stop`; route or prompt for the next required module/check.
 
 ## Subagents and reasoning
@@ -136,7 +131,7 @@ Gate summary: Proof ... / Change Review ... / Shipping ...
 - Next human actions:
 
 ### Checkpoint
-Use the required fields from `_shared/gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```
 

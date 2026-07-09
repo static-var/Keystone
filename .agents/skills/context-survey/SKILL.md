@@ -91,6 +91,6 @@ High/Medium/Low — why
 Module or `none`, with rationale
 
 ### Checkpoint
-Use the required fields from `_shared/gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```

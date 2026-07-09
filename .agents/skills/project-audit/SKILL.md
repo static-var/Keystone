@@ -128,10 +128,10 @@ Classify findings using the Project Audit priority rubric above: `Critical`, `Wa
 Health / Watch / At risk / Blocked — rationale
 
 ### Checkpoint
-Use the required fields from `_shared/gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```
 
 ## Shared standards
 
-For architecture-sensitive or code-quality-sensitive work, load `_shared/engineering-standards.md` and apply it as reference, not dogma.
+For architecture-sensitive or code-quality-sensitive work, load `../_shared/engineering-standards.md` and apply it as reference, not dogma.

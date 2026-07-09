@@ -3,6 +3,8 @@
 ## Purpose
 Verify claims with evidence before reporting success.
 
+This file owns evidence pass/fail. Phase skills choose the claim and strongest practical check for their domain; they do not redefine what counts as proof.
+
 This gate rejects vibe-based completion. Code inspection can support a claim, but inspection alone is not proof that behavior works. Proof must connect the intended outcome to observable evidence.
 
 ## Required checks

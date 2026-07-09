@@ -53,14 +53,16 @@ def write_json(path: Path, data: dict) -> None:
 
 
 def agent_skill_text(skill: str) -> str:
-    """Render one canonical skill for a standalone Agent Skills directory."""
-    return (ROOT / "skills" / skill / "SKILL.md").read_text().replace(
-        "../_shared/", "_shared/"
-    )
+    """Render one canonical skill inside the atomic Agent Skills bundle."""
+    return (ROOT / "skills" / skill / "SKILL.md").read_text()
 
 
 def write_agent_skills(catalog: list[dict[str, str]]) -> None:
     base = ROOT / ".agents" / "skills"
+    shared = base / "_shared"
+    if shared.exists():
+        shutil.rmtree(shared)
+    shutil.copytree(ROOT / "skills" / "_shared", shared)
     for entry in catalog:
         skill = entry["name"]
         target = base / skill
@@ -68,7 +70,6 @@ def write_agent_skills(catalog: list[dict[str, str]]) -> None:
             shutil.rmtree(target)
         target.mkdir(parents=True)
         (target / "SKILL.md").write_text(agent_skill_text(skill))
-        shutil.copytree(ROOT / "skills" / "_shared", target / "_shared")
 
 
 def main() -> int:

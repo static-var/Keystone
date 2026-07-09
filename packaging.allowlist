@@ -36,6 +36,7 @@ skills/_shared/handoff-packet.md
 .claude-plugin/marketplace.json
 .codex-plugin/plugin.json
 .agents/plugins/marketplace.json
+.agents/skills/_shared
 .agents/skills/context-survey
 .agents/skills/product-planning
 .agents/skills/task-creation

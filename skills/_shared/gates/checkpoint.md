@@ -3,6 +3,8 @@
 ## Purpose
 Prevent Keystone skills from ending at the wrong boundary.
 
+This file owns the stop-or-continue contract. Phase skills decide what work is next; they do not redefine checkpoint pass/fail. When the decision targets another skill, load `../handoff-packet.md` and carry its fields forward.
+
 A checkpoint is the visible stop-or-continue decision made before any user-facing final response, skill handoff, or long-running delegated step. It turns continuation from memory into an explicit ledger.
 
 This gate is binary: pass or fail.

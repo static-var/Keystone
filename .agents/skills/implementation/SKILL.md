@@ -39,13 +39,14 @@ Do not use Implementation for:
 
 Before Implementation exits, it must be able to report:
 
-- isolation was checked before the first mutation via `_shared/gates/isolation.md`
+- isolation was checked before the first mutation via `../_shared/gates/isolation.md`
 - the exact user scope and protected files were respected
 - the intended behavior or refactor invariant is stated plainly
 - tests, examples, or checks prove the change, or gaps are explicitly disclosed
-- red-capable tests were used for behavior changes whenever practical
+- `../_shared/gates/red.md` passed for behavior changes
+- `../_shared/gates/proof.md` passed before any success claim
 - delegated work, if any, was verified by the parent before acceptance
-- `_shared/gates/checkpoint.md` decided the next required event
+- `../_shared/gates/checkpoint.md` decided the next required event
 
 Implementation must not claim work is done because code "looks right." Proof and an explicit change-review/shipping checkpoint are required before completion claims.
 
@@ -65,9 +66,7 @@ Contract:
 - run relevant regression checks
 - refactor only while checks stay green
 
-Prefer tests that exercise real behavior over tests that only verify mocks, implementation details, or snapshots. If a failing test cannot be created, state why and use the strongest available proof.
-
-TDD exceptions are rare but real. When a red-capable automated test is impractical, state the reason before editing and write an alternative proof plan. Acceptable cases include documentation-only edits, generated files, one-off migrations where rollback is the proof, external systems unavailable in the environment, exploratory spikes that will be thrown away, or emergency config changes. The alternative proof plan must name the observable check, manual verification, diff review, sample input/output, dry run, or rollback validation that will replace red/green.
+Load and pass `../_shared/gates/red.md` for the red signal or its explicit exception. Prefer checks that exercise real behavior over mocks, implementation details, or snapshots.
 
 ### Refactor
 
@@ -149,7 +148,7 @@ Report: files changed, verification output, risks/gaps
    - If scope is unsafe or ambiguous, ask one focused question or route to `product-planning`.
 
 2. Pass isolation before mutation.
-   - Load/check `_shared/gates/isolation.md`.
+   - Load/check `../_shared/gates/isolation.md`.
    - Know the workspace, branch/worktree state, and dirty files.
    - Stop if unrelated changes could be overwritten.
 
@@ -159,11 +158,9 @@ Report: files changed, verification output, risks/gaps
    - Write the smallest observable behavior, invariant, or contract.
    - Avoid "make it better" as an implementation target.
 
-5. Establish proof before code.
-   - For behavior changes, create or identify a red-capable test/check.
-   - Run the focused check and confirm the failure would pass only for the intended change.
+5. Establish the signal before code.
+   - For behavior changes, load and pass `../_shared/gates/red.md` before editing.
    - For refactors, establish characterization or regression coverage.
-   - If proof is impossible in the environment, record the limitation before editing and use an alternative proof plan.
 
 6. Implement the smallest correct slice.
    - Edit only files in scope.
@@ -181,8 +178,7 @@ Report: files changed, verification output, risks/gaps
    - Keep tests green after cleanup.
 
 9. Regression check.
-   - Run the most focused relevant suite available.
-   - Never replace verification with a summary.
+   - Load and pass `../_shared/gates/proof.md` against the intended outcome.
 
 10. Early smell check.
    - Stop and simplify if the diff hits the architecture smell stop-list.
@@ -191,12 +187,12 @@ Report: files changed, verification output, risks/gaps
    - For architecture-sensitive changes, answer the inline pressure-test and remove abstractions that do not survive it.
 
 12. Checkpoint and handoff.
-   - Load/check `_shared/gates/checkpoint.md`.
+   - Load/check `../_shared/gates/checkpoint.md`.
    - Summarize changed files and behavior.
    - Include commands run and results.
    - Disclose unverified areas.
    - Decide whether `change-review` is required now, can be satisfied by self-review, or must be left as a pending review pointer.
-   - If review is required and Keystone can safely continue, hand off to `change-review` before the final response. If not, ask the user or include the pending review pointer from `_shared/gates/review.md`.
+   - If review is required and Keystone can safely continue, hand off to `change-review` before the final response. If not, ask the user or include the pending review pointer from `../_shared/gates/review.md`.
 
 ## Subagents and reasoning
 
@@ -222,7 +218,7 @@ Verify delegated work by:
 
 ## Hard rules
 
-- Implementation must pass `_shared/gates/isolation.md` before the first mutation.
+- Implementation must pass `../_shared/gates/isolation.md` before the first mutation.
 - Implementation must not ship, merge, publish, release, or finalize work.
 - Implementation must run the checkpoint gate before any final response.
 - After mutation, Implementation must not stop at “implemented” when review remains; continue to `change-review` when safe or leave an explicit review prompt/pending pointer.
@@ -267,4 +263,4 @@ When handing back from Implementation, respond with these sections, including `#
 
 ## Shared standards
 
-For architecture-sensitive or code-quality-sensitive work, load `_shared/engineering-standards.md` and apply it as reference, not dogma.
+For architecture-sensitive or code-quality-sensitive work, load `../_shared/engineering-standards.md` and apply it as reference, not dogma.

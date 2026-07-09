@@ -8,7 +8,6 @@
   <a href="https://www.npmjs.com/package/@static-var/keystone"><img alt="npm" src="https://img.shields.io/npm/v/%40static-var%2Fkeystone"></a>
   <a href="https://github.com/static-var/Keystone/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/static-var/Keystone/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/static-var/Keystone/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/npm/l/%40static-var%2Fkeystone"></a>
-  <a href="https://skills.sh/static-var/keystone"><img alt="skills.sh" src="https://img.shields.io/badge/skills.sh-keystone-0f766e"></a>
 </p>
 
 > Proactive workflow skills for disciplined AI work: use the right phase, keep boundaries clear, and prove the result.
@@ -44,21 +43,6 @@ Keystone turns those habits into explicit skills:
 There is no central routing skill. The host discovers the right Keystone skill from the user's prompt or the user invokes the matching slash command directly.
 
 ## Install
-
-### skills.sh / Agent Skills hosts
-
-```bash
-npx skills add static-var/keystone --list
-npx skills add static-var/keystone
-```
-
-Keystone generates nine self-contained Agent Skills under:
-
-```text
-.agents/skills/<skill-name>/
-```
-
-Each generated directory includes the skill and its local `_shared/` references, so it can be installed or copied individually. Agent Skills-compatible hosts include OpenCode, GitHub Copilot, and VS Code skill directories. Install all skills or select individual skills through skills.sh.
 
 ### Pi
 
@@ -166,8 +150,9 @@ Gates are internal shared contracts, not public skills or commands.
 
 - npm package: `@static-var/keystone`
 - public skills: `context-survey`, `product-planning`, `task-creation`, `implementation`, `refactoring`, `root-cause-analysis`, `change-review`, `shipping`, `project-audit`
+- distribution: one complete Keystone package containing all nine skills and one shared gate tree
 - license: MIT
-- supported surfaces: Pi, skills.sh Agent Skills, Claude Code, Codex, OpenCode, GitHub Copilot / VS Code-compatible hosts
+- supported surfaces: Pi, Claude Code, Codex
 
 For architecture, packaging, validation, and maintainer commands, read [`HOW_IT_WORKS.md`](HOW_IT_WORKS.md).
 

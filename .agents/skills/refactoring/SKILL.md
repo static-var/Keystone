@@ -21,7 +21,7 @@ A complete refactor reports:
 
 - the behavior invariant that must not change;
 - smells or pressures addressed;
-- isolation checked before mutation via `_shared/gates/isolation.md`;
+- isolation checked before mutation via `../_shared/gates/isolation.md`;
 - characterization/regression proof used before risky edits;
 - files changed and why each changed;
 - verification commands/results or explicit proof gaps;
@@ -37,27 +37,25 @@ A complete refactor reports:
    - Include goal, invariants, smells, affected areas, slices, proof, rollback, and review focus.
    - Completion criterion: doc is specific enough for `task-creation` or `implementation`.
 3. Pass isolation before mutation.
-   - Load/check `_shared/gates/isolation.md`.
+   - Load/check `../_shared/gates/isolation.md`.
    - Respect unrelated dirty files and protected scope.
    - Completion criterion: mutation scope is safe.
 4. Establish behavior proof.
-   - Prefer existing behavior tests.
-   - Add characterization tests when coverage is weak and behavior matters.
-   - If tests are impractical, state alternate proof before editing.
+   - Prefer existing behavior tests; add characterization coverage when the invariant lacks a tripwire.
    - Completion criterion: there is a tripwire for accidental behavior change or a documented proof gap.
 5. Apply small refactorings.
    - Prefer rename, extract, inline, move, split, consolidate, simplify conditionals, remove dead code, and clarify ownership.
    - Keep public contracts stable unless explicitly approved.
    - Completion criterion: each step is understandable and reversible.
 6. Use engineering standards.
-   - Load `_shared/engineering-standards.md` for architecture or ownership decisions.
+   - Load `../_shared/engineering-standards.md` for architecture or ownership decisions.
    - Remove abstractions that lack current pressure.
    - Completion criterion: the result has clearer ownership, state, naming, or boundaries.
 7. Verify.
-   - Run focused checks after meaningful steps and relevant regression checks before final report.
+   - Load and pass `../_shared/gates/proof.md` for the preserved invariant.
    - Completion criterion: behavior invariant is supported by observed evidence.
 8. Checkpoint and hand off.
-   - Use `_shared/gates/checkpoint.md`.
+   - Use `../_shared/gates/checkpoint.md`.
    - Hand off to `change-review` for non-trivial refactors or leave an explicit review pointer.
 
 ## Smell prompts

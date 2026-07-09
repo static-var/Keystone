@@ -20,7 +20,7 @@ Load when the user asks for code review, critique, audit, readiness assessment,
 release/merge review, security review, regression review, or review of a diff, branch,
 PR, patch, migration, fix, plan output, or completed implementation.
 
-Also load when another Keystone skill needs `_shared/gates/review.md` satisfied before shipping.
+Also load when another Keystone skill needs `../_shared/gates/review.md` satisfied before shipping.
 
 ## Not for
 Do not use Change Review for:
@@ -202,7 +202,8 @@ owns final severity and verdict.
 - Do not bury blockers under minor comments.
 - Do not disguise style preferences as correctness findings.
 - Do not omit needed tests when behavior changed.
-- Do not satisfy `_shared/gates/review.md` unless blockers and non-blockers are separated.
+- Do not satisfy `../_shared/gates/review.md` unless blockers and non-blockers are separated.
+- Load `../_shared/gates/review.md` before the verdict; Change Review owns the review execution and supplies the gate evidence.
 - Run the checkpoint gate before the final response; if review passes and delivery/finalization was requested, route to `shipping` or leave an explicit shipping prompt.
 
 ## Failure modes
@@ -271,7 +272,7 @@ None
 - Suggested owner module: implementation, root-cause-analysis, context-survey, shipping, or human
 
 ### Checkpoint
-Use the required fields from `_shared/gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```
 
@@ -280,4 +281,4 @@ must not be applied by Change Review.
 
 ## Shared standards
 
-For architecture-sensitive or code-quality-sensitive work, load `_shared/engineering-standards.md` and apply it as reference, not dogma.
+For architecture-sensitive or code-quality-sensitive work, load `../_shared/engineering-standards.md` and apply it as reference, not dogma.

@@ -8,6 +8,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_PUBLIC_SKILLS = {
+    "change-review", "context-survey", "implementation", "product-planning",
+    "project-audit", "refactoring", "root-cause-analysis", "shipping", "task-creation",
+}
 SHARED = [
     "skills/_shared/gates/checkpoint.md",
     "skills/_shared/gates/isolation.md",
@@ -70,6 +74,9 @@ def allowlist_entries() -> set[str]:
 
 
 def check_public_skills() -> None:
+    actual = set(public_skills())
+    if actual != EXPECTED_PUBLIC_SKILLS:
+        fail(f"public skills must be exactly {sorted(EXPECTED_PUBLIC_SKILLS)}; got {sorted(actual)}")
     for skill in public_skills():
         path = ROOT / "skills" / skill / "SKILL.md"
         if not path.is_file():
@@ -90,6 +97,23 @@ def check_public_skills() -> None:
 
 
 def check_agents_adapters() -> None:
+    base = ROOT / ".agents" / "skills"
+    generated_public = {
+        path.parent.name for path in base.glob("*/SKILL.md")
+        if path.parent.name != "writing-great-skills" and not path.parent.name.startswith("_")
+    }
+    if generated_public != EXPECTED_PUBLIC_SKILLS:
+        fail(f"generated public skills must be exactly {sorted(EXPECTED_PUBLIC_SKILLS)}; got {sorted(generated_public)}")
+    if (base / "_shared" / "SKILL.md").exists():
+        fail(".agents/skills/_shared must be reference only, not a public skill")
+    for rel in SHARED:
+        shared_rel = Path(rel).relative_to("skills/_shared")
+        generated = base / "_shared" / shared_rel
+        canonical_shared = ROOT / rel
+        if not generated.is_file():
+            fail(f"generated Agent Skills bundle is missing _shared/{shared_rel}")
+        if generated.read_bytes() != canonical_shared.read_bytes():
+            fail(f"generated shared reference is stale: _shared/{shared_rel}")
     for skill in public_skills():
         path = ROOT / ".agents" / "skills" / skill / "SKILL.md"
         if not path.is_file():
@@ -100,17 +124,24 @@ def check_agents_adapters() -> None:
         canonical_fm = parse_frontmatter(canonical.read_text())
         if adapter_fm != canonical_fm:
             fail(f"adapter metadata for {skill} must match canonical frontmatter")
-        expected = canonical.read_text().replace("../_shared/", "_shared/")
+        expected = canonical.read_text()
         if text != expected:
             fail(f"generated Agent Skill for {skill} is stale")
-        for rel in SHARED:
-            shared_rel = Path(rel).relative_to("skills/_shared")
-            generated = path.parent / "_shared" / shared_rel
-            canonical_shared = ROOT / rel
-            if not generated.is_file():
-                fail(f"generated Agent Skill for {skill} is missing _shared/{shared_rel}")
-            if generated.read_bytes() != canonical_shared.read_bytes():
-                fail(f"generated shared reference for {skill} is stale: _shared/{shared_rel}")
+        if (path.parent / "_shared").exists():
+            fail(f"generated Agent Skill for {skill} must use the bundle-level _shared tree")
+
+    markdown_link = re.compile(r"\]\((?!https?://|/)([^)#]+\.md)(?:#[^)]*)?\)")
+    code_pointer = re.compile(r"`([^`]+\.md)`")
+    markdown_files = [base / skill / "SKILL.md" for skill in public_skills()]
+    markdown_files += list((base / "_shared").rglob("*.md"))
+    for markdown in markdown_files:
+        text = markdown.read_text()
+        pointers = markdown_link.findall(text) + [
+            path for path in code_pointer.findall(text) if "<" not in path
+        ]
+        for relative in pointers:
+            if not (markdown.parent / relative).resolve().is_file():
+                fail(f"unresolved Agent Skills bundle pointer: {markdown.relative_to(base)} -> {relative}")
 
 
 def check_metadata() -> None:
@@ -188,6 +219,38 @@ def check_shared_references() -> None:
                 fail(f"shared gate contains stale skill/module name in {rel}: {name}")
 
 
+def orphaned_shared_references(root: Path, shared: list[str]) -> list[str]:
+    """Return canonical shared references with no incoming context pointer."""
+    shared_paths = {Path(rel) for rel in shared}
+    incoming: set[Path] = set()
+    sources = list((root / "skills").glob("*/SKILL.md"))
+    sources += [root / rel for rel in shared]
+    markdown_link = re.compile(r"\]\((?!https?://|/)([^)#]+\.md)(?:#[^)]*)?\)")
+    code_pointer = re.compile(r"`([^`]+\.md)`")
+    for source in sources:
+        if not source.is_file():
+            continue
+        text = source.read_text()
+        pointers = markdown_link.findall(text) + [
+            path for path in code_pointer.findall(text) if "<" not in path
+        ]
+        for relative in pointers:
+            target = (source.parent / relative).resolve()
+            try:
+                target_rel = target.relative_to(root.resolve())
+            except ValueError:
+                continue
+            if target_rel in shared_paths:
+                incoming.add(target_rel)
+    return sorted(rel.as_posix() for rel in shared_paths - incoming)
+
+
+def check_shared_reachability() -> None:
+    orphaned = orphaned_shared_references(ROOT, SHARED)
+    if orphaned:
+        fail("shared references require an incoming context pointer: " + ", ".join(orphaned))
+
+
 def main() -> int:
     check_public_skills()
     check_agents_adapters()
@@ -195,6 +258,7 @@ def main() -> int:
     check_stale_public_language()
     check_migration_corruption()
     check_shared_references()
+    check_shared_reachability()
     print("validate-keystone: ok")
     return 0
 

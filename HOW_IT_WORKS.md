@@ -1,6 +1,6 @@
 # How Keystone Works
 
-Keystone is a set of public workflow skills backed by shared internal gates. Each public skill names a phase of work, carries that phase's contract, and can hand off to another skill when the evidence says the job has changed.
+Keystone is one complete package: nine public workflow skills backed by one shared internal gate tree. Each public skill names a phase of work, carries that phase's contract, and can hand off to another skill when the evidence says the job has changed.
 
 There is no central routing layer. Keystone relies on strong model-visible skill descriptions and direct slash commands so the host can load the right workflow from the user's intent.
 
@@ -128,15 +128,13 @@ Explicit-only actions include commits, PR creation, merge, tag, publish, release
 
 ## Host capability notes
 
-Keystone is designed for Agent Skills hosts and adapts to each surface's capabilities.
+Keystone installs as a complete bundle and adapts to each supported surface's capabilities. Individual skills are entry points, not separately supported packages.
 
 | Harness | Discovery and invocation | Subagents / reasoning |
 |---|---|---|
 | Pi | npm package plus Pi extension registers public skill commands matching skill names | Uses subagent tools only if the active schema exposes them; no assumed named roles, model selection, or thinking controls |
 | Claude Code | plugin marketplace installs the Keystone skill package | Use host-supported delegation only when available; otherwise run inline |
 | Codex | plugin marketplace installs bundled skills | Reasoning controls are host-dependent; do not assume per-skill controls |
-| OpenCode | discovers self-contained `.agents/skills/<skill-name>/` directories | Provider-dependent controls; encode risk and depth in the task when controls are absent |
-| GitHub Copilot / VS Code | discovers self-contained Agent Skills from repo, workspace, or personal skill directories | Custom agent capabilities vary by host |
 
 Subagents are optional. A Keystone skill should delegate only when the boundary is clear, the artifact is useful, and coordination cost is lower than inline work.
 
@@ -150,7 +148,8 @@ canonical skill source
    ▼
 npm run regenerate
    │
-   ├─ .agents/skills/<skill-name>/SKILL.md + local _shared/
+   ├─ .agents/skills/<skill-name>/SKILL.md
+   ├─ .agents/skills/_shared/
    ├─ .agents/plugins/marketplace.json
    ├─ .claude-plugin/plugin.json
    ├─ .claude-plugin/marketplace.json
@@ -175,7 +174,7 @@ skills/project-audit/
 skills/_shared/
 ```
 
-Generated manifests and Agent Skills copies should not be hand-edited. Change the canonical source or package metadata, then regenerate. Each generated `.agents/skills/<skill-name>/` directory contains the skill and its local shared references, so the directory is independently portable.
+Generated manifests and Agent Skills bundle files should not be hand-edited. Change the canonical source or package metadata, then regenerate. The generated `.agents/skills/` tree is one unit: all nine entry points share its single `_shared/` directory and are not independently portable.
 
 ## Default-deny packaging
 
@@ -208,7 +207,7 @@ This focused validator checks:
 - discovered public skill directories have matching frontmatter names and model-visible descriptions
 - shared gates and shared references exist under `skills/_shared/`
 - stale central-router and one-entrypoint claims are absent from shipped surfaces
-- generated Agent Skills match canonical content and resolve local shared references
+- generated bundle skills match canonical content and resolve references through one shared tree
 - package and plugin metadata satisfy their structural contracts
 
 ### Package validation
@@ -222,12 +221,12 @@ Expected checks include:
 - required package files exist in the archive
 - forbidden files are absent
 - archive contents match the expanded allowlist
-- Agent Skills, Claude, Codex, and Pi surfaces expose the same public skill set
+- Claude, Codex, Pi, and the generated bundle expose the same public skill set
 
 ### Full verification
 
 `make test` adds the exact nine-skill catalog invariant, invocation-corpus coverage,
-standalone Agent Skills copy checks, package validation, and Python compilation.
+complete-bundle reference checks, package validation, and Python compilation.
 
 Known project commands:
 
@@ -261,11 +260,11 @@ Keystone provides:
 | Pi | `.pi/extensions/keystone.ts` plus `package.json` `pi.extensions` and `pi.skills` entries for public skill commands |
 | Claude Code | `.claude-plugin/plugin.json` plus `.claude-plugin/marketplace.json` |
 | Codex | `.codex-plugin/plugin.json` plus `.agents/plugins/marketplace.json` repo marketplace |
-| OpenCode / GitHub Copilot / VS Code | self-contained `.agents/skills/<skill-name>/` directories |
+| Complete Agent Skills bundle | `.agents/skills/` with nine skill directories and one sibling `_shared/` tree |
 
 The Pi extension should discover bundled skills and register commands matching the skill names. It should not inject a single-command bootstrap.
 
-The Agent Skills directories are generated from canonical `skills/` sources and include local copies of required shared references. Canonical sources remain the single source of truth; regenerate rather than editing generated copies.
+The Agent Skills tree is generated from canonical `skills/` sources as one complete bundle. Canonical sources remain the single source of truth; regenerate rather than editing generated files. Copying or installing one skill directory without its sibling skills and `_shared/` tree is unsupported.
 
 ## Common maintainer workflows
 
@@ -280,7 +279,7 @@ The Agent Skills directories are generated from canonical `skills/` sources and 
 
 1. Edit the gate under `skills/_shared/gates/`.
 2. Update only the public skills that need to point at it.
-3. Regenerate Agent Skills copies and manifests.
+3. Regenerate the complete bundle and manifests.
 4. Validate source and package contents.
 
 ### Change packaging metadata

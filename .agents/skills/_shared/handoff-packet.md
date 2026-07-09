@@ -1,6 +1,6 @@
 # Keystone Handoff Packet
 
-Use this packet whenever one Keystone skill hands work to another. Keep it concise and evidence-backed.
+Use this packet whenever `gates/checkpoint.md` selects another Keystone skill. This file owns handoff completeness; the source skill supplies branch-specific evidence.
 
 ## Fields
 

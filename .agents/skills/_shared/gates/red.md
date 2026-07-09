@@ -3,6 +3,8 @@
 ## Purpose
 Establish a meaningful failing signal before implementation when practical.
 
+This file owns red-signal pass/fail and its exception. Mutation and diagnosis skills choose the behavior-specific signal; they do not redefine the exception contract.
+
 The red signal proves the current system lacks the desired behavior and that the chosen check can detect the fix. It is binary: either a red-capable check exists, or an explicit alternative proof plan is recorded.
 
 ## Required checks

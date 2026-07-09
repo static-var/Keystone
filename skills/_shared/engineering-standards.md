@@ -2,6 +2,8 @@
 
 Language-agnostic reference for implementation, refactoring, change review, and project audit.
 
+This file owns shared architecture and code-quality prompts. Phase skills decide when architecture or ownership is material and point here instead of restating the checklist.
+
 ## Core standard
 
 Write code that makes ownership, state, behavior, and change pressure obvious. Prefer direct, boring structures until the domain shows real variation. A pattern earns its place only when it removes current pressure.

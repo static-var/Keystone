@@ -238,7 +238,7 @@ Use this structure unless the user requested a different artifact. For small con
 Next module: `<context-survey|implementation|root-cause-analysis|change-review|project-audit|shipping|product-planning>` because <reason>.
 
 ### Checkpoint
-Use the required fields from `_shared/gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```
 
