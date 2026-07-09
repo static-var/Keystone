@@ -40,6 +40,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('[data-header]');
   const prompt = document.querySelector('[data-prompt]');
   const skill = document.querySelector('[data-skill]');
+  const themeToggle = document.querySelector('[data-theme-toggle]');
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const savedTheme = () => {
+    try { return localStorage.getItem('keystone-theme'); } catch { return null; }
+  };
+
+  const applyTheme = (theme, persist = false) => {
+    document.documentElement.dataset.theme = theme;
+    themeToggle?.setAttribute('aria-pressed', String(theme === 'dark'));
+    themeToggle?.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+    themeColor?.setAttribute('content', theme === 'dark' ? '#0f121b' : '#f7f8fa');
+    if (persist) {
+      try { localStorage.setItem('keystone-theme', theme); } catch { /* Current page still updates. */ }
+    }
+  };
+
+  applyTheme(document.documentElement.dataset.theme || (systemTheme.matches ? 'dark' : 'light'));
+
+  themeToggle?.addEventListener('click', () => {
+    applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+  });
+
+  systemTheme.addEventListener('change', (event) => {
+    if (!savedTheme()) applyTheme(event.matches ? 'dark' : 'light');
+  });
 
   window.addEventListener('scroll', () => {
     header?.classList.toggle('scrolled', window.scrollY > 8);
