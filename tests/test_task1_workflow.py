@@ -9,6 +9,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_CREATION = ROOT / "skills" / "task-creation" / "SKILL.md"
+README = ROOT / "README.md"
+HOW_IT_WORKS = ROOT / "HOW_IT_WORKS.md"
 PI_EXTENSION = ROOT / ".pi" / "extensions" / "keystone.ts"
 PACKAGE_JSON = ROOT / "package.json"
 REQUIRED_SHARED_FILES = {
@@ -67,6 +69,30 @@ class TaskCreationWorkflowTests(unittest.TestCase):
         self.assertIn("change-review points", rule)
         self.assertNotIn("without verification gates", rule)
         self.assertRegex(rule, r"through|with|include|require")
+
+    def test_task_artifact_threshold_is_explicit_and_overrideable(self) -> None:
+        content = TASK_CREATION.read_text(encoding="utf-8")
+        normalized = content.lower()
+
+        self.assertIn("1–5 top-level vertical slices", normalized)
+        self.assertIn("6 or more top-level vertical slices", normalized)
+        self.assertIn("chat only", normalized)
+        self.assertIn("write or save", normalized)
+        self.assertIn("slice the work naturally before counting", normalized)
+        self.assertIn("do not duplicate the full task creation", normalized)
+        self.assertNotIn(
+            "no file mutation unless the user explicitly requested a task-creation artifact",
+            normalized,
+        )
+
+        for doc in (README, HOW_IT_WORKS):
+            with self.subTest(doc=doc.name):
+                documented = doc.read_text(encoding="utf-8").lower()
+                self.assertIn("1–5 top-level slices", documented)
+                self.assertIn("6 or more", documented)
+                self.assertIn("chat", documented)
+                self.assertIn("save", documented)
+                self.assertIn("override", documented)
 
     def test_pi_command_payload_embeds_resolvable_packaged_skill_content(self) -> None:
         payload = build_payload_from_outside_repo("task-creation", "Plan a risky migration")
