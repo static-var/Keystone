@@ -1,4 +1,4 @@
-.PHONY: test validate package regenerate routing unit py-compile
+.PHONY: test validate package openai-package regenerate routing unit py-compile
 
 test: validate unit py-compile
 
@@ -17,6 +17,9 @@ py-compile:
 
 package: regenerate
 	scripts/package-keystone.sh
+
+openai-package: regenerate
+	scripts/package-openai-plugin.sh
 
 regenerate:
 	python3 scripts/build-metadata.py

@@ -1,5 +1,10 @@
 {
+  "author": {
+    "name": "static-var",
+    "url": "https://keystone.staticvar.dev/"
+  },
   "description": "Keystone proactive multi-skill AI engineering workflows for planning, implementation, review, shipping, and maintenance.",
+  "homepage": "https://keystone.staticvar.dev/",
   "interface": {
     "brandColor": "#1F2933",
     "capabilities": [
@@ -12,6 +17,8 @@
     "composerIcon": "./assets/brand/keystone-icon.png",
     "defaultPrompt": [
       "Survey this repository before planning changes.",
+      "Turn this approved direction into implementation-ready tasks.",
+      "Diagnose this failure and prove the root cause before fixing it.",
       "Implement this approved task with proof.",
       "Review this branch for blockers before shipping."
     ],
@@ -19,9 +26,21 @@
     "displayName": "Keystone",
     "logo": "./assets/brand/keystone-icon.png",
     "longDescription": "Keystone ships 9 public engineering workflow skills. Skills are invoked directly by intent; there is no central command.",
-    "shortDescription": "Proactive AI engineering workflow skills."
+    "privacyPolicyURL": "https://keystone.staticvar.dev/privacy/",
+    "shortDescription": "Proactive AI engineering workflow skills.",
+    "termsOfServiceURL": "https://keystone.staticvar.dev/terms/",
+    "websiteURL": "https://keystone.staticvar.dev/"
   },
+  "keywords": [
+    "agent-skills",
+    "engineering",
+    "workflow",
+    "review",
+    "planning"
+  ],
+  "license": "MIT",
   "name": "keystone",
+  "repository": "https://github.com/static-var/Keystone",
   "skills": "./skills/",
-  "version": "2.0.0"
+  "version": "2.0.1"
 }

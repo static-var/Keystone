@@ -9,6 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "package.json"
 NAME = "keystone"
 PACKAGE_DESCRIPTION = "Keystone proactive multi-skill AI engineering workflows for planning, implementation, review, shipping, and maintenance."
+HOMEPAGE = "https://keystone.staticvar.dev/"
+REPOSITORY = "https://github.com/static-var/Keystone"
+PRIVACY_POLICY = f"{HOMEPAGE}privacy/"
+TERMS_OF_SERVICE = f"{HOMEPAGE}terms/"
 
 
 def parse_frontmatter(path: Path) -> dict[str, str]:
@@ -79,6 +83,11 @@ def main() -> int:
         "name": NAME,
         "version": version,
         "description": PACKAGE_DESCRIPTION,
+        "author": {"name": "static-var", "url": HOMEPAGE},
+        "homepage": HOMEPAGE,
+        "repository": REPOSITORY,
+        "license": license_name,
+        "keywords": ["agent-skills", "engineering", "workflow", "review", "planning"],
         "skills": "./skills/",
         "interface": {
             "displayName": "Keystone",
@@ -90,7 +99,16 @@ def main() -> int:
             "brandColor": "#1F2933",
             "composerIcon": "./assets/brand/keystone-icon.png",
             "logo": "./assets/brand/keystone-icon.png",
-            "defaultPrompt": ["Survey this repository before planning changes.", "Implement this approved task with proof.", "Review this branch for blockers before shipping."],
+            "websiteURL": HOMEPAGE,
+            "privacyPolicyURL": PRIVACY_POLICY,
+            "termsOfServiceURL": TERMS_OF_SERVICE,
+            "defaultPrompt": [
+                "Survey this repository before planning changes.",
+                "Turn this approved direction into implementation-ready tasks.",
+                "Diagnose this failure and prove the root cause before fixing it.",
+                "Implement this approved task with proof.",
+                "Review this branch for blockers before shipping.",
+            ],
         },
     }
     codex_marketplace = {
