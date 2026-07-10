@@ -22,11 +22,11 @@ PUBLIC_SKILLS = [
     "shipping",
     "project-audit",
 ]
-RELEASE_VERSION = "2.0.1"
+RELEASE_VERSION = "2.0.3"
 
 
 class ReleaseMetadataDocsTests(unittest.TestCase):
-    def test_release_version_is_synchronized_to_2_0_1(self):
+    def test_release_version_is_synchronized_to_2_0_2(self):
         package = json.loads((ROOT / "package.json").read_text())
         self.assertEqual(RELEASE_VERSION, package["version"])
         lockfile = json.loads((ROOT / "package-lock.json").read_text())
@@ -76,7 +76,7 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
             }))
             (root / ".claude-plugin" / "marketplace.json").write_text(json.dumps({
                 "name": "keystone",
-                "version": "2.0.1",
+                "version": "2.0.3",
                 "plugins": [{"name": "keystone", "version": "1.9.9"}],
             }))
             (root / ".codex-plugin").mkdir()
@@ -92,10 +92,10 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
 
             errors = validate_keystone.metadata_errors(root)
 
-        self.assertIn("package.json version must be 2.0.1", errors)
-        self.assertIn(".claude-plugin/plugin.json version must be 2.0.1", errors)
-        self.assertIn(".claude-plugin/marketplace.json plugins[0].version must be 2.0.1", errors)
-        self.assertIn(".codex-plugin/plugin.json version must be 2.0.1", errors)
+        self.assertIn("package.json version must be 2.0.3", errors)
+        self.assertIn(".claude-plugin/plugin.json version must be 2.0.3", errors)
+        self.assertIn(".claude-plugin/marketplace.json plugins[0].version must be 2.0.3", errors)
+        self.assertIn(".codex-plugin/plugin.json version must be 2.0.3", errors)
         self.assertIn('.codex-plugin/plugin.json skills must be "./skills/"', errors)
 
 

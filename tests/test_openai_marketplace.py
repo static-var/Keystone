@@ -1,4 +1,6 @@
 import json
+import posixpath
+import re
 import subprocess
 import tempfile
 import unittest
@@ -20,14 +22,53 @@ class OpenAIMarketplaceTests(unittest.TestCase):
         self.assertEqual("static-var", manifest["author"]["name"])
 
         interface = manifest["interface"]
+        self.assertEqual("Developer Tools", interface["category"])
+        self.assertLessEqual(len(interface["shortDescription"]), 30)
+        self.assertLessEqual(len(interface["defaultPrompt"]), 3)
         self.assertEqual("https://keystone.staticvar.dev/", interface["websiteURL"])
+        self.assertNotIn("supportURL", interface)
         self.assertEqual("https://keystone.staticvar.dev/privacy/", interface["privacyPolicyURL"])
         self.assertEqual("https://keystone.staticvar.dev/terms/", interface["termsOfServiceURL"])
+        self.assertIn("helps developers", interface["longDescription"])
+        self.assertIn("shipping with evidence", interface["longDescription"])
+        self.assertEqual(
+            "./assets/brand/keystone-icon.png",
+            interface["logo"],
+        )
+        self.assertEqual(
+            "./assets/brand/keystone-icon-dark.png",
+            interface["logoDark"],
+        )
+        self.assertEqual(
+            "./assets/brand/keystone-icon-composer.png",
+            interface["composerIcon"],
+        )
 
     def test_submission_materials_match_portal_requirements(self) -> None:
         submission = json.loads(SUBMISSION.read_text())
 
         self.assertEqual("Skills only", submission["submissionType"])
+        self.assertEqual("Developer Tools", submission["listing"]["category"])
+        self.assertEqual(
+            "https://keystone.staticvar.dev/support/",
+            submission["listing"]["supportURL"],
+        )
+        icons = submission["listing"]["icons"]
+        self.assertEqual(
+            "assets/brand/keystone-icon.png",
+            icons["directory"]["lightMode"],
+        )
+        self.assertEqual(
+            "assets/brand/keystone-icon-dark.png",
+            icons["directory"]["darkMode"],
+        )
+        self.assertEqual(
+            {
+                "lightMode": "assets/brand/keystone-icon-composer.png",
+                "darkMode": "assets/brand/keystone-icon-composer.png",
+            },
+            icons["composer"],
+        )
         self.assertEqual(5, len(submission["tests"]["positive"]))
         self.assertEqual(3, len(submission["tests"]["negative"]))
         self.assertGreaterEqual(len(submission["starterPrompts"]), 3)
@@ -54,10 +95,20 @@ class OpenAIMarketplaceTests(unittest.TestCase):
             self.assertEqual(0, result.returncode, result.stderr)
             with zipfile.ZipFile(archive) as bundle:
                 names = {name for name in bundle.namelist() if not name.endswith("/")}
+                skill_sources = {
+                    name: bundle.read(name).decode()
+                    for name in names
+                    if name.startswith("skills/") and name.endswith("/SKILL.md")
+                }
 
         self.assertIn(".codex-plugin/plugin.json", names)
         self.assertIn("LICENSE", names)
         self.assertIn("assets/brand/keystone-icon.png", names)
+        self.assertIn("assets/brand/keystone-icon-dark.png", names)
+        self.assertIn("assets/brand/keystone-icon-composer.png", names)
+        self.assertIn("references/gates/checkpoint.md", names)
+        self.assertIn("references/engineering-standards.md", names)
+        self.assertFalse(any(name.startswith("skills/_shared/") for name in names))
         for skill in (
             "change-review",
             "context-survey",
@@ -70,9 +121,17 @@ class OpenAIMarketplaceTests(unittest.TestCase):
             "task-creation",
         ):
             self.assertIn(f"skills/{skill}/SKILL.md", names)
+            self.assertNotIn("../_shared/", skill_sources[f"skills/{skill}/SKILL.md"])
         self.assertFalse(any(name.startswith(".claude-plugin/") for name in names))
         self.assertFalse(any(name.startswith(".pi/") for name in names))
         self.assertFalse(any(name.startswith("scripts/") for name in names))
+        for name, source in skill_sources.items():
+            for pointer in re.findall(r"`([^`]+\.md)`", source):
+                if pointer.startswith(("http://", "https://")) or "<" in pointer:
+                    continue
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(name), pointer))
+                with self.subTest(skill=name, pointer=pointer):
+                    self.assertIn(target, names)
 
     def test_legal_and_support_pages_are_public_site_artifacts(self) -> None:
         expected = {

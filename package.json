@@ -1,6 +1,6 @@
 {
   "name": "@static-var/keystone",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "Keystone proactive multi-skill AI engineering workflows for planning, implementation, review, shipping, and maintenance.",
   "type": "module",
   "license": "MIT",
@@ -29,6 +29,10 @@
     "HOW_IT_WORKS.md",
     "LICENSE",
     "assets/brand/keystone-icon.png",
+    "assets/brand/keystone-icon-composer.png",
+    "assets/brand/keystone-icon-composer.svg",
+    "assets/brand/keystone-icon-dark.png",
+    "assets/brand/keystone-icon-dark.svg",
     "assets/brand/keystone-icon.svg",
     "assets/brand/keystone-logo.png",
     "assets/brand/keystone-logo.svg",
