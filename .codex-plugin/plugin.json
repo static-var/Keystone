@@ -13,13 +13,11 @@
       "Review",
       "Workflow"
     ],
-    "category": "Development & Workflow",
+    "category": "Developer Tools",
     "composerIcon": "./assets/brand/keystone-icon.png",
     "defaultPrompt": [
       "Survey this repository before planning changes.",
-      "Turn this approved direction into implementation-ready tasks.",
       "Diagnose this failure and prove the root cause before fixing it.",
-      "Implement this approved task with proof.",
       "Review this branch for blockers before shipping."
     ],
     "developerName": "static-var",
@@ -42,5 +40,5 @@
   "name": "keystone",
   "repository": "https://github.com/static-var/Keystone",
   "skills": "./skills/",
-  "version": "2.0.1"
+  "version": "2.0.2"
 }

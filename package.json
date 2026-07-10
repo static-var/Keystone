@@ -1,6 +1,6 @@
 {
   "name": "@static-var/keystone",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Keystone proactive multi-skill AI engineering workflows for planning, implementation, review, shipping, and maintenance.",
   "type": "module",
   "license": "MIT",

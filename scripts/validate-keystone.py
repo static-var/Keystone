@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_RELEASE_VERSION = "2.0.1"
+EXPECTED_RELEASE_VERSION = "2.0.2"
 EXPECTED_PUBLIC_SKILLS = {
     "change-review", "context-survey", "implementation", "product-planning",
     "project-audit", "refactoring", "root-cause-analysis", "shipping", "task-creation",

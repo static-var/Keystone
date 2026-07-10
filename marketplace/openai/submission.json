@@ -4,7 +4,7 @@
     "name": "Keystone",
     "shortDescription": "Proactive AI engineering workflow skills.",
     "longDescription": "Keystone provides nine focused engineering skills for repository research, product planning, task creation, implementation, refactoring, root-cause analysis, change review, shipping, and project audits. Each skill keeps its phase boundaries explicit and requires evidence before completion claims.",
-    "category": "Developer tools",
+    "category": "Developer Tools",
     "websiteURL": "https://keystone.staticvar.dev/",
     "supportURL": "https://keystone.staticvar.dev/support/",
     "privacyPolicyURL": "https://keystone.staticvar.dev/privacy/",
@@ -13,9 +13,7 @@
   },
   "starterPrompts": [
     "Survey this repository and explain what is true before we decide what to change.",
-    "Turn this approved product direction into implementation-ready tasks with verification steps.",
     "Reproduce this failing test and prove the root cause before proposing a fix.",
-    "Implement this approved change, keep the scope narrow, and prove the result.",
     "Review this branch for correctness, regressions, security risks, and missing tests without editing it."
   ],
   "tests": {
@@ -70,5 +68,5 @@
     ]
   },
   "availability": "All portal-supported countries and regions where the publisher can provide the documented support and legal terms.",
-  "releaseNotes": "Initial OpenAI Plugins Directory submission of Keystone 2.0.1 as a skills-only plugin. The bundle contains nine public engineering workflow skills, their shared gates and standards, the production icon, and the MIT license. No MCP server, authentication, demo account, or external service is required."
+  "releaseNotes": "Initial OpenAI Plugins Directory submission of Keystone 2.0.2 as a skills-only plugin. The bundle contains nine public engineering workflow skills, their shared gates and standards, the production icon, and the MIT license. No MCP server, authentication, demo account, or external service is required."
 }

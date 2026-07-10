@@ -94,7 +94,7 @@ def main() -> int:
             "shortDescription": "Proactive AI engineering workflow skills.",
             "longDescription": f"Keystone ships {len(public_skills)} public engineering workflow skills. Skills are invoked directly by intent; there is no central command.",
             "developerName": "static-var",
-            "category": "Development & Workflow",
+            "category": "Developer Tools",
             "capabilities": ["Read", "Write", "Review", "Workflow"],
             "brandColor": "#1F2933",
             "composerIcon": "./assets/brand/keystone-icon.png",
@@ -104,9 +104,7 @@ def main() -> int:
             "termsOfServiceURL": TERMS_OF_SERVICE,
             "defaultPrompt": [
                 "Survey this repository before planning changes.",
-                "Turn this approved direction into implementation-ready tasks.",
                 "Diagnose this failure and prove the root cause before fixing it.",
-                "Implement this approved task with proof.",
                 "Review this branch for blockers before shipping.",
             ],
         },
