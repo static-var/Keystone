@@ -19,12 +19,14 @@ const examples = {
 
 const installs = {
   codex: {
-    command: 'codex plugin add keystone --marketplace keystone',
-    note: 'Add the static-var/Keystone marketplace first, then install the plugin.'
+    command: `codex plugin marketplace add static-var/Keystone --ref main
+codex plugin add keystone --marketplace keystone`,
+    note: 'Add the static-var/Keystone marketplace, then install the plugin.'
   },
   claude: {
-    command: '/plugin install keystone@keystone',
-    note: 'Add static-var/Keystone as a Claude Code marketplace first.'
+    command: `/plugin marketplace add static-var/Keystone
+/plugin install keystone@keystone`,
+    note: 'Add static-var/Keystone as a Claude Code marketplace, then install the plugin.'
   },
   pi: {
     command: 'pi install npm:@static-var/keystone',
@@ -88,10 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!install) return;
       document.querySelectorAll('[data-install]').forEach((item) => {
         item.classList.remove('active');
-        item.setAttribute('aria-selected', 'false');
+        item.setAttribute('aria-pressed', 'false');
       });
       button.classList.add('active');
-      button.setAttribute('aria-selected', 'true');
+      button.setAttribute('aria-pressed', 'true');
       command.textContent = install.command;
       note.textContent = install.note;
     });

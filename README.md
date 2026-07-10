@@ -42,6 +42,24 @@ Keystone turns those habits into explicit skills:
 
 There is no central routing skill. The host discovers the right Keystone skill from the user's prompt or the user invokes the matching slash command directly.
 
+## Migrate from `/keystone` to direct skills
+
+Keystone 2.0 removes the old `/keystone` entrypoint. Use the matching public skill directly instead:
+
+```text
+/context-survey inspect or summarize existing code
+/product-planning shape product, UX, scope, or technical direction
+/task-creation turn approved direction into implementation-ready tasks
+/implementation make scoped code, content, config, or documentation changes
+/refactoring improve structure without intended behavior changes
+/root-cause-analysis reproduce and explain bugs before fixing
+/change-review review a diff, branch, PR, or regression risk read-only
+/shipping explicitly commit, package, release, publish, or hand off completed work
+/project-audit audit repository, tooling, package health, or maintenance risk
+```
+
+Natural-language requests still work when the host supports skill discovery; the slash commands are the explicit migration path from `/keystone`.
+
 ## Install
 
 ### Pi

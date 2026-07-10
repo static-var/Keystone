@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Keystone multi-skill metadata, adapters, and public packaging surfaces."""
+"""Validate Keystone multi-skill metadata and public packaging surfaces."""
 from __future__ import annotations
 
 import json
@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_RELEASE_VERSION = "2.0.0"
 EXPECTED_PUBLIC_SKILLS = {
     "change-review", "context-survey", "implementation", "product-planning",
     "project-audit", "refactoring", "root-cause-analysis", "shipping", "task-creation",
@@ -67,10 +68,15 @@ def public_skills() -> list[str]:
     )
 
 
-def allowlist_entries() -> set[str]:
-    if not ALLOWLIST.is_file():
+def allowlist_entries_for(root: Path) -> set[str]:
+    allowlist = root / "packaging.allowlist"
+    if not allowlist.is_file():
         fail("missing packaging.allowlist")
-    return {line.strip() for line in ALLOWLIST.read_text().splitlines() if line.strip() and not line.lstrip().startswith("#")}
+    return {line.strip() for line in allowlist.read_text().splitlines() if line.strip() and not line.lstrip().startswith("#")}
+
+
+def allowlist_entries() -> set[str]:
+    return allowlist_entries_for(ROOT)
 
 
 def check_public_skills() -> None:
@@ -96,29 +102,50 @@ def check_public_skills() -> None:
             fail(f"missing shared Keystone file: {rel}")
 
 
-def check_metadata() -> None:
-    package = json.loads((ROOT / "package.json").read_text())
+def metadata_errors(root: Path) -> list[str]:
+    errors: list[str] = []
+    package = json.loads((root / "package.json").read_text())
     if package.get("name") != "@static-var/keystone":
-        fail('package.json name must be "@static-var/keystone"')
-    if set(package.get("files", [])) != allowlist_entries():
-        fail("package.json files must exactly match packaging.allowlist entries")
+        errors.append('package.json name must be "@static-var/keystone"')
+    if package.get("version") != EXPECTED_RELEASE_VERSION:
+        errors.append(f"package.json version must be {EXPECTED_RELEASE_VERSION}")
+    if set(package.get("files", [])) != allowlist_entries_for(root):
+        errors.append("package.json files must exactly match packaging.allowlist entries")
     if package.get("pi", {}).get("skills") != ["./skills"]:
-        fail('package.json must set pi.skills to ["./skills"]')
-    extension = PI_EXTENSION.read_text()
+        errors.append('package.json must set pi.skills to ["./skills"]')
+
+    extension = (root / ".pi" / "extensions" / "keystone.ts").read_text()
     if 'registerCommand("keystone"' in extension or "`/keystone" in extension:
-        fail("Pi extension must not register or advertise /keystone")
+        errors.append("Pi extension must not register or advertise /keystone")
     if "readdirSync(skillsDir" not in extension or "skillDescription(skill)" not in extension:
-        fail("Pi extension must discover public skills and descriptions from canonical frontmatter")
+        errors.append("Pi extension must discover public skills and descriptions from canonical frontmatter")
     if "registerCommand(skill" not in extension:
-        fail("Pi extension must register commands for discovered public skills")
+        errors.append("Pi extension must register commands for discovered public skills")
+
     for rel in (".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", ".codex-plugin/plugin.json", ".agents/plugins/marketplace.json"):
-        data = json.loads((ROOT / rel).read_text())
+        data = json.loads((root / rel).read_text())
         if data.get("name") != "keystone":
-            fail(f"{rel} name must be keystone")
+            errors.append(f"{rel} name must be keystone")
+        if rel in (".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", ".codex-plugin/plugin.json") and data.get("version") != EXPECTED_RELEASE_VERSION:
+            errors.append(f"{rel} version must be {EXPECTED_RELEASE_VERSION}")
+        if rel == ".claude-plugin/marketplace.json":
+            plugins = data.get("plugins", [])
+            if not plugins or plugins[0].get("version") != EXPECTED_RELEASE_VERSION:
+                errors.append(f"{rel} plugins[0].version must be {EXPECTED_RELEASE_VERSION}")
+        if rel == ".codex-plugin/plugin.json" and data.get("skills") != "./skills/":
+            errors.append(f'{rel} skills must be "./skills/"')
+    return errors
+
+
+def check_metadata() -> None:
+    for error in metadata_errors(ROOT):
+        fail(error)
 
 
 def check_stale_public_language() -> None:
-    patterns = [r"`/keystone", r"\s/keystone\b", r"one doorway", r"one-router", r"workflow router", r"public router"]
+    stale_patterns = [r"one doorway", r"one-router", r"workflow router", r"public router"]
+    command_patterns = [r"`/keystone", r"\s/keystone\b"]
+    migration_docs = {ROOT / "README.md", ROOT / "HOW_IT_WORKS.md"}
     paths = [ROOT / rel for rel in SHIPPED_SURFACES]
     paths += [ROOT / ".agents" / "skills" / skill / "SKILL.md" for skill in public_skills()]
     paths += [ROOT / "skills" / skill / "SKILL.md" for skill in public_skills()]
@@ -126,6 +153,7 @@ def check_stale_public_language() -> None:
         if not path.is_file():
             continue
         text = path.read_text().lower()
+        patterns = stale_patterns if path in migration_docs else stale_patterns + command_patterns
         for pattern in patterns:
             if re.search(pattern, text):
                 fail(f"stale public router language found in {path.relative_to(ROOT)}: {pattern}")

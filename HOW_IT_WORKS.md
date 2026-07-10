@@ -53,6 +53,24 @@ Keystone's old model made one public entrypoint choose internal modules. The mul
 
 A router is unnecessary because each public skill has a strong trigger description. Hosts that support skill discovery can choose from those descriptions, and users can still invoke the desired skill directly. Removing the router also removes a failure mode: the agent no longer has to spend a turn deciding which hidden module to use before doing the actual phase work.
 
+## Migrate from `/keystone` to direct skills
+
+Keystone 2.0 no longer ships `/keystone`. Use the matching public skill directly:
+
+| Old request shape | Direct skill command |
+|---|---|
+| `/keystone survey ...` or research requests | `/context-survey ...` |
+| `/keystone plan ...` or product/UX/scope shaping | `/product-planning ...` |
+| `/keystone tasks ...` or task breakdowns | `/task-creation ...` |
+| `/keystone implement ...` or scoped mutations | `/implementation ...` |
+| `/keystone refactor ...` or cleanup without behavior change | `/refactoring ...` |
+| `/keystone debug ...` or root-cause requests | `/root-cause-analysis ...` |
+| `/keystone review ...` or diff/PR readiness checks | `/change-review ...` |
+| `/keystone ship ...` or release/package handoff | `/shipping ...` |
+| `/keystone audit ...` or repo/tooling health checks | `/project-audit ...` |
+
+Hosts with skill discovery may still choose from natural language, but explicit invocations should name one of the nine public skills.
+
 ## Why gates stay internal
 
 Gates are shared safety checks, not user goals. A user asks to implement, review, or ship; the skill decides whether it needs isolation, proof, review, or ship checks.
@@ -205,7 +223,7 @@ This focused validator checks:
 - discovered public skill directories have matching frontmatter names and model-visible descriptions
 - shared gates and shared references exist under `skills/_shared/`
 - stale central-router and one-entrypoint claims are absent from shipped surfaces
-- generated bundle skills match canonical content and resolve references through one shared tree
+- generated plugin manifests stay synchronized with package metadata and canonical skill paths
 - package and plugin metadata satisfy their structural contracts
 
 ### Package validation
@@ -219,7 +237,7 @@ Expected checks include:
 - required package files exist in the archive
 - forbidden files are absent
 - archive contents match the expanded allowlist
-- Claude, Codex, Pi, and the generated bundle expose the same public skill set
+- Claude, Codex, and Pi package surfaces expose the same public skill set
 
 ### Full verification
 

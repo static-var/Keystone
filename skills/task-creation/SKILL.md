@@ -157,7 +157,7 @@ For each proposed delegation, specify purpose, required analysis depth, context 
 - Do not ask broad clarifying questions before inspecting available context.
 - Do not produce horizontal-only task-creations.
 - Do not hide assumptions, unresolved questions, or conflicts.
-- Route risky task sets only directly to `implementation` without verification gates and change-review points.
+- Route risky task sets through `implementation` with explicit verification gates and change-review points.
 
 ## Failure modes
 

@@ -27,7 +27,7 @@ export default function keystonePiExtension(pi: ExtensionAPI) {
 		pi.registerCommand(skill, {
 			description: skillDescription(skill),
 			handler: async (args, ctx) => {
-				const content = getCommandContent(skill, args);
+				const content = buildCommandPayload(skill, args);
 				if (!content) {
 					ctx.ui.notify(`Keystone skill not found: ${skill}`, "error");
 					return;
@@ -44,20 +44,44 @@ export default function keystonePiExtension(pi: ExtensionAPI) {
 	}
 }
 
-function getCommandContent(skill: string, args: string): string | null {
-	const skillPath = resolve(skillsDir, skill, "SKILL.md");
+type CommandPayloadOptions = {
+	packageRoot?: string;
+	skillsDir?: string;
+	sharedDir?: string;
+};
+
+export function buildCommandPayload(skill: string, args: string, options: CommandPayloadOptions = {}): string | null {
+	const resolvedPackageRoot = resolve(options.packageRoot ?? packageRoot);
+	const resolvedSkillsDir = resolve(options.skillsDir ?? resolve(resolvedPackageRoot, "skills"));
+	const skillDir = resolve(resolvedSkillsDir, skill);
+	const skillPath = resolve(skillDir, "SKILL.md");
 	if (!existsSync(skillPath)) return null;
+
+	const resolvedSharedDir = resolve(options.sharedDir ?? resolve(resolvedSkillsDir, "_shared"));
+	const skillContent = stripSkillFrontmatter(readFileSync(skillPath, "utf8"));
 	const request = args.trim() || `No request supplied. Briefly explain when to use /${skill} and ask for the task.`;
 	return `<EXTREMELY_IMPORTANT>
 keystone:${skill} for pi
 
-Use the Keystone \`${skill}\` skill for this request. Load and follow \`skills/${skill}/SKILL.md\` exactly. Resolve shared gates, handoff packet, and engineering standards relative to \`skills/\`.
+Use the Keystone \`${skill}\` skill for this request. The canonical packaged skill content is embedded below; follow that embedded content exactly.
+
+Canonical Keystone package root: \`${resolvedPackageRoot}\`.
+Embedded skill source: \`${skillPath}\`.
+When the embedded skill references a relative path, resolve it against \`${skillDir}\`. Shared gates, handoff packet, and engineering standards live under: \`${resolvedSharedDir}\`.
 
 Pi's built-in coding tools are lowercase: \`read\`, \`write\`, \`edit\`, \`bash\`, plus optional \`grep\`, \`find\`, and \`ls\`.
 
-If \`@tintinweb/pi-subagents\` is installed and the active tool schema exposes them, Pi subagent tool names are \`Agent\`, \`get_subagent_result\`, and \`steer_subagent\`. Follow the canonical Keystone subagent guidance for behavior.
+If \`@tintinweb/pi-subagents\` is installed and the active tool schema exposes them, Pi subagent tool names are \`Agent\`, \`get_subagent_result\`, and \`steer_subagent\`. Follow the embedded skill's subagent guidance for behavior.
+
+<KEYSTONE_SKILL name="${skill}">
+${skillContent}
+</KEYSTONE_SKILL>
 
 User request:
 ${request}
 </EXTREMELY_IMPORTANT>`;
+}
+
+function stripSkillFrontmatter(content: string): string {
+	return content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, "").trim();
 }
