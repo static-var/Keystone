@@ -23,8 +23,10 @@ class OpenAIMarketplaceTests(unittest.TestCase):
 
         interface = manifest["interface"]
         self.assertEqual("Developer Tools", interface["category"])
+        self.assertLessEqual(len(interface["shortDescription"]), 30)
         self.assertLessEqual(len(interface["defaultPrompt"]), 3)
         self.assertEqual("https://keystone.staticvar.dev/", interface["websiteURL"])
+        self.assertEqual("https://keystone.staticvar.dev/support/", interface["supportURL"])
         self.assertEqual("https://keystone.staticvar.dev/privacy/", interface["privacyPolicyURL"])
         self.assertEqual("https://keystone.staticvar.dev/terms/", interface["termsOfServiceURL"])
 
@@ -33,6 +35,16 @@ class OpenAIMarketplaceTests(unittest.TestCase):
 
         self.assertEqual("Skills only", submission["submissionType"])
         self.assertEqual("Developer Tools", submission["listing"]["category"])
+        icons = submission["listing"]["icons"]
+        self.assertEqual(
+            "assets/brand/keystone-icon.png",
+            icons["directory"]["lightMode"],
+        )
+        self.assertEqual(
+            "assets/brand/keystone-icon-dark.png",
+            icons["directory"]["darkMode"],
+        )
+        self.assertEqual(icons["directory"], icons["composer"])
         self.assertEqual(5, len(submission["tests"]["positive"]))
         self.assertEqual(3, len(submission["tests"]["negative"]))
         self.assertGreaterEqual(len(submission["starterPrompts"]), 3)
@@ -68,6 +80,7 @@ class OpenAIMarketplaceTests(unittest.TestCase):
         self.assertIn(".codex-plugin/plugin.json", names)
         self.assertIn("LICENSE", names)
         self.assertIn("assets/brand/keystone-icon.png", names)
+        self.assertIn("assets/brand/keystone-icon-dark.png", names)
         self.assertIn("references/gates/checkpoint.md", names)
         self.assertIn("references/engineering-standards.md", names)
         self.assertFalse(any(name.startswith("skills/_shared/") for name in names))

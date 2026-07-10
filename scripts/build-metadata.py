@@ -13,6 +13,7 @@ HOMEPAGE = "https://keystone.staticvar.dev/"
 REPOSITORY = "https://github.com/static-var/Keystone"
 PRIVACY_POLICY = f"{HOMEPAGE}privacy/"
 TERMS_OF_SERVICE = f"{HOMEPAGE}terms/"
+SUPPORT = f"{HOMEPAGE}support/"
 
 
 def parse_frontmatter(path: Path) -> dict[str, str]:
@@ -91,7 +92,7 @@ def main() -> int:
         "skills": "./skills/",
         "interface": {
             "displayName": "Keystone",
-            "shortDescription": "Proactive AI engineering workflow skills.",
+            "shortDescription": "Plan, build, review, and ship",
             "longDescription": f"Keystone ships {len(public_skills)} public engineering workflow skills. Skills are invoked directly by intent; there is no central command.",
             "developerName": "static-var",
             "category": "Developer Tools",
@@ -100,6 +101,7 @@ def main() -> int:
             "composerIcon": "./assets/brand/keystone-icon.png",
             "logo": "./assets/brand/keystone-icon.png",
             "websiteURL": HOMEPAGE,
+            "supportURL": SUPPORT,
             "privacyPolicyURL": PRIVACY_POLICY,
             "termsOfServiceURL": TERMS_OF_SERVICE,
             "defaultPrompt": [

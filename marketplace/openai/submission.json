@@ -2,14 +2,23 @@
   "submissionType": "Skills only",
   "listing": {
     "name": "Keystone",
-    "shortDescription": "Proactive AI engineering workflow skills.",
+    "shortDescription": "Plan, build, review, and ship",
     "longDescription": "Keystone provides nine focused engineering skills for repository research, product planning, task creation, implementation, refactoring, root-cause analysis, change review, shipping, and project audits. Each skill keeps its phase boundaries explicit and requires evidence before completion claims.",
     "category": "Developer Tools",
     "websiteURL": "https://keystone.staticvar.dev/",
     "supportURL": "https://keystone.staticvar.dev/support/",
     "privacyPolicyURL": "https://keystone.staticvar.dev/privacy/",
     "termsOfServiceURL": "https://keystone.staticvar.dev/terms/",
-    "logo": "assets/brand/keystone-icon.png"
+    "icons": {
+      "directory": {
+        "lightMode": "assets/brand/keystone-icon.png",
+        "darkMode": "assets/brand/keystone-icon-dark.png"
+      },
+      "composer": {
+        "lightMode": "assets/brand/keystone-icon.png",
+        "darkMode": "assets/brand/keystone-icon-dark.png"
+      }
+    }
   },
   "starterPrompts": [
     "Survey this repository and explain what is true before we decide what to change.",

@@ -25,7 +25,8 @@
     "logo": "./assets/brand/keystone-icon.png",
     "longDescription": "Keystone ships 9 public engineering workflow skills. Skills are invoked directly by intent; there is no central command.",
     "privacyPolicyURL": "https://keystone.staticvar.dev/privacy/",
-    "shortDescription": "Proactive AI engineering workflow skills.",
+    "shortDescription": "Plan, build, review, and ship",
+    "supportURL": "https://keystone.staticvar.dev/support/",
     "termsOfServiceURL": "https://keystone.staticvar.dev/terms/",
     "websiteURL": "https://keystone.staticvar.dev/"
   },
