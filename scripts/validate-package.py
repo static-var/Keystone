@@ -2,7 +2,6 @@
 """Validate the Keystone release archive contents."""
 from __future__ import annotations
 
-import re
 import sys
 import zipfile
 from pathlib import Path
@@ -24,19 +23,8 @@ REQUIRED = {
     ".pi/extensions/keystone.ts", ".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", ".codex-plugin/plugin.json", ".agents/plugins/marketplace.json",
     "skills/_shared/gates/checkpoint.md", "skills/_shared/gates/isolation.md", "skills/_shared/gates/proof.md", "skills/_shared/gates/red.md", "skills/_shared/gates/review.md", "skills/_shared/gates/ship.md",
     "skills/_shared/engineering-standards.md", "skills/_shared/handoff-packet.md",
-} | {f"skills/{s}/SKILL.md" for s in PUBLIC_SKILLS} | {
-    f".agents/skills/{s}/SKILL.md" for s in PUBLIC_SKILLS
-} | {
-    ".agents/skills/_shared/engineering-standards.md",
-    ".agents/skills/_shared/handoff-packet.md",
-    ".agents/skills/_shared/gates/checkpoint.md",
-    ".agents/skills/_shared/gates/isolation.md",
-    ".agents/skills/_shared/gates/proof.md",
-    ".agents/skills/_shared/gates/red.md",
-    ".agents/skills/_shared/gates/review.md",
-    ".agents/skills/_shared/gates/ship.md",
-}
-FORBIDDEN_PREFIXES = ("docs/", "plans/", "maintainers/", "dist/", ".git/", "skills/keystone/", ".agents/skills/keystone/")
+} | {f"skills/{s}/SKILL.md" for s in PUBLIC_SKILLS}
+FORBIDDEN_PREFIXES = ("docs/", "plans/", "maintainers/", "dist/", ".git/", "skills/keystone/", ".agents/skills/")
 FORBIDDEN_NAMES = {"index.html", "styles.css", ".DS_Store"}
 
 
@@ -46,8 +34,7 @@ def fail(message: str) -> None:
 
 
 def forbidden(path: str) -> bool:
-    private_agent_shared = re.match(r"^\.agents/skills/[^/]+/_shared/", path)
-    return bool(private_agent_shared) or path.rsplit("/", 1)[-1] in FORBIDDEN_NAMES or path.startswith(FORBIDDEN_PREFIXES) or path.endswith((".pyc", ".plan.md", "-plan.md", ".design.md", "-design.md"))
+    return path.rsplit("/", 1)[-1] in FORBIDDEN_NAMES or path.startswith(FORBIDDEN_PREFIXES) or path.endswith((".pyc", ".plan.md", "-plan.md", ".design.md", "-design.md"))
 
 
 def expand_allowlist() -> set[str]:

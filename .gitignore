@@ -16,6 +16,10 @@
 /.worktrees/
 /worktrees/
 
+# Developer-local instructions and authoring references
+/AGENTS.md
+/.agents/skills/writing-great-skills/
+
 # Generated packages
 /dist/
 /*.tgz

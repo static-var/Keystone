@@ -148,8 +148,6 @@ canonical skill source
    ▼
 npm run regenerate
    │
-   ├─ .agents/skills/<skill-name>/SKILL.md
-   ├─ .agents/skills/_shared/
    ├─ .agents/plugins/marketplace.json
    ├─ .claude-plugin/plugin.json
    ├─ .claude-plugin/marketplace.json
@@ -174,7 +172,7 @@ skills/project-audit/
 skills/_shared/
 ```
 
-Generated manifests and Agent Skills bundle files should not be hand-edited. Change the canonical source or package metadata, then regenerate. The generated `.agents/skills/` tree is one unit: all nine entry points share its single `_shared/` directory and are not independently portable.
+Generated manifests should not be hand-edited. Change the canonical source or package metadata, then regenerate.
 
 ## Default-deny packaging
 
@@ -260,11 +258,8 @@ Keystone provides:
 | Pi | `.pi/extensions/keystone.ts` plus `package.json` `pi.extensions` and `pi.skills` entries for public skill commands |
 | Claude Code | `.claude-plugin/plugin.json` plus `.claude-plugin/marketplace.json` |
 | Codex | `.codex-plugin/plugin.json` plus `.agents/plugins/marketplace.json` repo marketplace |
-| Complete Agent Skills bundle | `.agents/skills/` with nine skill directories and one sibling `_shared/` tree |
 
 The Pi extension should discover bundled skills and register commands matching the skill names. It should not inject a single-command bootstrap.
-
-The Agent Skills tree is generated from canonical `skills/` sources as one complete bundle. Canonical sources remain the single source of truth; regenerate rather than editing generated files. Copying or installing one skill directory without its sibling skills and `_shared/` tree is unsupported.
 
 ## Common maintainer workflows
 

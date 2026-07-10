@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,26 +49,6 @@ def read_package() -> dict:
 def write_json(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
-
-
-def agent_skill_text(skill: str) -> str:
-    """Render one canonical skill inside the atomic Agent Skills bundle."""
-    return (ROOT / "skills" / skill / "SKILL.md").read_text()
-
-
-def write_agent_skills(catalog: list[dict[str, str]]) -> None:
-    base = ROOT / ".agents" / "skills"
-    shared = base / "_shared"
-    if shared.exists():
-        shutil.rmtree(shared)
-    shutil.copytree(ROOT / "skills" / "_shared", shared)
-    for entry in catalog:
-        skill = entry["name"]
-        target = base / skill
-        if target.exists():
-            shutil.rmtree(target)
-        target.mkdir(parents=True)
-        (target / "SKILL.md").write_text(agent_skill_text(skill))
 
 
 def main() -> int:
@@ -124,7 +103,6 @@ def main() -> int:
     write_json(ROOT / ".claude-plugin" / "marketplace.json", claude_marketplace)
     write_json(ROOT / ".codex-plugin" / "plugin.json", codex_plugin)
     write_json(ROOT / ".agents" / "plugins" / "marketplace.json", codex_marketplace)
-    write_agent_skills(catalog)
     return 0
 
 

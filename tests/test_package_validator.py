@@ -1,5 +1,4 @@
 import importlib.util
-import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -57,36 +56,10 @@ class PackageValidatorTests(unittest.TestCase):
         for skill in validator.PUBLIC_SKILLS:
             with self.subTest(skill=skill):
                 self.assertIn(f"skills/{skill}/SKILL.md", validator.REQUIRED)
-                self.assertIn(f".agents/skills/{skill}/SKILL.md", validator.REQUIRED)
 
-    def test_agent_skills_ship_as_one_atomic_bundle(self):
+    def test_agent_skills_are_not_packaged_as_a_duplicate_tree(self):
         validator = load_validate_package()
-        expanded = validator.expand_allowlist()
-        for skill in validator.PUBLIC_SKILLS:
-            with self.subTest(skill=skill):
-                self.assertIn(f".agents/skills/{skill}/SKILL.md", expanded)
-                self.assertFalse(any(path.startswith(f".agents/skills/{skill}/_shared/") for path in expanded))
-        self.assertIn(".agents/skills/_shared/gates/checkpoint.md", expanded)
-        self.assertNotIn(".agents/skills/_shared/SKILL.md", expanded)
-
-    def test_agent_bundle_resolves_all_local_markdown_pointers(self):
-        markdown_link = re.compile(r"\]\((?!https?://|/)([^)#]+\.md)(?:#[^)]*)?\)")
-        code_pointer = re.compile(r"`([^`]+\.md)`")
-        validator = load_validate_package()
-        bundle = ROOT / ".agents" / "skills"
-        markdown_files = [bundle / skill / "SKILL.md" for skill in validator.PUBLIC_SKILLS]
-        markdown_files += list((bundle / "_shared").rglob("*.md"))
-        for markdown in markdown_files:
-            text = markdown.read_text()
-            pointers = markdown_link.findall(text) + [
-                path for path in code_pointer.findall(text) if "<" not in path
-            ]
-            for relative in pointers:
-                with self.subTest(file=markdown.relative_to(bundle), pointer=relative):
-                    self.assertTrue(
-                        (markdown.parent / relative).resolve().is_file(),
-                        f"{markdown.relative_to(bundle)} -> {relative}",
-                    )
+        self.assertFalse(any(path.startswith(".agents/skills/") for path in validator.expand_allowlist()))
 
     def test_license_file_is_required(self):
         validator = load_validate_package()

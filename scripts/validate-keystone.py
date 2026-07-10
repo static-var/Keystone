@@ -96,54 +96,6 @@ def check_public_skills() -> None:
             fail(f"missing shared Keystone file: {rel}")
 
 
-def check_agents_adapters() -> None:
-    base = ROOT / ".agents" / "skills"
-    generated_public = {
-        path.parent.name for path in base.glob("*/SKILL.md")
-        if path.parent.name != "writing-great-skills" and not path.parent.name.startswith("_")
-    }
-    if generated_public != EXPECTED_PUBLIC_SKILLS:
-        fail(f"generated public skills must be exactly {sorted(EXPECTED_PUBLIC_SKILLS)}; got {sorted(generated_public)}")
-    if (base / "_shared" / "SKILL.md").exists():
-        fail(".agents/skills/_shared must be reference only, not a public skill")
-    for rel in SHARED:
-        shared_rel = Path(rel).relative_to("skills/_shared")
-        generated = base / "_shared" / shared_rel
-        canonical_shared = ROOT / rel
-        if not generated.is_file():
-            fail(f"generated Agent Skills bundle is missing _shared/{shared_rel}")
-        if generated.read_bytes() != canonical_shared.read_bytes():
-            fail(f"generated shared reference is stale: _shared/{shared_rel}")
-    for skill in public_skills():
-        path = ROOT / ".agents" / "skills" / skill / "SKILL.md"
-        if not path.is_file():
-            fail(f"missing Agent Skills adapter: .agents/skills/{skill}/SKILL.md")
-        text = path.read_text()
-        canonical = ROOT / "skills" / skill / "SKILL.md"
-        adapter_fm = parse_frontmatter(text)
-        canonical_fm = parse_frontmatter(canonical.read_text())
-        if adapter_fm != canonical_fm:
-            fail(f"adapter metadata for {skill} must match canonical frontmatter")
-        expected = canonical.read_text()
-        if text != expected:
-            fail(f"generated Agent Skill for {skill} is stale")
-        if (path.parent / "_shared").exists():
-            fail(f"generated Agent Skill for {skill} must use the bundle-level _shared tree")
-
-    markdown_link = re.compile(r"\]\((?!https?://|/)([^)#]+\.md)(?:#[^)]*)?\)")
-    code_pointer = re.compile(r"`([^`]+\.md)`")
-    markdown_files = [base / skill / "SKILL.md" for skill in public_skills()]
-    markdown_files += list((base / "_shared").rglob("*.md"))
-    for markdown in markdown_files:
-        text = markdown.read_text()
-        pointers = markdown_link.findall(text) + [
-            path for path in code_pointer.findall(text) if "<" not in path
-        ]
-        for relative in pointers:
-            if not (markdown.parent / relative).resolve().is_file():
-                fail(f"unresolved Agent Skills bundle pointer: {markdown.relative_to(base)} -> {relative}")
-
-
 def check_metadata() -> None:
     package = json.loads((ROOT / "package.json").read_text())
     if package.get("name") != "@static-var/keystone":
@@ -253,7 +205,6 @@ def check_shared_reachability() -> None:
 
 def main() -> int:
     check_public_skills()
-    check_agents_adapters()
     check_metadata()
     check_stale_public_language()
     check_migration_corruption()
