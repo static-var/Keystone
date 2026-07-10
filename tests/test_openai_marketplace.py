@@ -26,17 +26,33 @@ class OpenAIMarketplaceTests(unittest.TestCase):
         self.assertLessEqual(len(interface["shortDescription"]), 30)
         self.assertLessEqual(len(interface["defaultPrompt"]), 3)
         self.assertEqual("https://keystone.staticvar.dev/", interface["websiteURL"])
-        self.assertEqual("https://keystone.staticvar.dev/support/", interface["supportURL"])
+        self.assertNotIn("supportURL", interface)
         self.assertEqual("https://keystone.staticvar.dev/privacy/", interface["privacyPolicyURL"])
         self.assertEqual("https://keystone.staticvar.dev/terms/", interface["termsOfServiceURL"])
         self.assertIn("helps developers", interface["longDescription"])
         self.assertIn("shipping with evidence", interface["longDescription"])
+        self.assertEqual(
+            "./assets/brand/keystone-icon.png",
+            interface["logo"],
+        )
+        self.assertEqual(
+            "./assets/brand/keystone-icon-dark.png",
+            interface["logoDark"],
+        )
+        self.assertEqual(
+            "./assets/brand/keystone-icon-composer.png",
+            interface["composerIcon"],
+        )
 
     def test_submission_materials_match_portal_requirements(self) -> None:
         submission = json.loads(SUBMISSION.read_text())
 
         self.assertEqual("Skills only", submission["submissionType"])
         self.assertEqual("Developer Tools", submission["listing"]["category"])
+        self.assertEqual(
+            "https://keystone.staticvar.dev/support/",
+            submission["listing"]["supportURL"],
+        )
         icons = submission["listing"]["icons"]
         self.assertEqual(
             "assets/brand/keystone-icon.png",
@@ -46,7 +62,13 @@ class OpenAIMarketplaceTests(unittest.TestCase):
             "assets/brand/keystone-icon-dark.png",
             icons["directory"]["darkMode"],
         )
-        self.assertEqual(icons["directory"], icons["composer"])
+        self.assertEqual(
+            {
+                "lightMode": "assets/brand/keystone-icon-composer.png",
+                "darkMode": "assets/brand/keystone-icon-composer.png",
+            },
+            icons["composer"],
+        )
         self.assertEqual(5, len(submission["tests"]["positive"]))
         self.assertEqual(3, len(submission["tests"]["negative"]))
         self.assertGreaterEqual(len(submission["starterPrompts"]), 3)
@@ -83,6 +105,7 @@ class OpenAIMarketplaceTests(unittest.TestCase):
         self.assertIn("LICENSE", names)
         self.assertIn("assets/brand/keystone-icon.png", names)
         self.assertIn("assets/brand/keystone-icon-dark.png", names)
+        self.assertIn("assets/brand/keystone-icon-composer.png", names)
         self.assertIn("references/gates/checkpoint.md", names)
         self.assertIn("references/engineering-standards.md", names)
         self.assertFalse(any(name.startswith("skills/_shared/") for name in names))

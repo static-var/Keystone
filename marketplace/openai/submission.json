@@ -15,8 +15,8 @@
         "darkMode": "assets/brand/keystone-icon-dark.png"
       },
       "composer": {
-        "lightMode": "assets/brand/keystone-icon.png",
-        "darkMode": "assets/brand/keystone-icon-dark.png"
+        "lightMode": "assets/brand/keystone-icon-composer.png",
+        "darkMode": "assets/brand/keystone-icon-composer.png"
       }
     }
   },
@@ -77,5 +77,5 @@
     ]
   },
   "availability": "All portal-supported countries and regions where the publisher can provide the documented support and legal terms.",
-  "releaseNotes": "Initial OpenAI Plugins Directory submission of Keystone 2.0.2 as a skills-only plugin. The bundle contains nine public engineering workflow skills, their shared gates and standards, the production icon, and the MIT license. No MCP server, authentication, demo account, or external service is required."
+  "releaseNotes": "Keystone 2.0.3 fixes marketplace icon contrast. The plugin now declares separate light- and dark-mode directory logos and uses a theme-safe composer icon with an opaque brand tile. Skills and workflow behavior are unchanged. No MCP server, authentication, demo account, or external service is required."
 }

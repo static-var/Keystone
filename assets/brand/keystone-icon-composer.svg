@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">Keystone composer icon</title>
+  <desc id="desc">A white double arch with a central keystone on a dark brand tile.</desc>
+  <rect x="2" y="2" width="96" height="96" rx="22" fill="#1F2933"/>
+  <g fill="none" stroke="#F7F7F8" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M10 90V45C10 25.7 27.9 10 50 10s40 15.7 40 35v45"/>
+    <path d="M34 90V50c0-7.7 7.2-14 16-14s16 6.3 16 14v40"/>
+    <path d="M40.9 13.9 50 36l9.1-22.1"/>
+  </g>
+</svg>

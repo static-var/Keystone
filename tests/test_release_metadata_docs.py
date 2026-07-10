@@ -22,7 +22,7 @@ PUBLIC_SKILLS = [
     "shipping",
     "project-audit",
 ]
-RELEASE_VERSION = "2.0.2"
+RELEASE_VERSION = "2.0.3"
 
 
 class ReleaseMetadataDocsTests(unittest.TestCase):
@@ -76,7 +76,7 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
             }))
             (root / ".claude-plugin" / "marketplace.json").write_text(json.dumps({
                 "name": "keystone",
-                "version": "2.0.2",
+                "version": "2.0.3",
                 "plugins": [{"name": "keystone", "version": "1.9.9"}],
             }))
             (root / ".codex-plugin").mkdir()
@@ -92,10 +92,10 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
 
             errors = validate_keystone.metadata_errors(root)
 
-        self.assertIn("package.json version must be 2.0.2", errors)
-        self.assertIn(".claude-plugin/plugin.json version must be 2.0.2", errors)
-        self.assertIn(".claude-plugin/marketplace.json plugins[0].version must be 2.0.2", errors)
-        self.assertIn(".codex-plugin/plugin.json version must be 2.0.2", errors)
+        self.assertIn("package.json version must be 2.0.3", errors)
+        self.assertIn(".claude-plugin/plugin.json version must be 2.0.3", errors)
+        self.assertIn(".claude-plugin/marketplace.json plugins[0].version must be 2.0.3", errors)
+        self.assertIn(".codex-plugin/plugin.json version must be 2.0.3", errors)
         self.assertIn('.codex-plugin/plugin.json skills must be "./skills/"', errors)
 
 

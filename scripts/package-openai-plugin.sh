@@ -18,6 +18,7 @@ cp .codex-plugin/plugin.json "$STAGE/.codex-plugin/plugin.json"
 cp LICENSE "$STAGE/LICENSE"
 cp assets/brand/keystone-icon.png "$STAGE/assets/brand/keystone-icon.png"
 cp assets/brand/keystone-icon-dark.png "$STAGE/assets/brand/keystone-icon-dark.png"
+cp assets/brand/keystone-icon-composer.png "$STAGE/assets/brand/keystone-icon-composer.png"
 cp -R skills "$STAGE/skills"
 mv "$STAGE/skills/_shared" "$STAGE/references"
 

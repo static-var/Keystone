@@ -13,7 +13,6 @@ HOMEPAGE = "https://keystone.staticvar.dev/"
 REPOSITORY = "https://github.com/static-var/Keystone"
 PRIVACY_POLICY = f"{HOMEPAGE}privacy/"
 TERMS_OF_SERVICE = f"{HOMEPAGE}terms/"
-SUPPORT = f"{HOMEPAGE}support/"
 
 
 def parse_frontmatter(path: Path) -> dict[str, str]:
@@ -98,10 +97,10 @@ def main() -> int:
             "category": "Developer Tools",
             "capabilities": ["Read", "Write", "Review", "Workflow"],
             "brandColor": "#1F2933",
-            "composerIcon": "./assets/brand/keystone-icon.png",
+            "composerIcon": "./assets/brand/keystone-icon-composer.png",
             "logo": "./assets/brand/keystone-icon.png",
+            "logoDark": "./assets/brand/keystone-icon-dark.png",
             "websiteURL": HOMEPAGE,
-            "supportURL": SUPPORT,
             "privacyPolicyURL": PRIVACY_POLICY,
             "termsOfServiceURL": TERMS_OF_SERVICE,
             "defaultPrompt": [

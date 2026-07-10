@@ -70,6 +70,8 @@ class PackageValidatorTests(unittest.TestCase):
         expanded = validator.expand_allowlist()
         for asset in (
             "assets/brand/keystone-icon.png",
+            "assets/brand/keystone-icon-composer.png",
+            "assets/brand/keystone-icon-composer.svg",
             "assets/brand/keystone-icon-dark.png",
             "assets/brand/keystone-icon-dark.svg",
             "assets/brand/keystone-icon.svg",
