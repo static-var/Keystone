@@ -35,6 +35,13 @@ class SiteInstallBehaviorTests(unittest.TestCase):
         self.assertNotIn("codex plugin add keystone --marketplace keystone',", script)
         self.assertNotIn("/plugin install keystone@keystone',", script)
 
+    def test_footer_links_public_legal_and_support_pages(self) -> None:
+        html = INDEX.read_text(encoding="utf-8")
+
+        self.assertIn('href="/privacy/"', html)
+        self.assertIn('href="/terms/"', html)
+        self.assertIn('href="/support/"', html)
+
     def test_head_theme_bootstrap_survives_blocked_local_storage(self) -> None:
         html = INDEX.read_text(encoding="utf-8")
         inline_script = re.search(r"<script>\s*([\s\S]*?)\s*</script>", html)

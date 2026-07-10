@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_RELEASE_VERSION = "2.0.0"
+EXPECTED_RELEASE_VERSION = "2.0.1"
 EXPECTED_PUBLIC_SKILLS = {
     "change-review", "context-survey", "implementation", "product-planning",
     "project-audit", "refactoring", "root-cause-analysis", "shipping", "task-creation",
@@ -134,6 +134,23 @@ def metadata_errors(root: Path) -> list[str]:
                 errors.append(f"{rel} plugins[0].version must be {EXPECTED_RELEASE_VERSION}")
         if rel == ".codex-plugin/plugin.json" and data.get("skills") != "./skills/":
             errors.append(f'{rel} skills must be "./skills/"')
+        if rel == ".codex-plugin/plugin.json":
+            interface = data.get("interface", {})
+            expected_urls = {
+                "homepage": "https://keystone.staticvar.dev/",
+                "repository": "https://github.com/static-var/Keystone",
+            }
+            for field, expected in expected_urls.items():
+                if data.get(field) != expected:
+                    errors.append(f"{rel} {field} must be {expected}")
+            interface_urls = {
+                "websiteURL": "https://keystone.staticvar.dev/",
+                "privacyPolicyURL": "https://keystone.staticvar.dev/privacy/",
+                "termsOfServiceURL": "https://keystone.staticvar.dev/terms/",
+            }
+            for field, expected in interface_urls.items():
+                if interface.get(field) != expected:
+                    errors.append(f"{rel} interface.{field} must be {expected}")
     return errors
 
 

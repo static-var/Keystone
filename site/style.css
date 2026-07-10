@@ -202,6 +202,19 @@ footer div { display: flex; gap: 23px; }
 footer div a { color: #c9ccd3; text-decoration: none; }
 footer div a:hover { color: white; }
 
+.legal-main { width: min(820px, calc(100vw - 48px)); min-height: calc(100vh - 248px); margin: 0 auto; padding: 92px 0 120px; }
+.legal-main .overline { margin-bottom: 22px; }
+.legal-main h1 { font-size: clamp(54px, 7vw, 82px); line-height: .95; }
+.legal-updated { margin: 22px 0 54px; color: var(--muted); font: 11px var(--mono); }
+.legal-content { padding-top: 42px; border-top: 1px solid var(--ink); }
+.legal-content h2 { margin: 48px 0 16px; font: 600 18px/1.3 var(--sans); letter-spacing: -.02em; }
+.legal-content h2:first-child { margin-top: 0; }
+.legal-content p, .legal-content li { color: var(--muted); font-size: 15px; line-height: 1.75; }
+.legal-content p { margin: 0 0 16px; }
+.legal-content ul { margin: 0 0 18px; padding-left: 22px; }
+.legal-content a { color: var(--blue); text-underline-offset: 3px; }
+.legal-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 34px; }
+
 :root[data-theme='dark'] .brand img { filter: invert(1); }
 :root[data-theme='dark'] .site-header nav a,
 :root[data-theme='dark'] .header-action { color: #b1b7c5; }
@@ -290,6 +303,7 @@ footer div a:hover { color: white; }
   .install-tabs { padding: 9px; }
   .command-row { align-items: flex-start; flex-direction: column; }
   footer { padding: 55px 16px; grid-template-columns: 1fr; gap: 20px; }
+  .legal-main { width: calc(100vw - 32px); padding: 66px 0 90px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
