@@ -119,7 +119,7 @@ Keystone creates durable artifacts when the work has enough agreement or scope t
 | Artifact | Created by | Default path | Rule |
 |---|---|---|---|
 | Spec | `product-planning` | `docs/keystone/specs/YYYY-MM-DD-<slug>.md` | Create only after the user approves the plan details. Before approval, work in conversation. |
-| Task breakdown | `task-creation` | `docs/keystone/tasks/YYYY-MM-DD-<slug>.md` | Create from an approved spec, goal, or user request for tasks/tickets/phases. |
+| Task breakdown | `task-creation` | `docs/keystone/tasks/YYYY-MM-DD-<slug>.md` | Keep 1–5 top-level slices in conversation; create an artifact for 6 or more. Explicit chat/save requests override the threshold. |
 | Refactor doc | `refactoring` | `docs/keystone/refactors/YYYY-MM-DD-<slug>.md` | Create for large or cross-cutting refactors. Small local refactors may proceed after checks. |
 
 Implementation proof, review findings, audit results, and shipping notes may live in conversation unless the user or repository convention asks for a file.

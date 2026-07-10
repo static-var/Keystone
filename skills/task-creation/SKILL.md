@@ -149,7 +149,7 @@ For each proposed delegation, specify purpose, required analysis depth, context 
 ## Hard rules
 
 - Task Creation stops before implementation.
-- No file mutation unless the user explicitly requested a task-creation artifact and the artifact itself is in scope.
+- Task Creation mutates only the task artifact selected by the Task artifact rule.
 - Do not rename `task-creation` to `plan`.
 - Do not expose `/plan`.
 - Do not claim the task-creation proves completion.
@@ -246,4 +246,11 @@ Keep the output detailed enough to guide implementation and review, but short en
 
 ## Task artifact rule
 
-When the user asks for a durable task plan, write it under `docs/keystone/tasks/YYYY-MM-DD-<slug>.md`.
+Slice the work naturally before counting top-level vertical slices. Then choose delivery:
+
+- For 1–5 top-level vertical slices, return the full task creation in conversation without creating a file.
+- For 6 or more top-level vertical slices, write the task creation under `docs/keystone/tasks/YYYY-MM-DD-<slug>.md`.
+- An explicit request for chat only or conversation only keeps any length in conversation.
+- An explicit request to write or save the task creation produces the artifact at any length.
+
+Explicit delivery requests override the numeric threshold. When writing an artifact, return a concise summary and its path in conversation; do not duplicate the full task creation there.

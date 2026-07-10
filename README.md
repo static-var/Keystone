@@ -142,7 +142,7 @@ docs/keystone/tasks/YYYY-MM-DD-<slug>.md      # task-creation
 docs/keystone/refactors/YYYY-MM-DD-<slug>.md  # large or cross-cutting refactoring
 ```
 
-Before a plan is approved, `product-planning` works in conversation and asks focused questions instead of creating a spec file.
+Before a plan is approved, `product-planning` works in conversation and asks focused questions instead of creating a spec file. `task-creation` keeps 1–5 top-level slices in conversation and writes 6 or more to its default artifact path; explicit chat-only or save requests override that threshold.
 
 ## Explicit-only shipping
 
