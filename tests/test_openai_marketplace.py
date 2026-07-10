@@ -29,6 +29,8 @@ class OpenAIMarketplaceTests(unittest.TestCase):
         self.assertEqual("https://keystone.staticvar.dev/support/", interface["supportURL"])
         self.assertEqual("https://keystone.staticvar.dev/privacy/", interface["privacyPolicyURL"])
         self.assertEqual("https://keystone.staticvar.dev/terms/", interface["termsOfServiceURL"])
+        self.assertIn("helps developers", interface["longDescription"])
+        self.assertIn("shipping with evidence", interface["longDescription"])
 
     def test_submission_materials_match_portal_requirements(self) -> None:
         submission = json.loads(SUBMISSION.read_text())

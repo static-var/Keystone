@@ -3,7 +3,7 @@
   "listing": {
     "name": "Keystone",
     "shortDescription": "Plan, build, review, and ship",
-    "longDescription": "Keystone provides nine focused engineering skills for repository research, product planning, task creation, implementation, refactoring, root-cause analysis, change review, shipping, and project audits. Each skill keeps its phase boundaries explicit and requires evidence before completion claims.",
+    "longDescription": "Keystone helps developers move from ambiguity to verified delivery with 9 focused skills for understanding codebases, planning changes, implementing and refactoring safely, diagnosing failures, reviewing work, and shipping with evidence. Each skill keeps the current phase explicit, protects user-owned work, and requires proof before completion claims.",
     "category": "Developer Tools",
     "websiteURL": "https://keystone.staticvar.dev/",
     "supportURL": "https://keystone.staticvar.dev/support/",

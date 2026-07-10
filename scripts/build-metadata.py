@@ -93,7 +93,7 @@ def main() -> int:
         "interface": {
             "displayName": "Keystone",
             "shortDescription": "Plan, build, review, and ship",
-            "longDescription": f"Keystone ships {len(public_skills)} public engineering workflow skills. Skills are invoked directly by intent; there is no central command.",
+            "longDescription": f"Keystone helps developers move from ambiguity to verified delivery with {len(public_skills)} focused skills for understanding codebases, planning changes, implementing and refactoring safely, diagnosing failures, reviewing work, and shipping with evidence. Each skill keeps the current phase explicit, protects user-owned work, and requires proof before completion claims.",
             "developerName": "static-var",
             "category": "Developer Tools",
             "capabilities": ["Read", "Write", "Review", "Workflow"],
