@@ -3,6 +3,8 @@
 ## Purpose
 Confirm mutation can happen safely before the first file change.
 
+This file owns mutation-safety pass/fail. A mutation skill supplies its intended blast radius; it does not redefine workspace isolation.
+
 This gate protects user work, local experiments, and unrelated files. It is binary: either the workspace is isolated for the requested blast radius, or mutation stops.
 
 ## Required checks

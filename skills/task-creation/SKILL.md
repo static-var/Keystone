@@ -1,11 +1,16 @@
-# Keystone Breakdown Module
+---
+name: task-creation
+description: Use when the user wants implementation steps, task breakdown, tickets, issues, milestones, phases, vertical slices, sequencing, or agent-ready work from an approved goal or spec.
+---
+
+# Task Creation
 
 ## Core principle
-Breakdown turns a goal into sequenced, reviewable vertical slices of work.
+Task Creation turns a goal into sequenced, reviewable vertical slices of work.
 
-A good breakdown makes implementation easier because every slice has a visible result, clear constraints, and a verification path. It makes review easier because reviewers can compare changes against stated goals, requirements, risks, and acceptance checks.
+A good task-creation makes implementation easier because every slice has a visible result, clear constraints, and a verification path. It makes review easier because reviewers can compare changes against stated goals, requirements, risks, and acceptance checks.
 
-Breakdown is sequencing, not execution. A breakdown is not proof; only inspected changes, tests, demos, or other evidence prove completion.
+Task Creation is sequencing, not execution. A task-creation is not proof; only inspected changes, tests, demos, or other evidence prove completion.
 
 ## Load when
 Use this module when the user asks to:
@@ -18,19 +23,19 @@ Use this module when the user asks to:
 - sequence greenfield architecture after the core users, runtime, and tradeoffs are stable enough to slice
 - split a large task into reviewable chunks without exposing another public command
 
-Also load when implementation is requested but the goal is broad enough that coding immediately would hide major sequencing decisions. If behavior, scope, UX, or architecture tradeoffs are still undecided, route to `shape` first; use Breakdown once the desired outcome is stable enough to sequence.
+Also load when implementation is requested but the goal is broad enough that coding immediately would hide major sequencing decisions. If behavior, scope, UX, or architecture tradeoffs are still undecided, route to `product-planning` first; use Task Creation once the desired outcome is stable enough to sequence.
 
 ## Not for
-Do not use Breakdown for:
+Do not use Task Creation for:
 
 - implementation, file edits, refactors, migrations, or generated code
-- debugging a known failure; use `debug` first, then return to Breakdown if a repair sequence is needed
-- research-only tasks; use `research` first when facts are missing
-- copy/design shaping as the primary work; use `shape` first when output is prose, UX, or design direction
-- final verification, release readiness, or completion claims; use `review`, `health`, or `ship`
+- debugging a known failure; use `root-cause-analysis` first, then return to Task Creation if a repair sequence is needed
+- context-survey-only tasks; use `context-survey` first when facts are missing
+- copy/design shaping as the primary work; use `product-planning` first when output is prose, UX, or design direction
+- final verification, release readiness, or completion claims; use `change-review`, `project-audit`, or `shipping`
 
 ## Outcome contract
-A Breakdown output must include:
+A Task Creation output must include:
 
 1. Goal: the intended outcome in one or two sentences.
 2. Context inspected: files, docs, requirements, or assumptions used.
@@ -42,21 +47,21 @@ A Breakdown output must include:
 8. Risks and dependencies: what can block, invalidate, or reorder the work.
 9. Handoff: recommended next primary module and any subagent/analysis-depth suggestions.
 
-If information is missing, state the assumption or ask the smallest set of questions required to avoid a bad breakdown.
+If information is missing, state the assumption or ask the smallest set of questions required to avoid a bad task-creation.
 
 ## Modes
 
-### Feature breakdown
+### Feature task-creation
 Use for new capabilities in an existing product. Focus on the user/operator goal, existing entry points, data paths, APIs, UI surfaces, tests, deployment constraints, and the smallest end-to-end slice that proves the feature path. Add progressive enrichment after the core loop works. Avoid horizontal buckets like "database", "backend", "frontend", and "tests" unless they are nested inside a vertical slice.
 
-### Greenfield architecture breakdown
+### Greenfield architecture task-creation
 Use for new projects, tools, services, apps, packages, or substantial standalone systems. Start architecture-first: name the primary users, runtime, language, framework, hosting, storage, auth, observability, CI, packaging constraints, system boundaries, and integration points. Iteration 1 should prove the architecture can run, test, deploy, and support one meaningful vertical path, not merely create folders.
 
-### Refactor/migration breakdown
+### Refactor/migration task-creation
 Use when behavior should remain stable while internals change. Focus on the current behavior contract, compatibility expectations, affected surfaces, consumers, migration seams, adapters, flags, dual-run paths, rollback strategy, observability, and characterization tests. Prefer strangler-style or seam-first slices over broad rewrites.
 
-### Subagent-parallel breakdown
-Use when independent workstreams can proceed safely in isolated workspaces. Build the dependency graph before delegation. Name shared files, interfaces, merge-risk hotspots, delegation purpose, required analysis depth, context packets, expected artifacts, integration order, and review checkpoints. Only parallelize slices that can be verified independently or integrated behind a clear contract.
+### Subagent-parallel task-creation
+Use when independent workstreams can proceed safely in isolated workspaces. Map the dependency graph before delegation. Name shared files, interfaces, merge-risk hotspots, delegation purpose, required analysis depth, context packets, expected artifacts, integration order, and review checkpoints. Only parallelize slices that can be verified independently or integrated behind a clear contract.
 
 ## Process
 
@@ -66,8 +71,8 @@ Use when independent workstreams can proceed safely in isolated workspaces. Buil
    - If the goal is unclear and cannot be inferred from context, ask one focused question.
 2. Inspect before asking broad questions.
    - Read relevant files, docs, issues, architecture notes, tests, package manifests, and existing modules when available.
-   - Use `research` for unfamiliar libraries, external constraints, or repository-wide discovery.
-   - Ask clarifying questions only when inspection cannot resolve a decision that materially changes the breakdown.
+   - Use `context-survey` for unfamiliar libraries, external constraints, or repository-wide discovery.
+   - Ask clarifying questions only when inspection cannot resolve a decision that materially changes the task-creation.
 3. Build the requirements inventory.
    - Separate critical requirements from non-functional requirements and good-to-haves.
    - Capture explicit user constraints, protected files, deadlines, compatibility needs, and review expectations.
@@ -129,12 +134,12 @@ Each task or slice must have:
 - rollback or safety note when risk is non-trivial
 - review focus: what a reviewer should inspect
 
-A weak task says "build backend" or "add tests". A strong slice says "Persist saved searches end-to-end behind the existing search UI, with API validation, storage migration, and regression coverage for loading saved searches."
+A weak task says "implementation backend" or "add tests". A strong slice says "Persist saved searches end-to-end behind the existing search UI, with API validation, storage migration, and regression coverage for loading saved searches."
 
 ## Subagents and reasoning
 Use subagents when sequencing benefits from independent context gathering, critique, or parallel workstream design and the active host exposes safe delegation:
 
-- read-only research on separate code areas, external APIs, or prior art
+- read-only context-survey on separate code areas, external APIs, or prior art
 - architecture critique for greenfield foundations and migrations
 - risk critique for security, data loss, compatibility, or release sequencing
 - implementation delegation only after slices are independent and interfaces are stable
@@ -143,16 +148,16 @@ For each proposed delegation, specify purpose, required analysis depth, context 
 
 ## Hard rules
 
-- No implementation under Breakdown.
-- No file mutation unless the user explicitly requested a breakdown artifact and the artifact itself is in scope.
-- Do not rename `breakdown` to `plan`.
+- Task Creation stops before implementation.
+- No file mutation unless the user explicitly requested a task-creation artifact and the artifact itself is in scope.
+- Do not rename `task-creation` to `plan`.
 - Do not expose `/plan`.
-- Do not claim the breakdown proves completion.
+- Do not claim the task-creation proves completion.
 - Do not skip goal identification.
 - Do not ask broad clarifying questions before inspecting available context.
-- Do not produce horizontal-only breakdowns.
+- Do not produce horizontal-only task-creations.
 - Do not hide assumptions, unresolved questions, or conflicts.
-- Do not route risky breakdowns directly to `build` without verification gates and review points.
+- Route risky task sets through `implementation` with explicit verification gates and change-review points.
 
 ## Failure modes
 
@@ -162,15 +167,15 @@ For each proposed delegation, specify purpose, required analysis depth, context 
 - Faux certainty: treats assumptions as facts.
 - Question spam: asks what inspection could answer.
 - Implementation leak: starts coding, editing files, or choosing exact code structure beyond sequencing needs.
-- Review-hostile output: lacks acceptance criteria, test commands, or reviewer focus.
+- Change Review-hostile output: lacks acceptance criteria, test commands, or reviewer focus.
 - Parallelism theater: delegates coupled workstreams that collide on shared files or undefined interfaces.
-- Breakdown-as-proof: reports success because a breakdown exists.
+- Task Creation-as-proof: reports success because a task-creation exists.
 
 ## Output format
 Use this structure unless the user requested a different artifact. For small contained tasks, compress sections while preserving goal, assumptions, slices, verification, risks, and handoff:
 
 ```markdown
-# Breakdown: <goal>
+# Task Creation: <goal>
 
 ## Goal
 <one or two sentences describing the desired outcome>
@@ -196,7 +201,7 @@ Use this structure unless the user requested a different artifact. For small con
 
 ### Unknowns and assumptions
 - Unknown: <question that matters>
-- Assumption: <assumption used for this breakdown>
+- Assumption: <assumption used for this task-creation>
 
 ## Iteration layering
 ### Iteration 1: <core path / architecture skeleton / safety seam>
@@ -221,7 +226,7 @@ Use this structure unless the user requested a different artifact. For small con
    - Dependencies: <prior slices or decisions>
    - Acceptance: <observable completion criteria>
    - Verification: <test/review/demo method>
-   - Review focus: <what reviewers should inspect>
+   - Change Review focus: <what reviewers should inspect>
 
 ## Risks and dependencies
 - <risk, impact, mitigation>
@@ -230,11 +235,15 @@ Use this structure unless the user requested a different artifact. For small con
 - <delegation purpose, required analysis depth, context packet, expected artifact>
 
 ## Handoff
-Next module: `<research|build|debug|review|health|ship|shape>` because <reason>.
+Next module: `<context-survey|implementation|root-cause-analysis|change-review|project-audit|shipping|product-planning>` because <reason>.
 
 ### Checkpoint
-Use the required fields from `gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```
 
 Keep the output detailed enough to guide implementation and review, but short enough that each slice remains actionable.
+
+## Task artifact rule
+
+When the user asks for a durable task plan, write it under `docs/keystone/tasks/YYYY-MM-DD-<slug>.md`.

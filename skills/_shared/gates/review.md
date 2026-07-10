@@ -3,6 +3,8 @@
 ## Purpose
 Confirm work has received the required review before finalization.
 
+This file owns review pass/fail. `change-review` performs the review and produces its evidence; consuming skills only decide when that evidence is required.
+
 Review is evidence, not a feeling. This gate separates blocking findings from non-blocking follow-ups and prevents shipping work that needs independent review.
 
 This gate is binary: pass or fail.

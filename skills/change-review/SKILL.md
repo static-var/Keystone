@@ -1,6 +1,12 @@
-# Keystone Review Module
+---
+name: change-review
+description: Use when the user asks for code review, change review, diff/branch/PR review, regression review, readiness assessment, critique, or blocker finding without edits.
+---
+
+# Change Review
+
 ## Core principle
-Review is an independent, read-only attempt to disprove readiness.
+Change Review is an independent, read-only attempt to disprove readiness.
 
 Ask two questions at the same time:
 1. **Spec axis:** does the work satisfy the stated requirements and acceptance criteria?
@@ -14,18 +20,18 @@ Load when the user asks for code review, critique, audit, readiness assessment,
 release/merge review, security review, regression review, or review of a diff, branch,
 PR, patch, migration, fix, plan output, or completed implementation.
 
-Also load when another Keystone module needs `gates/review.md` satisfied before ship.
+Also load when another Keystone skill needs `../_shared/gates/review.md` satisfied before shipping.
 
 ## Not for
-Do not use Review for:
+Do not use Change Review for:
 - fixing, refactoring, formatting, or rewriting code
 - committing, merging, tagging, publishing, or shipping
 - initial implementation planning before a reviewable artifact exists
-- open-ended research with no concrete artifact to assess
+- open-ended context-survey with no concrete artifact to assess
 - debugging where the requested outcome is a fix
 
-If asked to review and fix, review first, stop, and hand findings to `build`, `debug`,
-`research`, `ship`, or a human only after explicit permission.
+If asked to review and fix, review first, stop, and hand findings to `implementation`, `root-cause-analysis`,
+`context-survey`, `shipping`, or a human only after explicit permission.
 
 ## Outcome contract
 A complete review returns:
@@ -40,7 +46,7 @@ A complete review returns:
 The review is incomplete if it only inspects the diff, only comments on style, or
 cannot explain how the work behaves at runtime.
 
-## Review passes
+## Change Review passes
 Perform multiple passes. New evidence from one pass expands later passes.
 ### Pass 0: scope and baseline
 - Identify artifact reviewed: diff, branch, files, release candidate, or plan result.
@@ -120,7 +126,7 @@ Examples:
 - migration or compatibility gap that can break real deployments
 - high-risk behavior lacking tests plus a plausible failure mode
 
-P1 normally blocks ship.
+P1 normally blocks shipping.
 
 ### P2: Important non-blocker or conditional blocker
 Material issue with bounded impact, lower likelihood, or workaround. Examples:
@@ -187,9 +193,8 @@ patches. Reconcile duplicates and conflicts before reporting. The primary review
 owns final severity and verdict.
 
 ## Hard rules
-- Read-only only: do not edit, format, generate, stage, commit, merge, tag, publish,
-  or ship files.
-- Do not silently fix issues discovered during review.
+- Read-only: inspect files without editing, formatting, generating, staging, committing, merging, tagging, or publishing them.
+- Report issues without silently fixing them.
 - Do not run destructive or project-mutating commands.
 - Do not rely only on changed lines; inspect impacted code paths and contracts.
 - Do not approve solely because tests pass.
@@ -197,8 +202,9 @@ owns final severity and verdict.
 - Do not bury blockers under minor comments.
 - Do not disguise style preferences as correctness findings.
 - Do not omit needed tests when behavior changed.
-- Do not satisfy `gates/review.md` unless blockers and non-blockers are separated.
-- Run the checkpoint gate before the final response; if review passes and delivery/finalization was requested, route to `ship` or leave an explicit ship prompt.
+- Do not satisfy `../_shared/gates/review.md` unless blockers and non-blockers are separated.
+- Load `../_shared/gates/review.md` before the verdict; Change Review owns the review execution and supplies the gate evidence.
+- Run the checkpoint gate before the final response; if review passes and delivery/finalization was requested, route to `shipping` or leave an explicit shipping prompt.
 
 ## Failure modes
 Avoid these anti-patterns:
@@ -212,7 +218,7 @@ Avoid these anti-patterns:
 - **Severity deflation:** downgrading real user harm because the fix is small.
 - **Patch creep:** fixing, refactoring, or committing instead of reviewing.
 - **Unowned uncertainty:** failing to state what was not verified.
-- **Lost next event:** Review passes but never routes or prompts for `ship` when finalization remains.
+- **Lost next event:** Change Review passes but never routes or prompts for `shipping` when finalization remains.
 
 ## Output format
 Worked finding example:
@@ -263,12 +269,16 @@ None
 ## Handoff
 - Blockers:
 - Non-blocking follow-up:
-- Suggested owner module: build, debug, research, ship, or human
+- Suggested owner module: implementation, root-cause-analysis, context-survey, shipping, or human
 
 ### Checkpoint
-Use the required fields from `gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```
 
 If a severity has no findings, write `None`. Recommendations must be actionable but
-must not be applied by Review.
+must not be applied by Change Review.
+
+## Shared standards
+
+For architecture-sensitive or code-quality-sensitive work, load `../_shared/engineering-standards.md` and apply it as reference, not dogma.

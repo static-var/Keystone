@@ -11,7 +11,7 @@
         "name": "static-var"
       },
       "category": "productivity",
-      "description": "Use when the user invokes /keystone or explicitly asks Keystone to route work.",
+      "description": "Keystone proactive multi-skill AI engineering workflows for planning, implementation, review, shipping, and maintenance.",
       "name": "keystone",
       "source": "./",
       "tags": [
@@ -21,8 +21,8 @@
         "review",
         "planning"
       ],
-      "version": "1.1.2"
+      "version": "2.0.0"
     }
   ],
-  "version": "1.1.2"
+  "version": "2.0.0"
 }

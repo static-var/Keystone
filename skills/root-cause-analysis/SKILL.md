@@ -1,7 +1,12 @@
-# Keystone Debug Module
+---
+name: root-cause-analysis
+description: Use when the user reports a bug, regression, failing test, error, flaky behavior, unexpected output, broken workflow, suspicious logs, performance anomaly, or asks for RCA/root cause.
+---
+
+# Root-Cause Analysis
 
 ## Core principle
-Find the root cause before fixing. Debugging is an evidence ladder: observe the failure, reproduce it, minimize it, trace the mechanism, test falsifiable hypotheses, prove the cause, fix narrowly, guard against regression, verify with exact output, and clean up. No guess-and-check, no cargo-cult edits, no shipping/finalization work.
+Find the root cause before fixing. Root-cause analysis is an evidence ladder: observe the failure, reproduce it, minimize it, trace the mechanism, test falsifiable hypotheses, prove the cause, fix narrowly, guard against regression, verify with exact output, and clean up. No guess-and-check, no cargo-cult edits, no shipping/finalization work.
 
 ## Load when
 Load when the user reports an error, failing test, broken behavior, regression, flaky result, performance anomaly, unexpected output, integration failure, suspicious logs, silent failure, data corruption, or asks to troubleshoot why something happened.
@@ -15,13 +20,13 @@ Also load when the task involves:
 ## Not for
 - Implementing new behavior unrelated to the failure.
 - General code improvements without a reproduced problem.
-- Shipping, release finalization, merge strategy, or deployment handoff; use `ship` after proof/review.
-- Broad repository audits; use `health`.
-- Spec decisions where no failure exists; use `shape`.
+- Release finalization, merge strategy, or deployment handoff; use `shipping` after proof and review.
+- Broad repository audits; use `project-audit`.
+- Spec decisions where no failure exists; use `product-planning`.
 - Replacing review, test strategy, or gate validation modules.
 
 ## Outcome contract
-Deliver a debug report with:
+Deliver a root-cause analysis report with:
 - symptom, impact, affected users/systems, and failure classification;
 - reproduction steps, exact command/input/environment, or why reproduction was not possible;
 - minimized failing case when feasible, including what was removed and what still fails;
@@ -58,9 +63,9 @@ Stop only when one of these is true:
 6. **Trace/instrument narrowly.** Add the smallest temporary diagnostic that can confirm or falsify a hypothesis. Prefer assertions, structured logs, counters, spans, query plans, snapshots, or deterministic seeds over broad logging.
 7. **Form falsifiable hypotheses.** A good hypothesis names a mechanism and prediction. Test one at a time. Record disproven hypotheses instead of silently abandoning them.
 8. **Prove the root cause.** Show that the cause explains the symptom, reproduces or predicts the failure, and that removing/changing the cause removes the failure. Symptoms alone are not proof.
-9. **Fix narrowly.** Change only the code/config/data handling required by the proven cause. Avoid opportunistic refactors, rewrites, or unrelated cleanup.
+9. **Fix narrowly.** When this branch will mutate files, load and pass `../_shared/gates/isolation.md`, then load `../_shared/gates/red.md` and satisfy its observed-red or exception contract before the fix. Change only what the proven cause requires.
 10. **Add a regression guard.** Prefer a failing-before/passing-after test. If impractical, add an assertion, monitor, fixture, replay, seed, contract test, migration check, or documented manual proof.
-11. **Verify with exact output.** Run focused verification first, then broader commands if risk warrants. Capture command names and result snippets, not just “tests pass.”
+11. **Verify with exact output.** For a mutated fix, load and pass `../_shared/gates/proof.md`; run focused verification first, then broader commands if risk warrants.
 12. **Clean up.** Remove temporary diagnostics, revert failed experiments, leave useful permanent observability only when justified, and report remaining uncertainty.
 
 Branch checklists:
@@ -122,11 +127,11 @@ Subagents may inspect and reason independently, but fixes should converge on one
 - **Instrumentation Heisenbug:** diagnostics change timing, ordering, load, or state enough to hide the failure.
 - **First-bad-commit tunnel vision:** assuming bisect output is the mechanism without proof.
 - **Boundary blame ping-pong:** assuming another service owns the issue without request-level evidence.
-- **Diagnostic litter:** leaving logs, probes, sleeps, flags, generated data, or debug-only state behind.
+- **Diagnostic litter:** leaving logs, probes, sleeps, flags, generated data, or diagnosis-only state behind.
 
 ## Output format
 ```markdown
-## Debug report
+## Root-Cause Analysis report
 Symptom: ...
 Impact/scope: ...
 Failure classification: ...
@@ -166,6 +171,6 @@ Stop condition: fixed / blocked / escalated ...
 - Escalation needed, if any: ...
 
 ### Checkpoint
-Use the required fields from `gates/checkpoint.md`.
+Use the required fields from `../_shared/gates/checkpoint.md`.
 
 ```

@@ -1,52 +1,58 @@
-# Keystone Build Module
+---
+name: implementation
+description: Use when the user asks to implement, add, change, edit, update, wire, migrate, fix after diagnosis, or execute approved scoped code/content/config/documentation changes.
+---
+
+# Implementation
 
 ## Core principle
 
-Build changes through evidence, not vibes: isolate first, specify the next observable behavior, prove the test can fail, make the smallest correct change, then refactor without changing behavior.
+Implementation changes through evidence, not vibes: isolate first, specify the next observable behavior, prove the test can fail, make the smallest correct change, then refactor without changing behavior.
 
-Build is the mutation module. It may edit scoped project artifacts after the isolation gate passes, but it does not decide that work is shipped. Completion means "implemented with proof and handed to a review/ship checkpoint," not finalized.
+Implementation is the mutation module. It may edit scoped project artifacts after the isolation gate passes, but it does not decide that work is shipped. Completion means "implemented with proof and handed to a change-review/shipping checkpoint," not finalized.
 
 ## Load when
 
-Use Build when the user asks to:
+Use Implementation when the user asks to:
 
 - implement, create, edit, or wire behavior
 - add a feature, screen, endpoint, command, migration, or integration
 - refactor existing code while preserving behavior
 - change architecture, module boundaries, interfaces, or contracts
-- apply an approved plan from `breakdown`
+- apply an approved plan from `task-creation`
 - delegate independent implementation work when a subagent tool is available
 - make focused content or configuration changes that require mutation
 
 ## Not for
 
-Do not use Build for:
+Do not use Implementation for:
 
-- routing unclear work: use `router`
-- researching unknowns without mutation: use `research`
-- shaping requirements or acceptance criteria: use `shape`
-- decomposing large work before implementation: use `breakdown`
-- diagnosing a failure whose cause is unknown: use `debug`
-- reviewing completed changes: use `review`
-- releasing, merging, publishing, or finalizing: use `ship`
+- routing unclear work: use `context-survey`
+- context-surveying unknowns without mutation: use `context-survey`
+- shaping requirements or acceptance criteria: use `product-planning`
+- decomposing large work before implementation: use `task-creation`
+- diagnosing a failure whose cause is unknown: use `root-cause-analysis`
+- reviewing completed changes: use `change-review`
+- releasing, merging, publishing, or finalizing: use `shipping`
 
 ## Outcome contract
 
-Before Build exits, it must be able to report:
+Before Implementation exits, it must be able to report:
 
-- isolation was checked before the first mutation via `gates/isolation.md`
+- isolation was checked before the first mutation via `../_shared/gates/isolation.md`
 - the exact user scope and protected files were respected
 - the intended behavior or refactor invariant is stated plainly
 - tests, examples, or checks prove the change, or gaps are explicitly disclosed
-- red-capable tests were used for behavior changes whenever practical
+- `../_shared/gates/red.md` passed for behavior changes
+- `../_shared/gates/proof.md` passed before any success claim
 - delegated work, if any, was verified by the parent before acceptance
-- `modules/gates/checkpoint.md` decided the next required event
+- `../_shared/gates/checkpoint.md` decided the next required event
 
-Build must not claim work is done because code "looks right." Proof and an explicit review/ship checkpoint are required before completion claims.
+Implementation must not claim work is done because code "looks right." Proof and an explicit change-review/shipping checkpoint are required before completion claims.
 
 ## Modes
 
-### TDD feature build
+### TDD feature implementation
 
 Use when adding or changing observable behavior.
 
@@ -60,9 +66,7 @@ Contract:
 - run relevant regression checks
 - refactor only while checks stay green
 
-Prefer tests that exercise real behavior over tests that only verify mocks, implementation details, or snapshots. If a failing test cannot be created, state why and use the strongest available proof.
-
-TDD exceptions are rare but real. When a red-capable automated test is impractical, state the reason before editing and write an alternative proof plan. Acceptable cases include documentation-only edits, generated files, one-off migrations where rollback is the proof, external systems unavailable in the environment, exploratory spikes that will be thrown away, or emergency config changes. The alternative proof plan must name the observable check, manual verification, diff review, sample input/output, dry run, or rollback validation that will replace red/green.
+Load and pass `../_shared/gates/red.md` for the red signal or its explicit exception. Prefer checks that exercise real behavior over mocks, implementation details, or snapshots.
 
 ### Refactor
 
@@ -75,7 +79,7 @@ Contract:
 - make small mechanical changes first
 - keep public contracts stable unless the user requested a contract change
 - run regression checks before and after meaningful refactor steps
-- stop if behavior questions appear; route back to `shape` or `debug` as needed
+- stop if behavior questions appear; route back to `product-planning` or `root-cause-analysis` as needed
 
 A characterization test captures what the current system does before you change structure. It is not a claim that current behavior is ideal; it is a tripwire that prevents accidental behavior changes while refactoring. Write it around externally visible behavior, important edge cases, or bug-compatible outputs that must stay stable until the user approves a behavior change.
 
@@ -83,7 +87,7 @@ Concise example: before extracting invoice total formatting, add a test that `re
 
 Refactoring is not a license to redesign everything nearby.
 
-### Architecture-sensitive build
+### Architecture-sensitive implementation
 
 Use when the change affects boundaries, state management, cross-module dependencies, platform conventions, or long-lived maintainability.
 
@@ -109,7 +113,7 @@ Architecture pressure-test:
 - **SOLID check:** one reason to change; known variation handled safely; substitutes honor contracts; callers avoid unused surface; high-level policies depend on stable abstractions only at real boundaries.
 - Smell stop-list: god functions, vague managers/helpers, hidden control flow, stringly APIs, layer violations, speculative interfaces.
 
-### Delegated/parallel build
+### Delegated/parallel implementation
 
 Use when two or more implementation slices are independent enough to proceed without shared mutable state or ambiguous ownership.
 
@@ -141,10 +145,10 @@ Report: files changed, verification output, risks/gaps
 1. Confirm scope.
    - Restate the requested mutation in one sentence.
    - Identify protected files and out-of-scope behavior.
-   - If scope is unsafe or ambiguous, ask one focused question or route to `shape`.
+   - If scope is unsafe or ambiguous, ask one focused question or route to `product-planning`.
 
 2. Pass isolation before mutation.
-   - Load/check `gates/isolation.md`.
+   - Load/check `../_shared/gates/isolation.md`.
    - Know the workspace, branch/worktree state, and dirty files.
    - Stop if unrelated changes could be overwritten.
 
@@ -154,11 +158,9 @@ Report: files changed, verification output, risks/gaps
    - Write the smallest observable behavior, invariant, or contract.
    - Avoid "make it better" as an implementation target.
 
-5. Establish proof before code.
-   - For behavior changes, create or identify a red-capable test/check.
-   - Run the focused check and confirm the failure would pass only for the intended change.
+5. Establish the signal before code.
+   - For behavior changes, load and pass `../_shared/gates/red.md` before editing.
    - For refactors, establish characterization or regression coverage.
-   - If proof is impossible in the environment, record the limitation before editing and use an alternative proof plan.
 
 6. Implement the smallest correct slice.
    - Edit only files in scope.
@@ -168,7 +170,7 @@ Report: files changed, verification output, risks/gaps
 
 7. Green.
    - Run the focused test/check.
-   - If it fails unexpectedly, use `debug`; do not stack guesses.
+   - If it fails unexpectedly, use `root-cause-analysis`; do not stack guesses.
 
 8. Refactor.
    - Remove duplication introduced by the slice.
@@ -176,8 +178,7 @@ Report: files changed, verification output, risks/gaps
    - Keep tests green after cleanup.
 
 9. Regression check.
-   - Run the most focused relevant suite available.
-   - Never replace verification with a summary.
+   - Load and pass `../_shared/gates/proof.md` against the intended outcome.
 
 10. Early smell check.
    - Stop and simplify if the diff hits the architecture smell stop-list.
@@ -186,12 +187,12 @@ Report: files changed, verification output, risks/gaps
    - For architecture-sensitive changes, answer the inline pressure-test and remove abstractions that do not survive it.
 
 12. Checkpoint and handoff.
-   - Load/check `gates/checkpoint.md`.
+   - Load/check `../_shared/gates/checkpoint.md`.
    - Summarize changed files and behavior.
    - Include commands run and results.
    - Disclose unverified areas.
-   - Decide whether `review` is required now, can be satisfied by self-review, or must be left as a pending review pointer.
-   - If review is required and Keystone can safely continue, hand off to `review` before the final response. If not, ask the user or include the pending review pointer from `gates/review.md`.
+   - Decide whether `change-review` is required now, can be satisfied by self-review, or must be left as a pending review pointer.
+   - If review is required and Keystone can safely continue, hand off to `change-review` before the final response. If not, ask the user or include the pending review pointer from `../_shared/gates/review.md`.
 
 ## Subagents and reasoning
 
@@ -217,10 +218,10 @@ Verify delegated work by:
 
 ## Hard rules
 
-- Build must pass `gates/isolation.md` before the first mutation.
-- Build must not ship, merge, publish, release, or finalize work.
-- Build must run the checkpoint gate before any final response.
-- After mutation, Build must not stop at “implemented” when review remains; continue to `review` when safe or leave an explicit review prompt/pending pointer.
+- Implementation must pass `../_shared/gates/isolation.md` before the first mutation.
+- Implementation must not ship, merge, publish, release, or finalize work.
+- Implementation must run the checkpoint gate before any final response.
+- After mutation, Implementation must not stop at “implemented” when review remains; continue to `change-review` when safe or leave an explicit review prompt/pending pointer.
 - Do not edit files outside the user's scope.
 - Do not claim completion without proof or explicit disclosure of missing proof.
 - Do not skip red/green/refactor for behavior changes unless there is a stated, practical reason and alternative proof plan.
@@ -245,17 +246,21 @@ Watch for these and correct course:
 - **Speculative interface:** abstraction exists for imagined future variants, not current pressure.
 - **Ambiguous delegation:** workers receive goals like "improve this" without contracts or boundaries.
 - **Unverified handoff:** delegated changes are accepted from a summary alone.
-- **Finalization leak:** Build says work is shipped, merged, or ready for users instead of ready for review/ship.
-- **Lost next event:** Build ends with “done” or only a passive Next line while review, ship, or a user approval is still required.
+- **Finalization leak:** Implementation says work is shipped, merged, or ready for users instead of ready for change-review/shipping.
+- **Lost next event:** Implementation ends with “done” or only a passive Next line while change-review, shipping, or a user approval is still required.
 
 ## Output format
 
-When handing back from Build, respond with these sections, including `### Checkpoint`:
+When handing back from Implementation, respond with these sections, including `### Checkpoint`:
 
 - `Summary`: what changed, in bullets
 - `Files changed`: exact paths
 - `Verification`: commands/checks run and results
 - `Delegation`: subagents used, contracts passed, and how their work was verified; or `none`
 - `Risks / gaps`: anything unverified, deferred, or worth reviewing
-- `### Checkpoint`: current module, completed gates, next required module, next check, action (`continue now`, `ask user`, `pending pointer`, or `stop`)
-- `Next`: usually `review` or `ship`, phrased as an action/prompt or already-executed handoff; never a claim that Build finalized the work
+- `### Checkpoint`: current skill, completed gates, next required skill, next check, action (`continue now`, `ask user`, `pending pointer`, or `stop`)
+- `Next`: usually `change-review` or `shipping`, phrased as an action/prompt or already-executed handoff; never a claim that Implementation finalized the work
+
+## Shared standards
+
+For architecture-sensitive or code-quality-sensitive work, load `../_shared/engineering-standards.md` and apply it as reference, not dogma.

@@ -3,6 +3,8 @@
 ## Purpose
 Ensure finalization happens only after completed, verified, reviewed work is ready for delivery.
 
+This file owns finalization pass/fail. `shipping` gathers the delivery-specific evidence and executes explicitly authorized mechanics; it does not redefine readiness.
+
 Shipping is a handoff decision. This gate confirms the work can be understood, verified, rolled back, and continued by someone else. It is binary: ready to hand off or not ready.
 
 ## Required checks
@@ -40,7 +42,7 @@ Rollback: Revert this docs-only change; no migration or runtime state.
 Follow-ups: Confirm wording matches Keystone doctrine before next release.
 ```
 
-Pending review is not a passing ship note. If required review is pending, fail this gate and route to `gates/review.md` or the Review module first.
+Pending review is not a passing ship note. If required review is pending, fail this gate and route to `review.md` or the `change-review` skill first.
 
 ## Pass condition
 Pass only when proof, review, delivery notes, rollback/handoff evidence, and scope compliance are all present.
@@ -55,5 +57,5 @@ Missing review: <none or details>
 Missing delivery notes: <none or details>
 Rollback/handoff gap: <none or details>
 Scope violation or stealth fix risk: <none or details>
-Required next action: <which gate/module to run before shipping>
+Required next action: <which gate or skill to run before shipping>
 ```

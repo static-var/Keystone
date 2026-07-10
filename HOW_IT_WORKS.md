@@ -1,22 +1,20 @@
 # How Keystone Works
 
-Keystone is easiest to understand as a building with one front door and many private rooms.
+Keystone is one complete package: nine public workflow skills backed by one shared internal gate tree. Each public skill names a phase of work, carries that phase's contract, and can hand off to another skill when the evidence says the job has changed.
 
-The front door is `/keystone`. The private rooms are internal modules. The gates are checkpoints that stop the agent from doing risky work too early.
+There is no central routing layer. Keystone relies on strong model-visible skill descriptions and direct slash commands so the host can load the right workflow from the user's intent.
 
 ## The short version
 
 Keystone does five things:
 
-1. **Receives a request** through one public skill: `/keystone`.
-2. **Routes the request** to exactly one internal module.
-3. **Applies that module's contract** so the agent knows what it may and may not do.
-4. **Loads gates only when needed** to protect mutation, verification, review, and shipping.
-5. **Hands off cleanly** to the next module when the work changes shape.
+1. **Exposes nine public skills** for the major phases of agent work.
+2. **Lets the host or user choose the phase** from natural language or a matching command.
+3. **Applies that skill's contract** so the agent knows its scope, boundaries, and completion criteria.
+4. **Loads shared gates and standards** when mutation, proof, review, or shipping risk appears.
+5. **Hands off with a packet** when another phase should continue the work.
 
-When the host supports subagents, Keystone can delegate bounded work with the right analysis depth. When the host does not support explicit reasoning controls, Keystone encodes the desired depth in the task prompt instead of treating it as a guaranteed setting.
-
-This keeps the agent from mixing jobs. Planning stays planning. Building stays building. Review stays read-only. Shipping only happens after proof and review.
+This keeps the agent from mixing jobs. Survey stays evidence-gathering. Planning stays planning. Implementation changes files. Review stays read-only. Shipping only runs when the user explicitly asks for finalization.
 
 ## Why Keystone exists
 
@@ -26,186 +24,137 @@ Agent workflows often fail for predictable reasons:
 - a plan is treated as proof of completion
 - review turns into implementation
 - shipping happens before verification
-- the agent finishes a build and forgets the review/ship handoff
-- too many public commands overlap and conflict
-- platform-specific packaging drifts away from the real source
+- the agent finishes a build and forgets the review or handoff
+- platform-specific packaging drifts away from source
 
-Keystone counters those failures with a small public surface and explicit internal contracts.
+Keystone counters those failures with public phase skills, shared gates, and explicit delivery boundaries.
 
-## The public surface
+## Public skill graph
 
-There is one public skill:
+The public skills are peers with their own model-visible triggers:
 
-```text
-skills/keystone/SKILL.md
-```
-
-That file is the only public entrypoint. Users invoke Keystone with `/keystone`. In hosts that support model-discovered skills, an explicit natural-language request for Keystone to route work may also discover Keystone, but it is not a separate public entrypoint.
-
-Everything else in the shipped skill is internal:
-
-```text
-skills/keystone/modules/*.md
-skills/keystone/modules/gates/*.md
-```
-
-Internal modules are named in the public skill, but they are not separate slash commands.
-
-Maintainer-only notes may live elsewhere in the repository, such as `maintainers/skill-engineering.md`. Those files are not part of the shipped product.
-
-## Request lifecycle
-
-```text
-1. User asks for work
-       │
-       ▼
-2. Keystone public skill loads
-       │
-       ▼
-3. Router selects one primary module
-       │
-       ▼
-4. The module contract controls the work
-       │
-       ▼
-5. Gates run only if the module needs them
-       │
-       ▼
-6. Checkpoint gate decides continue / ask / pending pointer / stop
-       │
-       ▼
-7. Keystone reports result or hands off to the next module
-```
-
-The important phrase is **one primary module**. Keystone avoids blending roles unless a module explicitly hands off. Before any final response, the checkpoint gate makes the next event explicit so a completed build cannot silently skip review.
-
-## Modules
-
-Each module has the same shape:
-
-- **Intent:** what the module is for
-- **Load when:** when Keystone should choose it
-- **Allowed mutation:** what files or artifacts it may change
-- **Must not:** hard boundaries
-- **May call:** allowed handoffs or gates
-- **Handoff:** what it should report when done
-- **Exit gate:** what must be true before leaving the module
-
-### Module catalogue
-
-| Module | Job | Hard boundary |
+| Skill | Loads when the user asks to... | Usually hands off to... |
 |---|---|---|
-| `router` | Choose the right module | Does not do the work itself |
-| `research` | Inspect, summarize, gather evidence, and compare options | Does not edit or present guesses as facts |
-| `shape` | Draft prose, shape product direction, UI/UX, visual direction, and scope | Does not implement or treat a spec as proof |
-| `breakdown` | Convert approved direction into ordered tasks | Is not named `plan` |
-| `build` | Mutate scoped files | Must pass isolation before first mutation |
-| `debug` | Diagnose failures from evidence | Does not guess fixes |
-| `review` | Evaluate work without changing it | Read-only: no fixes, commits, or shipping |
-| `ship` | Finalize completed work | Does not start new implementation |
-| `health` | Assess project/tooling condition | Does not silently fix issues |
+| `context-survey` | inspect, research, summarize, inventory, compare, validate claims, or answer what is true | `product-planning`, `task-creation`, `project-audit` |
+| `product-planning` | brainstorm, shape product/UX/copy/technical direction, decide scope, or create an approved spec | `task-creation`, `context-survey` |
+| `task-creation` | create implementation steps, tickets, phases, milestones, checks, or agent-ready work items | `implementation`, `refactoring`, `change-review` |
+| `implementation` | add, change, edit, migrate, fix after diagnosis, or execute an approved task | `change-review`, `shipping`, `root-cause-analysis` |
+| `refactoring` | simplify, extract, reorganize, reduce duplication, or improve maintainability without behavior change | `change-review`, `implementation`, `root-cause-analysis` |
+| `root-cause-analysis` | reproduce, isolate, and explain bugs, regressions, failing tests, flaky behavior, or errors | `implementation`, `refactoring` |
+| `change-review` | review a branch, diff, PR, regression risk, correctness, or readiness without mutation | `implementation`, `refactoring`, `root-cause-analysis`, `shipping` |
+| `shipping` | explicitly commit, prepare PR, merge, tag, package, publish, release, deploy, finalize, or hand off completed work | none unless the user asks for follow-up |
+| `project-audit` | audit repository health, tooling, packaging, architecture, maintenance, or skill drift | `context-survey`, `task-creation`, `implementation`, `refactoring` |
 
-## Subagents and reasoning
+The graph is evidence-driven rather than fixed. A skill continues only when the user's intent and current evidence support the next phase.
 
-Keystone keeps authoritative subagent behavior in `skills/keystone/SKILL.md` and each module's `Subagents and reasoning` section. The Pi extension only maps host-specific command, file, and tool names. There is no separate helper file to load.
+## Why no router exists
 
-Use subagents only when the active host exposes them and delegation has a clear boundary, useful artifact, and lower coordination cost than inline work.
+Keystone's old model made one public entrypoint choose internal modules. The multi-skill model removes that middle step.
 
-For Pi, Keystone is configured for `@tintinweb/pi-subagents` (https://github.com/tintinweb/pi-subagents):
+A router is unnecessary because each public skill has a strong trigger description. Hosts that support skill discovery can choose from those descriptions, and users can still invoke the desired skill directly. Removing the router also removes a failure mode: the agent no longer has to spend a turn deciding which hidden module to use before doing the actual phase work.
 
-```bash
-pi install npm:@tintinweb/pi-subagents
-```
+## Migrate from `/keystone` to direct skills
 
-When installed, Keystone may use `Agent`, `get_subagent_result`, and `steer_subagent` if the active tool schema exposes them. It does not assume named roles, model selection, or thinking controls from Pi; otherwise it works inline.
+Keystone 2.0 no longer ships `/keystone`. Use the matching public skill directly:
 
-### Host capability summary
-
-| Harness | Subagents | Reasoning control |
-|---|---:|---|
-| Pi coding agent with `@tintinweb/pi-subagents` | yes | use only controls exposed by the active tool schema; do not assume named roles, `model`, or `thinking` |
-| Claude Code | yes | model selection and built-in Explore detail; no general custom-agent reasoning field confirmed |
-| Codex CLI/app | host-dependent | global `model_reasoning_effort`; per-subagent effort not confirmed |
-| OpenCode | yes | partial/provider-dependent: `model` plus provider-specific `variant`; no universal reasoning knob confirmed; discovers Keystone through `.agents/skills` or symlinked canonical skill |
-| GitHub Copilot / VS Code | yes | custom agent `model`; no general reasoning field confirmed; discovers Keystone through `.agents/skills`, `.github/skills`, or personal skill dirs |
-
-### Module analysis depth
-
-| Module group | Analysis depth guidance |
+| Old request shape | Direct skill command |
 |---|---|
-| router, simple reading, simple writing | lightweight; ask one question rather than over-analyzing |
-| research, shape, build, health, ship | normal depth, deeper when risk or ambiguity rises |
-| breakdown, debug, review, high-stakes shape decisions | deeper analysis; require evidence, alternatives, and stop conditions |
-| gates | lightweight unless evidence is safety-critical |
+| `/keystone survey ...` or research requests | `/context-survey ...` |
+| `/keystone plan ...` or product/UX/scope shaping | `/product-planning ...` |
+| `/keystone tasks ...` or task breakdowns | `/task-creation ...` |
+| `/keystone implement ...` or scoped mutations | `/implementation ...` |
+| `/keystone refactor ...` or cleanup without behavior change | `/refactoring ...` |
+| `/keystone debug ...` or root-cause requests | `/root-cause-analysis ...` |
+| `/keystone review ...` or diff/PR readiness checks | `/change-review ...` |
+| `/keystone ship ...` or release/package handoff | `/shipping ...` |
+| `/keystone audit ...` or repo/tooling health checks | `/project-audit ...` |
 
-The rule is simple: delegate the narrowest bounded task and request only the analysis depth needed to complete it safely. Only use role names, model selection, or thinking controls when the active host schema exposes them; otherwise encode depth and risk in the prompt. Escalate for ambiguity, irreversible decisions, security, data loss, release risk, or root-cause uncertainty.
+Hosts with skill discovery may still choose from natural language, but explicit invocations should name one of the nine public skills.
 
-## Gates
+## Why gates stay internal
 
-Gates are small checks loaded by modules when needed.
+Gates are shared safety checks, not user goals. A user asks to implement, review, or ship; the skill decides whether it needs isolation, proof, review, or ship checks.
 
-| Gate | Purpose | Usually used by |
-|---|---|---|
-| `checkpoint` | Decide continue / ask / pending pointer / stop before final response | all modules at completion |
-| `isolation` | Confirm mutation is safe before editing | `build` |
-| `red` | Establish a failing check or reproduction when practical | `build`, `debug` |
-| `proof` | Verify claims with evidence before success reports | `debug`, `ship`, `health` |
-| `review` | Confirm required review has no blockers | `ship` |
-| `ship` | Confirm verified, reviewed work is ready for handoff | `ship` |
+Keeping gates internal gives Keystone one source of truth for repeated contracts without adding extra public commands. It also keeps the public surface focused on outcomes rather than mechanics.
 
-The gates are deliberately boring. Their job is to stop common mistakes, not to be clever. The checkpoint gate is the handoff memory: it requires the current module, completed evidence, next required module, next check, and action before Keystone can stop.
-
-## Why `breakdown`, not `plan`
-
-Many tools already use `/plan`. Keystone keeps `/keystone` as the only public entrypoint and uses `breakdown` internally for task decomposition.
-
-So this is correct:
+Shared gate paths:
 
 ```text
-/keystone → breakdown
+skills/_shared/gates/checkpoint.md
+skills/_shared/gates/isolation.md
+skills/_shared/gates/proof.md
+skills/_shared/gates/red.md
+skills/_shared/gates/review.md
+skills/_shared/gates/ship.md
 ```
 
-This is not:
+## Shared standards and handoff packets
+
+Keystone also shares two non-gate references:
 
 ```text
-/plan
+skills/_shared/engineering-standards.md
+skills/_shared/handoff-packet.md
 ```
 
-The name also clarifies the job: `breakdown` turns an approved direction into verifiable work items. It does not mean the work is done.
+`engineering-standards.md` is language-agnostic guidance for implementation, refactoring, review, and audit work. It keeps attention on ownership, state, boundaries, source of truth, abstraction quality, duplication, and maintainability.
 
-## Build vs. ship
+`handoff-packet.md` defines what one skill passes to another:
 
-Keystone separates implementation from finalization.
-
-### Build
-
-`build` is for changing files. Before the first mutation it must check isolation:
-
-- What branch/worktree are we in?
-- What files are protected?
-- Are there unrelated dirty changes?
-- Is the requested scope clear?
-
-`build` may implement, refactor, edit, or create files. It does not merge, publish, or call the work shippable by itself. After mutation, `build` must checkpoint to `review` when review is still required, or leave an explicit pending review pointer/question if it cannot continue safely.
-
-### Ship
-
-`ship` is for finalizing completed work. It can prepare delivery notes, package output, PR/merge handoff, or release readiness.
-
-It should only run after proof and review are satisfied or explicitly waived.
-
-## Review is read-only
-
-The `review` module never fixes. This is intentional.
-
-A reviewer that edits while reviewing blurs evidence. Keystone keeps review as a report:
-
-- blockers
-- non-blocking findings
+- source skill
+- target skill
+- goal
 - evidence
-- recommended owner module for follow-up
+- files and mutability
+- risks
+- next check
+- explicit user overrides or waivers
 
-If something must be fixed, Keystone routes back to `build` or `debug`.
+The packet prevents context drift when a workflow crosses phases.
+
+## Artifact lifecycle
+
+Keystone creates durable artifacts when the work has enough agreement or scope to justify them.
+
+| Artifact | Created by | Default path | Rule |
+|---|---|---|---|
+| Spec | `product-planning` | `docs/keystone/specs/YYYY-MM-DD-<slug>.md` | Create only after the user approves the plan details. Before approval, work in conversation. |
+| Task breakdown | `task-creation` | `docs/keystone/tasks/YYYY-MM-DD-<slug>.md` | Create from an approved spec, goal, or user request for tasks/tickets/phases. |
+| Refactor doc | `refactoring` | `docs/keystone/refactors/YYYY-MM-DD-<slug>.md` | Create for large or cross-cutting refactors. Small local refactors may proceed after checks. |
+
+Implementation proof, review findings, audit results, and shipping notes may live in conversation unless the user or repository convention asks for a file.
+
+## Mutation and delivery boundaries
+
+### Implementation
+
+`implementation` changes scoped code, content, config, or docs. Before mutation it uses the isolation gate to check branch/worktree state, dirty files, protected paths, and requested scope. For code-quality-sensitive changes it consults shared engineering standards.
+
+### Refactoring
+
+`refactoring` changes internal structure without intended behavior changes. It preserves behavior through existing tests, characterization checks, or other proof. If intended behavior changes, the work belongs in `implementation`. If the failure cause is unknown, it belongs in `root-cause-analysis`.
+
+### Review
+
+`change-review` is read-only. It reports blockers, non-blocking findings, evidence, and a recommended owner skill for follow-up. It does not fix, commit, or ship.
+
+### Shipping
+
+`shipping` finalizes completed work only when explicitly requested. It can prepare commits, PRs, releases, package output, deployment handoffs, or delivery notes, but it must require proof and review evidence or an explicit user waiver.
+
+Explicit-only actions include commits, PR creation, merge, tag, publish, release, deploy, destructive cleanup, and external side effects.
+
+## Host capability notes
+
+Keystone installs as a complete bundle and adapts to each supported surface's capabilities. Individual skills are entry points, not separately supported packages.
+
+| Harness | Discovery and invocation | Subagents / reasoning |
+|---|---|---|
+| Pi | npm package plus Pi extension registers public skill commands matching skill names | Uses subagent tools only if the active schema exposes them; no assumed named roles, model selection, or thinking controls |
+| Claude Code | plugin marketplace installs the Keystone skill package | Use host-supported delegation only when available; otherwise run inline |
+| Codex | plugin marketplace installs bundled skills | Reasoning controls are host-dependent; do not assume per-skill controls |
+
+Subagents are optional. A Keystone skill should delegate only when the boundary is clear, the artifact is useful, and coordination cost is lower than inline work.
 
 ## Packaging model
 
@@ -215,56 +164,53 @@ Keystone uses a canonical-source packaging pipeline.
 canonical skill source
    │
    ▼
-make regenerate
+npm run regenerate
    │
+   ├─ .agents/plugins/marketplace.json
    ├─ .claude-plugin/plugin.json
    ├─ .claude-plugin/marketplace.json
-   ├─ .codex-plugin/plugin.json
-   ├─ .agents/plugins/marketplace.json
-   └─ .agents/skills/keystone/SKILL.md
+   └─ .codex-plugin/plugin.json
    │
    ▼
-make package
-   │
-   ▼
-dist/keystone.zip
+npm run pack:dry-run / package build
 ```
 
-The canonical source is:
+The canonical public skill directories are expected to be:
 
 ```text
-skills/keystone/
+skills/context-survey/
+skills/product-planning/
+skills/task-creation/
+skills/implementation/
+skills/refactoring/
+skills/root-cause-analysis/
+skills/change-review/
+skills/shipping/
+skills/project-audit/
+skills/_shared/
 ```
 
-Generated manifests should not be hand-edited. Change the canonical source or package metadata, then run:
-
-```bash
-make regenerate
-```
+Generated manifests should not be hand-edited. Change the canonical source or package metadata, then regenerate.
 
 ## Default-deny packaging
 
-The archive is built from `packaging.allowlist`.
+The archive is built from `packaging.allowlist`. Files are not shipped unless they are explicitly allowed.
 
-That means files are not shipped unless they are explicitly allowed.
-
-The package script rejects known local or generated noise:
+The package script rejects local or generated noise such as:
 
 - `docs/`
 - `plans/`
-- `index.html`
-- `styles.css`
+- preview files such as `index.html` and `styles.css`
 - `dist/`
 - `.git/`
 - pycache and `.pyc`
-- `*.plan.md`, `*-plan.md`
-- `*.design.md`, `*-design.md`
+- local plan or design drafts not meant to ship
 
-This keeps the release package focused on the Keystone skill system, not local planning or preview artifacts.
+This keeps the release package focused on the Keystone skill system and generated host surfaces.
 
-## Validators
+## Validation model
 
-Keystone has three validation layers.
+Keystone validation should cover three layers.
 
 ### Source validation
 
@@ -272,15 +218,13 @@ Keystone has three validation layers.
 python3 scripts/validate-keystone.py
 ```
 
-Checks include:
+This focused validator checks:
 
-- canonical skill exists
-- skill name is `keystone`
-- `breakdown` terminology is present
-- public `/plan` is not introduced
-- referenced modules/gates exist
-- ignored artifacts are not tracked
-- `package.json` has required package and Pi extension/skill metadata
+- discovered public skill directories have matching frontmatter names and model-visible descriptions
+- shared gates and shared references exist under `skills/_shared/`
+- stale central-router and one-entrypoint claims are absent from shipped surfaces
+- generated plugin manifests stay synchronized with package metadata and canonical skill paths
+- package and plugin metadata satisfy their structural contracts
 
 ### Package validation
 
@@ -288,113 +232,82 @@ Checks include:
 python3 scripts/validate-package.py dist/keystone.zip
 ```
 
-Checks include:
+Expected checks include:
 
 - required package files exist in the archive
 - forbidden files are absent
 - archive contents match the expanded allowlist
+- Claude, Codex, and Pi package surfaces expose the same public skill set
 
-### Routing validation
+### Full verification
 
-```bash
-python3 -m unittest tests/test_routing.py
-```
+`make test` adds the exact nine-skill catalog invariant, invocation-corpus coverage,
+complete-bundle reference checks, package validation, and Python compilation.
 
-Checks include:
-
-- routing fixtures are valid
-- every Keystone module has coverage
-- Keystone has no public `/plan`; users invoke `/keystone` for breakdown/decomposition
-- fixture prompts match the routing table in `skills/keystone/SKILL.md`
-
-## Full verification
-
-Run everything with:
+Known project commands:
 
 ```bash
-make test
+npm run regenerate
+npm run validate
+npm run typecheck
+npm run pack:dry-run
 ```
 
-This runs metadata generation, packaging, source validation, package validation, routing tests, and Python compile checks.
+If packaging scripts change, update this document and the implementation task with the actual commands.
+
+### Invocation evaluation
+
+`tests/routing/cases.yaml` covers each public skill, ambiguous neighboring phases, and explicit no-skill prompts. Automated tests verify corpus shape, exact nine-skill coverage, and that every case is exported with the full catalog of candidate descriptions. They do not prove which skill a model will select.
+
+Export JSONL for a supported host/model runner:
+
+```bash
+python3 scripts/export-invocation-eval.py
+```
+
+Before release, run every exported prompt against each host listed as supported, expose all nine descriptions at once, allow either one skill or no skill, and compare the observed selection with `expected`. Record host version, model, case ID, observed selection, and result. Treat unexpected selections as release evidence to fix or explicitly waive; a passing unit test alone is not invocation proof.
 
 ## Platform outputs
 
-Keystone currently provides:
+Keystone provides:
 
 | Host | Output |
 |---|---|
-| Pi | `.pi/extensions/keystone.ts` plus `package.json` with `pi.extensions` and `pi.skills` |
-| Claude Code | `.claude-plugin/plugin.json` plus `.claude-plugin/marketplace.json` marketplace |
+| Pi | `.pi/extensions/keystone.ts` plus `package.json` `pi.extensions` and `pi.skills` entries for public skill commands |
+| Claude Code | `.claude-plugin/plugin.json` plus `.claude-plugin/marketplace.json` |
 | Codex | `.codex-plugin/plugin.json` plus `.agents/plugins/marketplace.json` repo marketplace |
-| OpenCode / GitHub Copilot / VS Code | `.agents/skills/keystone/SKILL.md` adapter plus canonical `skills/keystone/` |
 
-The Claude Code plugin path uses Claude's marketplace pattern: `.claude-plugin/plugin.json` identifies the repository root as a plugin, and `.claude-plugin/marketplace.json` exposes a single installable `keystone` entry with source `./`. Users add it with `/plugin marketplace add static-var/Keystone`, install with `/plugin install keystone@keystone`, then invoke `/keystone:keystone`.
-
-The Pi extension mirrors the Superpowers packaging pattern: it discovers bundled skills, registers `/keystone` as the public command, and injects only a minimal Pi-specific bootstrap while keeping the full host mapping inside the `/keystone` command payload.
-
-The Codex plugin path uses the Codex plugin marketplace pattern: `.codex-plugin/plugin.json` declares the bundled skill directory, while `.agents/plugins/marketplace.json` exposes a single installable Keystone entry whose local source is the repository root. Users can add it with `codex plugin marketplace add static-var/Keystone --ref main`, then install Keystone from `codex /plugins` or `codex plugin add keystone --marketplace keystone`.
-
-OpenCode, GitHub Copilot, and VS Code support the Agent Skills standard directly. Keystone ships `.agents/skills/keystone/SKILL.md` as a thin adapter that points those hosts back to the canonical `skills/keystone/SKILL.md`, preserving one source of truth and one public Keystone skill.
-
-The Pi package gallery at `https://pi.dev/packages` indexes npm packages. Keystone publishes as `@static-var/keystone` with the `pi-package` keyword, so installs use:
-
-```bash
-pi install npm:@static-var/keystone
-```
+The Pi extension should discover bundled skills and register commands matching the skill names. It should not inject a single-command bootstrap.
 
 ## Common maintainer workflows
 
-### Change routing language
+### Change a public skill
 
-1. Edit `skills/keystone/SKILL.md`.
-2. Update `tests/routing/cases.yaml` if behavior changes.
-3. Run `make test`.
+1. Edit `skills/<skill-name>/SKILL.md` or disclosed reference files.
+2. Keep shared rules in `skills/_shared/` when more than one skill needs them.
+3. Run `npm run regenerate`.
+4. Run `npm run validate` and any targeted tests.
 
-### Release Keystone
+### Add or change a shared gate
 
-1. Confirm the npm scope in `package.json` is owned by the publisher. Keystone currently uses `@static-var/keystone`.
-2. If the npm package does not exist yet, bootstrap it once with `npm login`, `npm run typecheck`, `make test`, and `npm publish --access public --provenance=false`; append `--otp <code>` if npm requires 2FA. npm only exposes Trusted Publisher settings after the package exists.
-3. In npm package access settings for `@static-var/keystone`, configure Trusted Publisher → GitHub Actions with user `static-var`, repository `Keystone`, workflow filename `release.yml`, no environment, and allowed action `npm publish`.
-4. Bump `package.json` with `npm version <patch|minor|major> --no-git-tag-version`.
-5. Run `npm run typecheck` and `make test`.
-6. Commit `package.json` and `package-lock.json`.
-7. Tag the commit as `v<package.json version>` and push `main` plus tags.
-8. The release workflow publishes npm via Trusted Publishing/OIDC with provenance and creates a GitHub Release containing the npm tarball plus `dist/keystone.zip`.
-
-### Add a shipped module
-
-1. Add `skills/keystone/modules/<name>.md`.
-2. Add a routing row in `skills/keystone/SKILL.md`.
-3. Add routing fixture coverage.
-4. Add a `Subagents and reasoning` section to the module.
-5. Ensure packaging includes the module directory through `packaging.allowlist`.
-7. Run `make test`.
-
-### Add maintainer-only guidance
-
-1. Put it outside `skills/keystone/`, for example under `maintainers/`.
-2. Do not add it to `skills/keystone/SKILL.md` routing.
-3. Do not add it to `packaging.allowlist` unless it is meant to ship.
-4. Run `make test` and inspect `dist/keystone.zip` if packaging changed.
+1. Edit the gate under `skills/_shared/gates/`.
+2. Update only the public skills that need to point at it.
+3. Regenerate the complete bundle and manifests.
+4. Validate source and package contents.
 
 ### Change packaging metadata
 
-1. Edit `package.json` or canonical skill frontmatter.
-2. Run `make regenerate`.
-3. Inspect generated manifests if needed.
-4. Run `make test`.
+1. Edit `package.json`, `packaging.allowlist`, or canonical skill frontmatter.
+2. Run `npm run regenerate`.
+3. Inspect generated manifests.
+4. Run `npm run validate` and `npm run pack:dry-run`.
 
 ### Prepare a release package
 
-```bash
-make package
-```
-
-Then inspect:
-
-```text
-dist/keystone.zip
-```
+1. Run `npm run typecheck`.
+2. Run `npm run validate`.
+3. Run `npm run pack:dry-run` and inspect the included files.
+4. Use `shipping` only when the user explicitly asks to commit, tag, publish, release, or deploy.
 
 ## What should stay out of git
 
@@ -415,21 +328,19 @@ They may exist locally, but they should remain ignored.
 
 Before changing Keystone, ask:
 
-1. Is `/keystone` still the only public entrypoint?
-2. Did we avoid creating `/plan`?
-3. Does each request still route to one primary module?
-4. Does every module completion pass the checkpoint gate?
-5. Does `build` still check isolation before mutation?
-6. Does `build` route or prompt for review after mutation?
-7. Is `review` still read-only?
-8. Does `ship` only finalize already-completed work?
-9. Are generated manifests regenerated from source?
-10. Does `make test` pass?
-
-If the answer to any question is no, Keystone's contract has drifted.
+1. Are exactly nine public skills exposed?
+2. Do public skill names match the agreed names?
+3. Are gates internal shared docs rather than commands?
+4. Does mutation pass isolation before file changes?
+5. Does RCA establish evidence before a fix path?
+6. Is review read-only?
+7. Is shipping explicit-only?
+8. Are specs, tasks, and refactor docs written to documented default paths when needed?
+9. Are generated manifests regenerated from canonical source?
+10. Do validation and package dry-run pass, or are blockers documented with exact evidence?
 
 ## Design principle
 
 Keystone is not trying to make agents more autonomous by removing structure.
 
-It makes agents safer by giving each phase a name, a boundary, and a proof requirement.
+It makes agents safer by giving each phase a clear name, a boundary, shared gates, and a proof requirement.
