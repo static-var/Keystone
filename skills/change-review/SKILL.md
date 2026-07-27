@@ -1,6 +1,6 @@
 ---
 name: change-review
-description: Use when the user asks for code review, change review, diff/branch/PR review, regression review, readiness assessment, critique, or blocker finding without edits.
+description: Project change review for a concrete software delivery artifact. Use when a diff, branch, PR, patch, migration, fix, implementation result, or project plan needs an evidence-backed readiness verdict, or when another Keystone skill needs the review gate satisfied.
 ---
 
 # Change Review
@@ -16,11 +16,15 @@ Do not assume changed lines are the blast radius. Trace callers, callees, contra
 data flow, tests, runtime paths, and user impact before giving a verdict.
 
 ## Load when
-Load when the user asks for code review, critique, audit, readiness assessment,
-release/merge review, security review, regression review, or review of a diff, branch,
-PR, patch, migration, fix, plan output, or completed implementation.
+Load when a concrete software project artifact needs review: a diff, branch, PR, patch,
+migration, fix, implementation result, or project plan that must be assessed against
+its specification and engineering standards.
 
 Also load when another Keystone skill needs `../_shared/gates/review.md` satisfied before shipping.
+
+At entry, use the full Keystone path when there is an inspectable project artifact and
+a readiness or blocker verdict is the outcome. Handle general critiques, prose review,
+and standalone explanations directly. Explicit invocation selects the full Change Review behavior.
 
 ## Not for
 Do not use Change Review for:

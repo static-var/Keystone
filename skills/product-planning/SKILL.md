@@ -1,6 +1,6 @@
 ---
 name: product-planning
-description: Use when the user wants brainstorming, product planning, UX or copy shaping, architecture direction, scope decisions, acceptance criteria, or a spec after details are finalized.
+description: Software product planning for a concrete software or digital-product initiative whose behavior, UX, user-facing copy, technical direction, scope, or acceptance criteria must be shaped before implementation, or whose approved direction must become a specification.
 ---
 
 # Product Planning
@@ -9,7 +9,25 @@ description: Use when the user wants brainstorming, product planning, UX or copy
 Product Planning is a specification algorithm: turn an unclear intent into exact behavior, constraints, tradeoffs, and acceptance criteria before anyone implements. It decides what should be true, not whether code is complete.
 
 ## Load when
-Load when the user asks to draft, rewrite, design, spec, define product behavior, improve UI/UX, choose visual direction, name or explain a feature, make scope or architecture tradeoffs, prepare acceptance criteria, or turn context-survey into an implementation-ready direction.
+Load when a concrete software or digital-product initiative needs:
+
+- product behavior, business rules, scope, success criteria, or acceptance criteria shaped before implementation;
+- UX/UI flows, states, accessibility behavior, or visual constraints decided;
+- user-facing product copy shaped as part of a feature or product experience;
+- technical direction, boundaries, APIs, data flow, or architecture tradeoffs decided;
+- alternatives explored for a project decision;
+- approved direction converted into a specification;
+- context-survey evidence converted into an implementation-ready direction.
+
+## Entry fit
+
+An explicit invocation selects the full Product Planning behavior.
+
+A Keystone handoff selects the full skill when a concrete software or digital-product initiative needs this specification contract.
+
+For automatic entry, load the full skill when the prompt's subject identifies a concrete software or digital-product initiative **and** this specification contract materially improves the decision. The current directory alone does not establish project scope.
+
+For automatic routing of ordinary brainstorming, standalone copywriting, rewriting, naming, or visual ideation unrelated to a concrete software or digital-product initiative, use the direct creative/answering path and return the requested result without Keystone gates.
 
 ## Not for
 - Writing implementation code or changing runtime behavior; hand off to `implementation`.

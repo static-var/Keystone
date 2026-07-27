@@ -4,6 +4,24 @@ Keystone is one complete package: nine public workflow skills backed by one shar
 
 There is no central routing layer. Keystone relies on strong model-visible skill descriptions and direct slash commands so the host can load the right workflow from the user's intent.
 
+## Invocation eligibility
+
+Automatic invocation has two gates. Work must be both:
+
+1. **Project-bound:** the request's subject is a software or product repository, initiative, feature, architecture, regression, release, or project decision.
+2. **Workflow-worthy:** applying a Keystone phase contract would materially change how the work should proceed.
+
+Eligibility follows the prompt's subject, not the current working directory. Being inside a repository does not turn an unrelated search, explanation, or utility request into project work.
+
+Use normal agent behavior for standalone public web search or recommendations, generic summaries or explanations, ordinary copywriting or brainstorming, mechanical single-file config or documentation edits, and one-off scripts. Project-specific external research still qualifies when it informs a project decision, and pure repository understanding or reconnaissance qualifies when the repository itself is the subject. Integrated project config or scripts, product copy decisions, diagnosis, review, audit, and explicitly requested shipping remain workflow-worthy.
+
+| Normal agent behavior | Keystone project workflow |
+|---|---|
+| Research the latest laptop recommendations. | Research deployment providers against this project's runtime constraints. |
+| Summarize this public article. | Survey this repository and map its current ownership boundaries. |
+| Write a temporary log-cleanup script. | Add a repository maintenance script, integrate it with CI, and prove the behavior. |
+| Fix a typo in one config comment. | Migrate the project's configuration contract across code, docs, and tests. |
+
 ## The short version
 
 Keystone does five things:
@@ -35,15 +53,15 @@ The public skills are peers with their own model-visible triggers:
 
 | Skill | Loads when the user asks to... | Usually hands off to... |
 |---|---|---|
-| `context-survey` | inspect, research, summarize, inventory, compare, validate claims, or answer what is true | `product-planning`, `task-creation`, `project-audit` |
-| `product-planning` | brainstorm, shape product/UX/copy/technical direction, decide scope, or create an approved spec | `task-creation`, `context-survey` |
-| `task-creation` | create implementation steps, tickets, phases, milestones, checks, or agent-ready work items | `implementation`, `refactoring`, `change-review` |
-| `implementation` | add, change, edit, migrate, fix after diagnosis, or execute an approved task | `change-review`, `shipping`, `root-cause-analysis` |
-| `refactoring` | simplify, extract, reorganize, reduce duplication, or improve maintainability without behavior change | `change-review`, `implementation`, `root-cause-analysis` |
-| `root-cause-analysis` | reproduce, isolate, and explain bugs, regressions, failing tests, flaky behavior, or errors | `implementation`, `refactoring` |
-| `change-review` | review a branch, diff, PR, regression risk, correctness, or readiness without mutation | `implementation`, `refactoring`, `root-cause-analysis`, `shipping` |
-| `shipping` | explicitly commit, prepare PR, merge, tag, package, publish, release, deploy, finalize, or hand off completed work | none unless the user asks for follow-up |
-| `project-audit` | audit repository health, tooling, packaging, architecture, maintenance, or skill drift | `context-survey`, `task-creation`, `implementation`, `refactoring` |
+| `context-survey` | understand a repository or gather project-specific evidence before a project decision or change | `product-planning`, `task-creation`, `project-audit` |
+| `product-planning` | shape a product initiative's behavior, UX, user-facing copy, architecture, scope, or approved spec | `task-creation`, `context-survey` |
+| `task-creation` | turn approved project direction into sequenced, verifiable implementation work | `implementation`, `refactoring`, `change-review` |
+| `implementation` | make an integrated project change that needs project context and proof | `change-review`, `shipping`, `root-cause-analysis` |
+| `refactoring` | improve project structure without intended behavior change | `change-review`, `implementation`, `root-cause-analysis` |
+| `root-cause-analysis` | reproduce, isolate, and explain a project bug, regression, failure, or anomaly | `implementation`, `refactoring` |
+| `change-review` | assess a project diff, branch, PR, regression risk, or readiness without mutation | `implementation`, `refactoring`, `root-cause-analysis`, `shipping` |
+| `shipping` | explicitly finalize completed project work through commit, push, PR preparation or creation, merge, tag, package, publish, release, deploy, repository handoff, or destructive cleanup | none unless the user asks for follow-up |
+| `project-audit` | assess repository health, tooling, packaging, architecture, maintenance, or skill drift | `context-survey`, `task-creation`, `implementation`, `refactoring` |
 
 The graph is evidence-driven rather than fixed. A skill continues only when the user's intent and current evidence support the next phase.
 
@@ -51,7 +69,7 @@ The graph is evidence-driven rather than fixed. A skill continues only when the 
 
 Keystone's old model made one public entrypoint choose internal modules. The multi-skill model removes that middle step.
 
-A router is unnecessary because each public skill has a strong trigger description. Hosts that support skill discovery can choose from those descriptions, and users can still invoke the desired skill directly. Removing the router also removes a failure mode: the agent no longer has to spend a turn deciding which hidden module to use before doing the actual phase work.
+A router is unnecessary because each public skill has a project-scoped trigger description. Hosts that support skill discovery can choose from those descriptions after the request passes the eligibility boundary, and users can still invoke the desired skill directly. Removing the router also removes a failure mode: the agent no longer has to spend a turn deciding which hidden module to use before doing the actual phase work.
 
 ## Migrate from `/keystone` to direct skills
 
@@ -66,7 +84,7 @@ Keystone 2.0 no longer ships `/keystone`. Use the matching public skill directly
 | `/keystone refactor ...` or cleanup without behavior change | `/refactoring ...` |
 | `/keystone debug ...` or root-cause requests | `/root-cause-analysis ...` |
 | `/keystone review ...` or diff/PR readiness checks | `/change-review ...` |
-| `/keystone ship ...` or release/package handoff | `/shipping ...` |
+| `/keystone ship ...` or explicitly requested commit, push, PR preparation or creation, merge, tag, package, publish, release, deploy, repository handoff, or destructive cleanup | `/shipping ...` |
 | `/keystone audit ...` or repo/tooling health checks | `/project-audit ...` |
 
 Hosts with skill discovery may still choose from natural language, but explicit invocations should name one of the nine public skills.
@@ -110,7 +128,7 @@ skills/_shared/handoff-packet.md
 - next check
 - explicit user overrides or waivers
 
-The packet prevents context drift when a workflow crosses phases.
+The packet prevents context drift when a workflow crosses phases. For a `shipping` handoff, its canonical `evidence` field must carry the user's explicit delivery request and authorized action set.
 
 ## Artifact lifecycle
 
@@ -140,9 +158,9 @@ Implementation proof, review findings, audit results, and shipping notes may liv
 
 ### Shipping
 
-`shipping` finalizes completed work only when explicitly requested. It can prepare commits, PRs, releases, package output, deployment handoffs, or delivery notes, but it must require proof and review evidence or an explicit user waiver.
+`shipping` finalizes completed project work only when explicitly requested. Its delivery actions are commit, push, PR preparation or creation, merge, tag, package, publish, release, deploy, repository handoff, and destructive cleanup; it must require proof and review evidence or an explicit user waiver.
 
-Explicit-only actions include commits, PR creation, merge, tag, publish, release, deploy, destructive cleanup, and external side effects.
+Every delivery action in that set is explicit-only.
 
 ## Host capability notes
 
@@ -257,7 +275,7 @@ If packaging scripts change, update this document and the implementation task wi
 
 ### Invocation evaluation
 
-`tests/routing/cases.yaml` covers each public skill, ambiguous neighboring phases, and explicit no-skill prompts. Automated tests verify corpus shape, exact nine-skill coverage, and that every case is exported with the full catalog of candidate descriptions. They do not prove which skill a model will select.
+`tests/routing/cases.yaml` covers each public skill, ambiguous neighboring phases, and explicit no-skill prompts, including project-versus-standalone near-pairs. Automated tests verify corpus shape, exact nine-skill coverage, and that every case is exported with the full catalog of candidate descriptions. Static tests do not prove which skill a model will select.
 
 Export JSONL for a supported host/model runner:
 
@@ -265,7 +283,7 @@ Export JSONL for a supported host/model runner:
 python3 scripts/export-invocation-eval.py
 ```
 
-Before release, run every exported prompt against each host listed as supported, expose all nine descriptions at once, allow either one skill or no skill, and compare the observed selection with `expected`. Record host version, model, case ID, observed selection, and result. Treat unexpected selections as release evidence to fix or explicitly waive; a passing unit test alone is not invocation proof.
+Before release, run every exported prompt against each host and model listed as supported, expose all nine descriptions at once, allow either one skill or no skill, and compare the observed selection with `expected`. Record host version, model, case ID, observed selection, and result. Treat unexpected selections as release evidence to fix or explicitly waive; a passing unit test alone is not invocation proof.
 
 ## Platform outputs
 
@@ -307,7 +325,7 @@ The Pi extension should discover bundled skills and register commands matching t
 1. Run `npm run typecheck`.
 2. Run `npm run validate`.
 3. Run `npm run pack:dry-run` and inspect the included files.
-4. Use `shipping` only when the user explicitly asks to commit, tag, publish, release, or deploy.
+4. Use `shipping` only when the user explicitly asks to commit, push, prepare or create a PR, merge, tag, package, publish, release, deploy, perform a repository handoff, or perform destructive cleanup.
 
 ## What should stay out of git
 

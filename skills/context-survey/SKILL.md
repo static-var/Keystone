@@ -1,6 +1,6 @@
 ---
 name: context-survey
-description: Use when the user asks to inspect, research, summarize, inventory, compare, understand existing code/docs, gather context, validate claims, or answer what is true before planning or changing files.
+description: Project context survey for repository reconnaissance or project decisions that require evidence from existing code, project documentation, or project-specific external sources before planning or changing the project.
 ---
 
 # Context Survey
@@ -9,7 +9,22 @@ description: Use when the user asks to inspect, research, summarize, inventory, 
 Context Survey is evidence gathering before action. Inspect available material first, preserve source quality, separate facts from assumptions, and stay read-only unless the user explicitly asks for a durable context-survey artifact.
 
 ## Load when
-Load when the user asks to read, inspect, summarize, inventory, extract, compare, explain, investigate options, gather technical or market context, validate claims, or answer “what is true here?” before a decision.
+Load when a software or product project needs:
+
+- repository reconnaissance or understanding as the requested project outcome;
+- evidence from existing code, tests, configuration, history, or project documentation;
+- project-specific external documentation, standards, issues, market examples, or APIs;
+- synthesis or validation of project evidence before another Keystone phase.
+
+## Entry fit
+
+An explicit invocation selects the full Context Survey behavior.
+
+A Keystone handoff selects the full skill for project-bound repository understanding or evidence needed for a project decision or change.
+
+For automatic entry, the prompt's subject must be project-bound. Load the full skill when repository understanding or reconnaissance is the requested outcome, or when this evidence contract materially improves a project decision or change. The current directory alone does not establish project scope.
+
+For automatic routing of standalone public search, general research, ordinary explanation, or summarization unrelated to a project, use the direct research/answering path and return the requested result without Keystone gates.
 
 ## Not for
 - Implementing, refactoring, editing, or fixing code.
@@ -34,7 +49,7 @@ Deliver a context-survey brief that states:
 - **Discovery scout:** map a large unknown area without drawing strong conclusions until evidence is sampled.
 
 ## Process
-1. Restate the context-survey question and the decision it informs.
+1. Restate the context-survey question or requested repository reconnaissance outcome, and the downstream decision when applicable.
 2. Inspect before asking: search/read the repo, docs, logs, or provided sources before requesting more context.
 3. Prefer primary evidence: source code, tests, product docs, official docs, reproducible commands, direct user-provided material.
 4. Track citations as you go. Every important claim should point to evidence or be labeled as an assumption.

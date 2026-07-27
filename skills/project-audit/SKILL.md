@@ -1,6 +1,6 @@
 ---
 name: project-audit
-description: Use when the user asks for a project audit, health check, repo/tooling/package/skill health scan, maintenance review, architecture smell review, drift detection, or risk assessment.
+description: Project health audit for a concrete software repository or product subsystem. Use when its tooling, CI, dependencies, configuration, tests, documentation, packaging, architecture, or agent instructions need a whole-system condition and risk assessment.
 ---
 
 # Project Audit
@@ -11,7 +11,9 @@ Project Audit is a read-only, whole-project condition scan. It turns repository 
 Project Audit answers “what is the condition of this project or subsystem?” Change Review answers “is this specific change acceptable?” If the task centers on a PR/diff/patch, use `change-review`; if it centers on repo-wide readiness, drift, tooling, docs, tests, releases, or operational condition, use `project-audit`.
 
 ## Load when
-Load when the user asks for a health check, readiness scan, risk assessment, project status audit, tooling audit, dependency/config review, maintenance assessment, drift detection, “what should we worry about?”, or “is this repo in good shape?”
+Load when the user asks for a whole-system condition scan of a concrete software repository or product subsystem: project health, release readiness, tooling/CI drift, dependency/config condition, maintenance risk, architecture smells, docs-vs-reality, test health, packaging, or instruction drift.
+
+At entry, use the full Keystone path when repository or subsystem evidence must support a project-level health verdict. Handle general risk questions, personal health checks, and narrow standalone inspections directly. Explicit invocation selects the full Project Audit behavior.
 
 ## Not for
 - Fixing issues found during the audit.

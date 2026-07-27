@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -54,6 +55,192 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
             with self.subTest(skill=skill):
                 self.assertIn(f"/{skill}", combined)
         self.assertNotIn("standalone Agent Skills", combined)
+
+    def test_shipping_explicit_only_sections_cover_canonical_actions(self):
+        action_patterns = {
+            "commit": r"\bcommits?\b",
+            "push": r"\bpush(?:es)?\b",
+            "PR": r"\bPRs?\b",
+            "merge": r"\bmerge\b",
+            "tag": r"\btag\b",
+            "package": r"\bpackage\b",
+            "publish": r"\bpublish\b",
+            "release": r"\brelease\b",
+            "deploy": r"\bdeploy\b",
+            "repository handoff": r"\brepository handoff\b",
+            "destructive cleanup": r"\bdestructive cleanup\b",
+        }
+        shipping = (ROOT / "skills" / "shipping" / "SKILL.md").read_text()
+        readme = (ROOT / "README.md").read_text()
+        how = (ROOT / "HOW_IT_WORKS.md").read_text()
+
+        def section(text, heading):
+            depth = len(heading.split(" ", 1)[0])
+            return re.search(
+                rf"^{re.escape(heading)}\n(?P<body>.*?)(?=^#{{1,{depth}}} |\Z)",
+                text,
+                re.MULTILINE | re.DOTALL,
+            )
+
+        def line(text, marker):
+            return re.search(
+                rf"^(?P<body>.*{re.escape(marker)}.*)$",
+                text,
+                re.MULTILINE,
+            )
+
+        sections = {
+            "Shipping description": re.search(
+                r"^description: (?P<body>.*)$",
+                shipping,
+                re.MULTILINE,
+            ),
+            "Shipping Load when": section(shipping, "## Load when"),
+            "Shipping Hard rules": section(shipping, "## Hard rules"),
+            "Shipping Explicit-only finalization": section(
+                shipping, "## Explicit-only finalization"
+            ),
+            "README Shipping trigger": line(readme, "| `shipping` |"),
+            "README /shipping trigger": line(readme, "/shipping explicitly"),
+            "README Explicit-only shipping": section(
+                readme, "## Explicit-only shipping"
+            ),
+            "HOW Shipping trigger": line(how, "| `shipping` |"),
+            "HOW /shipping trigger": line(how, "| `/keystone ship"),
+            "HOW Shipping boundary": section(how, "### Shipping"),
+            "HOW maintainer Shipping reminder": line(
+                how, "Use `shipping` only when"
+            ),
+        }
+
+        for source, match in sections.items():
+            with self.subTest(source=source, section="present"):
+                self.assertIsNotNone(match)
+            assert match is not None
+            body = match.group("body")
+            for action, pattern in action_patterns.items():
+                with self.subTest(source=source, action=action):
+                    self.assertIsNotNone(re.search(pattern, body, re.IGNORECASE))
+
+    def test_shipping_process_executes_authorized_actions_safely(self):
+        shipping = (ROOT / "skills" / "shipping" / "SKILL.md").read_text()
+        process = re.search(
+            r"^## Process\n(?P<body>.*?)(?=^## |\Z)",
+            shipping,
+            re.MULTILINE | re.DOTALL,
+        )
+        self.assertIsNotNone(process)
+        assert process is not None
+
+        contracts = {
+            "perform authorized action set": (
+                r"\bperform\b.*\bauthorized action set\b"
+            ),
+            "resolve exact targets": r"\bresolve\b.*\bexact targets?\b",
+            "record results": r"\brecord\b.*\bresults?\b",
+            "stop on failure": r"\bstop\b.*\bfail(?:s|ure|ed)?\b",
+            "destructive cleanup recoverability": (
+                r"\bdestructive cleanup\b.*\brecoverab"
+            ),
+            "destructive cleanup target confirmation": (
+                r"\bdestructive cleanup\b.*\btarget confirmation\b"
+            ),
+        }
+        for contract, pattern in contracts.items():
+            with self.subTest(contract=contract):
+                self.assertIsNotNone(
+                    re.search(pattern, process.group("body"), re.IGNORECASE | re.DOTALL)
+                )
+
+    def test_shipping_handoff_authorization_is_canonical(self):
+        handoff = (ROOT / "skills" / "_shared" / "handoff-packet.md").read_text()
+        rules = re.search(
+            r"^## Rules\n(?P<body>.*?)(?=^## |\Z)",
+            handoff,
+            re.MULTILINE | re.DOTALL,
+        )
+        self.assertIsNotNone(rules)
+        assert rules is not None
+        body = rules.group("body")
+
+        contracts = {
+            "shipping target condition": r"\btarget skill\b.*\bshipping\b",
+            "evidence authorization field": (
+                r"\bevidence\b.*\b(?:carries|contains)\b"
+            ),
+            "verbatim explicit delivery request": (
+                r"\bverbatim\b.*\bexplicit delivery request\b"
+            ),
+            "exact authorized action set": r"\bexact authorized action set\b",
+        }
+        for contract, pattern in contracts.items():
+            with self.subTest(contract=contract):
+                self.assertIsNotNone(
+                    re.search(pattern, body, re.IGNORECASE | re.DOTALL)
+                )
+
+    def test_shipping_packet_reports_action_execution_state(self):
+        shipping = (ROOT / "skills" / "shipping" / "SKILL.md").read_text()
+
+        def section(heading):
+            return re.search(
+                rf"^{re.escape(heading)}\n(?P<body>.*?)(?=^## |\Z)",
+                shipping,
+                re.MULTILINE | re.DOTALL,
+            )
+
+        sections = {
+            "Outcome contract": section("## Outcome contract"),
+            "Output format": section("## Output format"),
+        }
+        contracts = {
+            "authorized action set": r"\bauthorized action set\b",
+            "attempted action exact target result": (
+                r"\battempted actions?\b.*\bexact targets?\b.*\b(?:result|status)\b"
+            ),
+            "partial completion": r"\bpartial completion\b",
+            "remaining or unattempted actions": (
+                r"\b(?:remaining|unattempted) actions?\b"
+            ),
+            "recovery": r"\brecovery\b",
+            "next step": r"\bnext step\b",
+        }
+        for source, match in sections.items():
+            with self.subTest(source=source, section="present"):
+                self.assertIsNotNone(match)
+            assert match is not None
+            body = match.group("body")
+            for contract, pattern in contracts.items():
+                with self.subTest(source=source, contract=contract):
+                    self.assertIsNotNone(
+                        re.search(pattern, body, re.IGNORECASE | re.DOTALL)
+                    )
+
+    def test_context_survey_step_one_supports_pure_reconnaissance(self):
+        survey = (ROOT / "skills" / "context-survey" / "SKILL.md").read_text()
+        process = re.search(
+            r"^## Process\n(?P<body>.*?)(?=^## |\Z)",
+            survey,
+            re.MULTILINE | re.DOTALL,
+        )
+        self.assertIsNotNone(process)
+        assert process is not None
+        step_one = re.search(r"^1\. (?P<body>.*)$", process.group("body"), re.MULTILINE)
+        self.assertIsNotNone(step_one)
+        assert step_one is not None
+        body = step_one.group("body")
+
+        contracts = {
+            "requested understanding outcome": (
+                r"\b(?:requested understanding outcome|repository reconnaissance)\b"
+            ),
+            "conditional downstream decision": (
+                r"\b(?:downstream )?decision\b.*\b(?:when|if|where) applicable\b"
+            ),
+        }
+        for contract, pattern in contracts.items():
+            with self.subTest(contract=contract):
+                self.assertIsNotNone(re.search(pattern, body, re.IGNORECASE))
 
     def test_validator_reports_release_metadata_version_mismatches(self):
         with tempfile.TemporaryDirectory() as tmp:
