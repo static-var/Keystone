@@ -15,6 +15,8 @@ Eligibility follows the prompt's subject, not the current working directory. Bei
 
 Use normal agent behavior for standalone public web search or recommendations, generic summaries or explanations, ordinary copywriting or brainstorming, mechanical single-file config or documentation edits, and one-off scripts. Project-specific external research still qualifies when it informs a project decision, and pure repository understanding or reconnaissance qualifies when the repository itself is the subject. Integrated project config or scripts, product copy decisions, diagnosis, review, audit, and explicitly requested shipping remain workflow-worthy.
 
+Supporting artifacts only within an already-active behavior-changing implementation include project configuration, documentation, content, and scripts; standalone mechanical artifact edits stay normal/direct.
+
 | Normal agent behavior | Keystone project workflow |
 |---|---|
 | Research the latest laptop recommendations. | Research deployment providers against this project's runtime constraints. |
@@ -89,6 +91,12 @@ Keystone 2.0 no longer ships `/keystone`. Use the matching public skill directly
 
 Hosts with skill discovery may still choose from natural language, but explicit invocations should name one of the nine public skills.
 
+For an explicit artifact-edit override:
+
+```text
+/implementation explicitly edit project docs, config, content, or scripts
+```
+
 ## Why gates stay internal
 
 Gates are shared safety checks, not user goals. A user asks to implement, review, or ship; the skill decides whether it needs isolation, proof, review, or ship checks.
@@ -146,7 +154,7 @@ Implementation proof, review findings, audit results, and shipping notes may liv
 
 ### Implementation
 
-`implementation` changes scoped code, content, config, or docs. Before mutation it uses the isolation gate to check branch/worktree state, dirty files, protected paths, and requested scope. For code-quality-sensitive changes it consults shared engineering standards.
+`implementation` changes behavior in identified project code. During an already-active behavior-changing implementation, it may also update supporting configuration, documentation, content, or scripts. Standalone natural-language requests for mechanical artifact edits stay on the normal/direct path unless the user explicitly invokes `implementation`. Before mutation it uses the isolation gate to check branch/worktree state, dirty files, protected paths, and requested scope. For code-quality-sensitive changes it consults shared engineering standards.
 
 ### Refactoring
 

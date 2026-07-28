@@ -1,6 +1,6 @@
 ---
 name: change-review
-description: Project change review for a concrete software delivery artifact. Use when a diff, branch, PR, patch, migration, fix, implementation result, or project plan needs an evidence-backed readiness verdict, or when another Keystone skill needs the review gate satisfied.
+description: Project change review for a concrete diff, branch, PR, patch, migration, fix, implementation result, or project plan that needs a new evidence-backed readiness verdict, or when another Keystone skill needs the Review Gate evaluated.
 ---
 
 # Change Review

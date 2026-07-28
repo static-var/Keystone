@@ -1,6 +1,6 @@
 ---
 name: refactoring
-description: Project code refactoring for an existing software codebase. Use when its internal structure, ownership, types, duplication, or maintainability must improve while preserving an identified behavior contract, or when another Keystone skill hands off that work.
+description: Program source-code refactoring for an explicit structural code improvement to structure, ownership, types, or duplication that preserves identified executable behavior. Select only when the request requires a structural code change with project-specific invariant proof, or enters through a canonical handoff from another Keystone skill.
 ---
 
 # Refactoring

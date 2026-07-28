@@ -23,11 +23,209 @@ PUBLIC_SKILLS = [
     "shipping",
     "project-audit",
 ]
-RELEASE_VERSION = "2.0.3"
+RELEASE_VERSION = "2.0.4"
 
 
 class ReleaseMetadataDocsTests(unittest.TestCase):
-    def test_release_version_is_synchronized_to_2_0_2(self):
+    def skill_description(self, skill):
+        text = (ROOT / "skills" / skill / "SKILL.md").read_text()
+        match = re.search(r"^description:\s*(?P<body>.+)$", text, re.MULTILINE)
+        self.assertIsNotNone(match, f"{skill} must expose a model-visible description")
+        assert match is not None
+        return match.group("body")
+
+    def test_implementation_description_requires_behavior_changing_project_work(self):
+        description = self.skill_description("implementation")
+        contracts = {
+            "executable-software implementation": (
+                r"\bexecutable[- ]software implementation\b"
+            ),
+            "implementation belongs to an identified project": (
+                r"\bexecutable[- ]software implementation\b.*"
+                r"\b(?:identified software project|existing project codebase)\b"
+            ),
+            "eligibility requires requested behavior alteration": (
+                r"\bselect only when\b.*\brequested change\b.*\balters?\b.*"
+                r"\bruntime\b.*\bAPI\b.*\bdata\b.*\bbuild\b.*\brelease\b.*"
+                r"\bbehavior\b"
+            ),
+            "project-specific verification": r"\bproject-specific verification\b",
+            "feature category": r"\bfeatures?\b",
+            "diagnosed-fix category": r"\bdiagnosed fixes?\b",
+            "migration category": r"\bmigrations?\b",
+            "integration category": r"\bintegrations?\b",
+            "runtime category": r"\bruntime\b",
+            "API category": r"\bAPI\b",
+            "data category": r"\bdata\b",
+            "build category": r"\bbuild\b",
+            "release category": r"\brelease\b",
+            "automation category": r"\bautomation\b",
+        }
+        for contract, pattern in contracts.items():
+            with self.subTest(contract=contract):
+                self.assertRegex(description, re.compile(pattern, re.IGNORECASE))
+        mechanical_triggers = {
+            "prose": r"\bprose\b",
+            "documentation": r"\bdocumentation\b",
+            "formatter": r"\bformatter\b",
+            "line width": r"\bline[- ]width\b",
+            "configuration or config": r"\bconfig(?:uration)?\b",
+            "standalone": r"\bstandalone\b",
+            "throwaway": r"\bthrowaway\b",
+            "script": r"\bscripts?\b",
+        }
+        for trigger, pattern in mechanical_triggers.items():
+            with self.subTest(mechanical_trigger=trigger):
+                self.assertIsNone(re.search(pattern, description, re.IGNORECASE))
+
+    def test_implementation_supporting_artifact_boundary_is_consistent(self):
+        implementation = (ROOT / "skills" / "implementation" / "SKILL.md").read_text()
+        readme = (ROOT / "README.md").read_text()
+        how = (ROOT / "HOW_IT_WORKS.md").read_text()
+
+        def section(text, heading):
+            match = re.search(
+                rf"^{re.escape(heading)}\n(?P<body>.*?)(?=^## |\Z)",
+                text,
+                re.MULTILINE | re.DOTALL,
+            )
+            self.assertIsNotNone(match, f"missing section: {heading}")
+            assert match is not None
+            return match.group("body")
+
+        boundary_pattern = re.compile(
+            r"\bsupporting artifacts only within an already-active "
+            r"behavior-changing implementation\b",
+            re.IGNORECASE,
+        )
+        artifact_patterns = {
+            "configuration": r"\bconfiguration\b",
+            "documentation": r"\bdocumentation\b",
+            "content": r"\bcontent\b",
+            "scripts": r"\bscripts?\b",
+        }
+
+        skill_boundary = (
+            f"{section(implementation, '## Load when')}\n"
+            f"{section(implementation, '## Entry fit')}"
+        )
+        with self.subTest(source="implementation", contract="supporting boundary"):
+            self.assertRegex(skill_boundary, boundary_pattern)
+        for artifact, pattern in artifact_patterns.items():
+            with self.subTest(source="implementation", artifact=artifact):
+                self.assertRegex(skill_boundary, re.compile(pattern, re.IGNORECASE))
+
+        for source, text in {"README": readme, "HOW_IT_WORKS": how}.items():
+            with self.subTest(source=source, contract="explicit override example"):
+                self.assertIsNotNone(
+                    re.search(
+                        r"^/implementation\b.*"
+                        r"\b(?:config\w*|doc\w*|content|scripts?)\b",
+                        text,
+                        re.MULTILINE | re.IGNORECASE,
+                    )
+                )
+            boundary_line = re.search(
+                r"^(?P<body>.*supporting artifacts.*)$",
+                text,
+                re.MULTILINE | re.IGNORECASE,
+            )
+            with self.subTest(source=source, contract="supporting boundary"):
+                self.assertIsNotNone(boundary_line)
+            if boundary_line is None:
+                continue
+            body = boundary_line.group("body")
+            with self.subTest(source=source, contract="active implementation"):
+                self.assertRegex(body, boundary_pattern)
+            for artifact, pattern in artifact_patterns.items():
+                with self.subTest(source=source, artifact=artifact):
+                    self.assertRegex(body, re.compile(pattern, re.IGNORECASE))
+
+    def test_refactoring_description_requires_code_structure_and_invariant_proof(self):
+        description = self.skill_description("refactoring")
+        contracts = {
+            "program source-code refactoring": (
+                r"\bprogram source-code refactoring\b"
+            ),
+            "explicit structural code improvement": (
+                r"\b(?:explicit(?:ly)?|user-requested)\b.*"
+                r"\bstructural code improvement\b"
+            ),
+            "identified executable behavior preservation": (
+                r"\bpreserv\w*\b.*\bidentified executable behavior\b"
+            ),
+            "project-specific invariant proof": r"\bproject-specific invariant proof\b",
+            "eligibility requires structural change and proof or handoff": (
+                r"\bselect only when\b.*\bstructural code change\b.*"
+                r"\b(?:project-specific invariant proof|canonical handoff)\b"
+            ),
+        }
+        for contract, pattern in contracts.items():
+            with self.subTest(contract=contract):
+                self.assertRegex(description, re.compile(pattern, re.IGNORECASE))
+        mechanical_triggers = {
+            "formatting": r"\bformatting\b",
+            "formatter": r"\bformatter\b",
+            "settings": r"\bsettings?\b",
+            "configuration or config": r"\bconfig(?:uration)?\b",
+            "prose": r"\bprose\b",
+            "documentation": r"\bdocumentation\b",
+        }
+        for trigger, pattern in mechanical_triggers.items():
+            with self.subTest(mechanical_trigger=trigger):
+                self.assertIsNone(re.search(pattern, description, re.IGNORECASE))
+
+    def test_change_review_description_requires_a_new_readiness_verdict(self):
+        description = self.skill_description("change-review")
+        self.assertRegex(
+            description,
+            re.compile(
+                r"\bneeds?\b.*\bnew evidence-backed readiness verdict\b",
+                re.IGNORECASE,
+            ),
+        )
+
+    def test_shipping_description_requires_authorized_immediate_execution(self):
+        description = self.skill_description("shipping")
+        contracts = {
+            "authorized immediate delivery execution": (
+                r"\bauthorized immediate delivery execution\b"
+            ),
+            "handoff has non-empty exact action set": (
+                r"\bhandoff\b.*\bnon-empty exact authorized action set\b"
+            ),
+            "cleanup has exact named completed target": (
+                r"\bdestructive cleanup\b.*"
+                r"\bexact named completed-delivery target\b"
+            ),
+            "Context Survey owns cleanup reconnaissance": (
+                r"\bContext Survey\b.*\bcleanup-target reconnaissance\b"
+            ),
+            "cleanup reconnaissance is before authorization": (
+                r"\b(?:pre-authorization|pending-approval)\b"
+            ),
+        }
+        for contract, pattern in contracts.items():
+            with self.subTest(contract=contract):
+                self.assertRegex(description, re.compile(pattern, re.IGNORECASE))
+
+    def test_openai_marketplace_release_notes_match_current_release(self):
+        submission = json.loads(
+            (ROOT / "marketplace" / "openai" / "submission.json").read_text()
+        )
+        release_notes = submission["releaseNotes"]
+        with self.subTest(contract="current version"):
+            self.assertRegex(
+                release_notes,
+                re.compile(rf"\bKeystone {re.escape(RELEASE_VERSION)}\b"),
+            )
+        with self.subTest(contract="workflow change is acknowledged"):
+            self.assertNotIn(
+                "Skills and workflow behavior are unchanged",
+                release_notes,
+            )
+
+    def test_release_version_is_synchronized(self):
         package = json.loads((ROOT / "package.json").read_text())
         self.assertEqual(RELEASE_VERSION, package["version"])
         lockfile = json.loads((ROOT / "package-lock.json").read_text())
@@ -509,7 +707,7 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
             }))
             (root / ".claude-plugin" / "marketplace.json").write_text(json.dumps({
                 "name": "keystone",
-                "version": "2.0.3",
+                "version": RELEASE_VERSION,
                 "plugins": [{"name": "keystone", "version": "1.9.9"}],
             }))
             (root / ".codex-plugin").mkdir()
@@ -525,10 +723,20 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
 
             errors = validate_keystone.metadata_errors(root)
 
-        self.assertIn("package.json version must be 2.0.3", errors)
-        self.assertIn(".claude-plugin/plugin.json version must be 2.0.3", errors)
-        self.assertIn(".claude-plugin/marketplace.json plugins[0].version must be 2.0.3", errors)
-        self.assertIn(".codex-plugin/plugin.json version must be 2.0.3", errors)
+        self.assertIn(f"package.json version must be {RELEASE_VERSION}", errors)
+        self.assertIn(
+            f".claude-plugin/plugin.json version must be {RELEASE_VERSION}",
+            errors,
+        )
+        self.assertIn(
+            ".claude-plugin/marketplace.json plugins[0].version must be "
+            f"{RELEASE_VERSION}",
+            errors,
+        )
+        self.assertIn(
+            f".codex-plugin/plugin.json version must be {RELEASE_VERSION}",
+            errors,
+        )
         self.assertIn('.codex-plugin/plugin.json skills must be "./skills/"', errors)
 
 

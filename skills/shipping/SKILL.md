@@ -1,6 +1,6 @@
 ---
 name: shipping
-description: Project delivery finalization for identified, already-completed software work. Use only when the user explicitly asks to commit, push, prepare or create a PR, merge, tag, package, publish, release, deploy, perform an exact repository handoff, or perform destructive cleanup of a named completed-delivery target; another Keystone skill may route here only when its canonical handoff evidence carries that verbatim request and exact authorized action set.
+description: Project shipping is authorized immediate delivery execution for identified, already-completed software work. Select only when the user explicitly authorizes an immediate concrete action to commit, push, prepare or create a PR, merge, tag, package, publish, release, deploy, perform an exact repository handoff, or perform destructive cleanup of an exact named completed-delivery target. A canonical handoff qualifies only when it carries the verbatim explicit delivery request and a non-empty exact authorized action set. Context Survey owns pre-authorization cleanup-target reconnaissance while approval is pending.
 ---
 
 # Shipping

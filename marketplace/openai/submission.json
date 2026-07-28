@@ -77,5 +77,5 @@
     ]
   },
   "availability": "All portal-supported countries and regions where the publisher can provide the documented support and legal terms.",
-  "releaseNotes": "Keystone 2.0.3 fixes marketplace icon contrast. The plugin now declares separate light- and dark-mode directory logos and uses a theme-safe composer icon with an opaque brand tile. Skills and workflow behavior are unchanged. No MCP server, authentication, demo account, or external service is required."
+  "releaseNotes": "Keystone 2.0.4 narrows automatic skill invocation to project-bound, workflow-worthy work while keeping standalone searches, explanations, and mechanical artifact edits on the direct path. Review now requires a fresh evidence-backed readiness verdict, and Shipping carries explicit authorization through handoffs, executes only the authorized delivery action set, and reports partial completion and recovery state. No MCP server, authentication, demo account, or external service is required."
 }

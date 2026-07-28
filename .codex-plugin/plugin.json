@@ -41,5 +41,5 @@
   "name": "keystone",
   "repository": "https://github.com/static-var/Keystone",
   "skills": "./skills/",
-  "version": "2.0.3"
+  "version": "2.0.4"
 }

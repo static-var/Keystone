@@ -27,6 +27,8 @@ The prompt's subject controls eligibility, not the current working directory. A 
 
 Normal agent behavior handles standalone public web search and recommendations, generic summaries and explanations, ordinary copywriting or brainstorming, mechanical single-file config or documentation edits, and one-off scripts. Keystone remains appropriate for integrated project config or scripts, product copy decisions, diagnosis, review, audit, and explicitly requested shipping.
 
+Supporting artifacts only within an already-active behavior-changing implementation include project configuration, documentation, content, and scripts; standalone mechanical artifact edits stay normal/direct.
+
 Near-pairs make the boundary concrete:
 
 | Normal agent behavior | Keystone project workflow |
@@ -70,7 +72,7 @@ Keystone 2.0 removes the old `/keystone` entrypoint. Use the matching public ski
 /context-survey inspect or summarize existing code
 /product-planning shape product, UX, scope, or technical direction
 /task-creation turn approved direction into implementation-ready tasks
-/implementation make scoped code, content, config, or documentation changes
+/implementation explicitly edit project documentation, configuration, content, or scripts
 /refactoring improve structure without intended behavior changes
 /root-cause-analysis reproduce and explain bugs before fixing
 /change-review review a diff, branch, PR, or regression risk read-only
