@@ -1,6 +1,6 @@
 ---
 name: implementation
-description: Use when the user asks to implement, add, change, edit, update, wire, migrate, fix after diagnosis, or execute approved scoped code/content/config/documentation changes.
+description: Integrated project implementation for a named software or digital-product initiative. Use for features, diagnosed fixes, migrations, integrations, or approved project changes that require project-specific context and verification, including configuration or scripts integrated with project behavior.
 ---
 
 # Implementation
@@ -13,15 +13,24 @@ Implementation is the mutation module. It may edit scoped project artifacts afte
 
 ## Load when
 
-Use Implementation when the user asks to:
+Use Implementation when a named software or digital-product initiative needs:
 
-- implement, create, edit, or wire behavior
-- add a feature, screen, endpoint, command, migration, or integration
-- refactor existing code while preserving behavior
-- change architecture, module boundaries, interfaces, or contracts
-- apply an approved plan from `task-creation`
-- delegate independent implementation work when a subagent tool is available
-- make focused content or configuration changes that require mutation
+- a feature, screen, endpoint, command, migration, or integration implemented;
+- a diagnosed fix applied;
+- architecture, module boundaries, interfaces, or contracts changed;
+- an approved plan from `task-creation` executed;
+- independent implementation slices delegated when a subagent tool is available;
+- project configuration, documentation, content, or scripts changed where project integration and verification materially help.
+
+## Entry fit
+
+An explicit invocation selects the full Implementation behavior.
+
+A Keystone handoff selects the full skill when a project change needs this mutation-and-proof contract.
+
+For automatic entry, load the full skill when the prompt's subject is project-bound **and** this mutation-and-proof contract materially improves the change. The current directory alone does not establish project scope.
+
+For automatic routing of a mechanical single-file configuration edit, one-off script, or other standalone small mutation that does not need project-specific context or proof gates, use the direct editing path and verify the requested result proportionately.
 
 ## Not for
 
@@ -68,9 +77,9 @@ Contract:
 
 Load and pass `../_shared/gates/red.md` for the red signal or its explicit exception. Prefer checks that exercise real behavior over mocks, implementation details, or snapshots.
 
-### Refactor
+### In-slice refactor
 
-Use when preserving behavior while improving structure, names, duplication, readability, or boundaries.
+Use for behavior-preserving cleanup within an already-active behavior-changing implementation, or after an explicit Keystone handoff from `refactoring`. Route standalone behavior-preserving structural work to `refactoring`.
 
 Contract:
 

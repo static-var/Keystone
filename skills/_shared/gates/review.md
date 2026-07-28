@@ -41,6 +41,8 @@ Known gaps: <unverified items>
 Please classify findings as BLOCKER or NON-BLOCKER.
 ```
 
+A review-enablement exception does not pass this gate. When the review requires the PR and pending independent review is the sole missing gate, a delivery skill may, after proof and isolation pass, perform only explicitly authorized scaffolding: commit, push, and create a draft PR. It must then stop with the Review Gate pending and route to review. Block package, merge, tag, publish, release, deploy, repository handoff, and destructive cleanup until this gate passes.
+
 ## Pass condition
 Pass only when required review evidence exists and either no blocking findings remain unresolved, or the user explicitly accepts the remaining blockers.
 

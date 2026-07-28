@@ -12,9 +12,29 @@
 
 > Proactive workflow skills for disciplined AI work: use the right phase, keep boundaries clear, and prove the result.
 
-Keystone is a package of model-discoverable workflow skills for coding agents. Instead of sending every request through a single router, Keystone exposes the phases agents need for real work: survey, plan, break down, implement, refactor, diagnose, review, ship, and audit.
+Keystone is a package of model-discoverable workflow skills for coding agents. Instead of sending every request through a single router, Keystone exposes the phases agents need for project work: survey, plan, break down, implement, refactor, diagnose, review, ship, and audit.
 
 Use Keystone when you want an agent to move deliberately: gather evidence before decisions, mutate only after isolation checks, separate review from fixing, and require proof before success claims.
+
+## When Keystone loads
+
+Keystone auto-loads only when the request is both **project-bound** and **workflow-worthy**:
+
+- **Project-bound** means the request's subject is a software or product repository, initiative, feature, architecture, regression, release, or project decision.
+- **Workflow-worthy** means a Keystone phase contract would materially change how the work should proceed.
+
+The prompt's subject controls eligibility, not the current working directory. A public web search performed while the agent happens to be inside a repository remains normal agent work. Project-specific external research can qualify when its evidence informs that project's decision or change. Pure repository understanding or reconnaissance also qualifies when the repository itself is the subject, even without a downstream decision or change.
+
+Normal agent behavior handles standalone public web search and recommendations, generic summaries and explanations, ordinary copywriting or brainstorming, mechanical single-file config or documentation edits, and one-off scripts. Keystone remains appropriate for integrated project config or scripts, product copy decisions, diagnosis, review, audit, and explicitly requested shipping.
+
+Near-pairs make the boundary concrete:
+
+| Normal agent behavior | Keystone project workflow |
+|---|---|
+| Compare current password-manager prices. | Compare authentication providers against this repository's architecture constraints. |
+| Write a one-off script to rename local images. | Add a migration script integrated with this project's CI and verify it. |
+| Change one value in a tool config. | Migrate the application's config schema across runtime code and tests. |
+| Rewrite this standalone announcement. | Decide the in-product upgrade copy and acceptance criteria for this feature. |
 
 ## Why use Keystone?
 
@@ -30,15 +50,15 @@ Keystone turns those habits into explicit skills:
 
 | You need... | Use... |
 |---|---|
-| inspect, research, inventory, compare, or answer “what is true here?” | `context-survey` |
-| shape product behavior, UX, copy, technical direction, architecture, or scope | `product-planning` |
-| turn approved direction into tasks, tickets, milestones, or handoffs | `task-creation` |
-| make scoped code, content, config, or documentation changes | `implementation` |
-| improve structure without intended behavior changes | `refactoring` |
-| reproduce, isolate, and explain a bug or failure before fixing | `root-cause-analysis` |
-| review a diff, branch, PR, or change read-only | `change-review` |
-| explicitly finalize completed work: commit, PR, release, publish, package, or hand off | `shipping` |
-| audit repository, tooling, package health, architecture, or maintenance risk | `project-audit` |
+| understand a repository or gather project-specific evidence before a decision | `context-survey` |
+| shape a product initiative's behavior, UX, copy, architecture, or scope | `product-planning` |
+| turn approved project direction into implementation-ready work | `task-creation` |
+| make an integrated project change with project-specific proof | `implementation` |
+| improve project structure without intended behavior changes | `refactoring` |
+| reproduce, isolate, and explain a project bug or regression before fixing | `root-cause-analysis` |
+| review a project diff, branch, PR, or readiness decision read-only | `change-review` |
+| explicitly finalize completed project work: commit, push, prepare or create a PR, merge, tag, package, publish, release, deploy, perform a repository handoff, or perform destructive cleanup | `shipping` |
+| audit repository health, tooling, packaging, architecture, or maintenance risk | `project-audit` |
 
 There is no central routing skill. The host discovers the right Keystone skill from the user's prompt or the user invokes the matching slash command directly.
 
@@ -54,7 +74,7 @@ Keystone 2.0 removes the old `/keystone` entrypoint. Use the matching public ski
 /refactoring improve structure without intended behavior changes
 /root-cause-analysis reproduce and explain bugs before fixing
 /change-review review a diff, branch, PR, or regression risk read-only
-/shipping explicitly commit, package, release, publish, or hand off completed work
+/shipping explicitly commit, push, prepare or create a PR, merge, tag, package, publish, release, deploy, perform a repository handoff, or perform destructive cleanup
 /project-audit audit repository, tooling, package health, or maintenance risk
 ```
 
@@ -130,7 +150,7 @@ Review the current branch for blockers, regressions, and packaging leaks.
 Ship this completed change: verify evidence, prepare the commit summary, and hand off the PR notes.
 ```
 
-Keystone skills can hand off when the work changes shape. For example, `root-cause-analysis` may hand off to `implementation` after evidence supports a fix path, and `change-review` may hand off findings to `refactoring` or `implementation`. Handoffs use a shared packet so the next skill receives the goal, evidence, files, risks, and next check.
+Keystone skills can hand off when the work changes shape. For example, `root-cause-analysis` may hand off to `implementation` after evidence supports a fix path, and `change-review` may hand off findings to `refactoring` or `implementation`. Handoffs use a shared packet so the next skill receives the goal, evidence, files, risks, and next check. A handoff to `shipping` carries authorization in the canonical packet's `evidence` field as the user's explicit delivery request and action set.
 
 ## Artifact defaults
 
@@ -146,7 +166,7 @@ Before a plan is approved, `product-planning` works in conversation and asks foc
 
 ## Explicit-only shipping
 
-`shipping` is explicit-only. Keystone does not commit, open PRs, merge, tag, publish, release, deploy, perform destructive cleanup, or create external side effects just because implementation or review finished.
+`shipping` is explicit-only. Keystone does not commit, push, prepare or create a PR, merge, tag, package, publish, release, deploy, perform a repository handoff, or perform destructive cleanup just because implementation or review finished.
 
 Ask for those actions directly, and Keystone will require proof and review evidence unless you explicitly waive them.
 

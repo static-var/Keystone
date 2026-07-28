@@ -1,6 +1,6 @@
 ---
 name: refactoring
-description: Use when the user asks to refactor, clean up, simplify, extract, inline, reduce duplication, improve maintainability, address code smells, improve boundaries/types, or reorganize code without intended behavior changes.
+description: Project code refactoring for an existing software codebase. Use when its internal structure, ownership, types, duplication, or maintainability must improve while preserving an identified behavior contract, or when another Keystone skill hands off that work.
 ---
 
 # Refactoring
@@ -11,9 +11,11 @@ Refactoring changes structure while preserving behavior. Improve design in small
 
 ## Load when
 
-Use when the user asks to refactor, clean up, simplify, extract functions/classes, inline needless indirection, reduce duplication, rename for clarity, improve type boundaries, remove code smells, or reorganize code without asking for new behavior.
+Load for an existing software project when the user asks to improve code structure while preserving an identified behavior contract: extract or inline code, reduce duplication, clarify names or type boundaries, remove code smells, or reorganize ownership.
 
 If the user wants behavior change, use `implementation`. If a failure cause is unknown, use `root-cause-analysis`. If the refactor is broad or risky, create a refactor doc before mutation.
+
+At entry, use the full Keystone path when the work changes integrated project code and needs project-specific invariant proof. Handle isolated text cleanup, mechanical formatting, and standalone snippets directly. Explicit invocation selects the full Refactoring behavior.
 
 ## Outcome contract
 

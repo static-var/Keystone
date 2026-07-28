@@ -36,16 +36,28 @@ Ownership is known only when it comes from an explicit user statement, a file cr
 | Dirty path is generated artifact | Maybe | Tool/unknown | Do not delete unless user approved |
 | Dirty path conflicts with requested scope | Yes | Unknown | Fail until clarified |
 
+## Requested cleanup mode
+
+Use this mode only for an explicit user request to remove an exact named target. It is a stricter isolation branch, not an exemption.
+
+1. Resolve the exact named target as a literal path, worktree, branch, or artifact. Prove it is not the current workspace or worktree, a repository root, a protected path, or a broader target produced by a glob or unresolved variable.
+2. Inspect dirty and untracked state for a worktree or path, and unmerged or unpushed state for a branch or commit. Record dependencies from other worktrees, refs, releases, or active processes.
+3. Establish recoverability and a concrete restore path: remote ref, retained commit, tag, backup, trash location, or recreation command. Prefer a recoverable operation.
+4. Hard exclusions fail unconditionally: an ambiguous, broad, glob-derived, or unresolved target; the current workspace; the current worktree; a repository root; a protected path; or an irrecoverable target. User approval cannot override these hard exclusions.
+5. Risk-acceptable states—dirty, untracked, unmerged, unpushed, active, or depended-upon—fail and stop until they are disclosed, recovery remains viable, and the user makes a fresh explicit decision accepting the current risk.
+
+Cleanup mode passes only when the target is proven outside the hard exclusions and the exact target, explicit request, state inspection, dependencies, recoverability, restore path, and any required fresh decision are recorded.
+
 ## Pass condition
 Pass only when all are true:
 - Workspace root, branch, and worktree state are known.
 - `git status --porcelain` has been captured.
 - Planned blast radius is explicit.
 - Dirty files are either absent, guaranteed untouched, or planned dirty files with explicit user approval and recorded ownership/decision.
-- No auto-stash, auto-commit, reset, checkout, cleanup, or generated-file deletion is needed.
+- No auto-stash, auto-commit, reset, checkout, unrequested cleanup, or unapproved generated-file deletion is needed. An explicitly requested cleanup must pass Requested cleanup mode.
 
 ## Fail action
-Stop before changing files. Do not auto-stash, auto-commit, reset, or "clean up" user work.
+Stop before changing files. Do not auto-stash, auto-commit, reset, or clean up anything outside Requested cleanup mode.
 
 Report:
 

@@ -1,6 +1,6 @@
 ---
 name: task-creation
-description: Use when the user wants implementation steps, task breakdown, tickets, issues, milestones, phases, vertical slices, sequencing, or agent-ready work from an approved goal or spec.
+description: Project delivery breakdown for a concrete software or product goal. Use when that goal needs implementation slices, milestones, dependencies, verification gates, or agent-ready work, or when another Keystone skill hands off a shaped goal for sequencing.
 ---
 
 # Task Creation
@@ -13,7 +13,7 @@ A good task-creation makes implementation easier because every slice has a visib
 Task Creation is sequencing, not execution. A task-creation is not proof; only inspected changes, tests, demos, or other evidence prove completion.
 
 ## Load when
-Use this module when the user asks to:
+Load for a concrete software or product project when the user asks to:
 
 - break down a feature, fix, refactor, migration, tool, system, or project
 - produce milestones, implementation steps, tickets, issues, vertical slices, or phases
@@ -24,6 +24,8 @@ Use this module when the user asks to:
 - split a large task into reviewable chunks without exposing another public command
 
 Also load when implementation is requested but the goal is broad enough that coding immediately would hide major sequencing decisions. If behavior, scope, UX, or architecture tradeoffs are still undecided, route to `product-planning` first; use Task Creation once the desired outcome is stable enough to sequence.
+
+At entry, use the full Keystone path for project delivery work tied to a repository, product initiative, approved specification, or engineering lifecycle outcome. Handle standalone lists, personal planning, and ordinary to-do decomposition directly. Explicit invocation selects the full Task Creation behavior.
 
 ## Not for
 Do not use Task Creation for:

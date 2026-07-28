@@ -1,6 +1,6 @@
 ---
 name: root-cause-analysis
-description: Use when the user reports a bug, regression, failing test, error, flaky behavior, unexpected output, broken workflow, suspicious logs, performance anomaly, or asks for RCA/root cause.
+description: Project debugging for a concrete failure in a software or product system. Use for a reproducible or evidence-bearing regression, failing test/build, runtime or integration defect, flake, data corruption, or performance anomaly, or when another Keystone skill needs the cause proven.
 ---
 
 # Root-Cause Analysis
@@ -9,13 +9,15 @@ description: Use when the user reports a bug, regression, failing test, error, f
 Find the root cause before fixing. Root-cause analysis is an evidence ladder: observe the failure, reproduce it, minimize it, trace the mechanism, test falsifiable hypotheses, prove the cause, fix narrowly, guard against regression, verify with exact output, and clean up. No guess-and-check, no cargo-cult edits, no shipping/finalization work.
 
 ## Load when
-Load when the user reports an error, failing test, broken behavior, regression, flaky result, performance anomaly, unexpected output, integration failure, suspicious logs, silent failure, data corruption, or asks to troubleshoot why something happened.
+Load when the user reports a concrete failure in a software project or product system: a failing test/build, broken runtime behavior, regression, flaky result, performance anomaly, integration failure, suspicious system logs, silent failure, or data corruption.
 
 Also load when the task involves:
 - deciding whether a failure is local, historical, environmental, data-dependent, timing-dependent, or cross-system;
 - diagnosing nondeterminism, race conditions, retries, timeouts, queues, caches, or distributed boundaries;
 - interpreting logs/traces/metrics to explain a symptom;
 - proving whether a suspected fix actually addresses the cause.
+
+At entry, use the full Keystone path when the failure belongs to a project artifact or operated product and evidence can be gathered from its code, tests, builds, telemetry, or runtime. Handle general explanations of error messages and non-project troubleshooting directly. Explicit invocation selects the full Root-Cause Analysis behavior.
 
 ## Not for
 - Implementing new behavior unrelated to the failure.
