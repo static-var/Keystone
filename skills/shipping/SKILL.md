@@ -10,7 +10,7 @@ Shipping is deterministic finalization for already-completed work. It proves, re
 
 A shipping decision consumes three shared contracts: load `../_shared/gates/proof.md`, `../_shared/gates/review.md`, and `../_shared/gates/ship.md`. Those files own pass/fail; Shipping gathers evidence and performs explicitly authorized delivery mechanics.
 
-If any final check fails, abort shipping and route to an existing Keystone module: `implementation` for contained fixes, `root-cause-analysis` for unexplained failures, `change-review` for unresolved review risk, or `project-audit` for broad release/tooling readiness concerns.
+If a final check fails, follow its owning gate's fail action. Final delivery remains blocked until the required gates pass.
 
 ## Load when
 Load only when the user explicitly asks to deliver completed software project work:
@@ -19,9 +19,10 @@ perform an exact repository handoff or destructive cleanup of a named completed-
 target.
 
 For a Keystone handoff, load `../_shared/handoff-packet.md`. The canonical packet's
-`evidence` field is the source of authorization: it must carry the verbatim user
-delivery request and exact authorized action set. A handoff without that carried
-request does not qualify for Shipping.
+`evidence` field must carry the verbatim user delivery request and exact authorized
+action set. Before acting, derive the effective action set using the packet's
+current-intent reconciliation rule. A handoff without carried authorization does not
+qualify for Shipping.
 
 At entry, use the full Keystone path when an identified repository change, package,
 release candidate, or deployment is complete enough for gates and the user has
@@ -72,17 +73,21 @@ Deliver a strict shipping packet that includes:
 2. Inspect branch/worktree state: branch name, base branch, dirty files, untracked files, commits/diff summary, and whether unrelated changes are present.
 3. Define the required gates for this change:
    - Load the shared proof, review, and ship gates and identify the evidence each requires for this delivery mode.
+   - For a handoff, derive the effective authorized action set with the current-intent rule in `../_shared/handoff-packet.md`.
 4. Run or cite verification evidence. Do not claim passing checks you did not observe. Include command, context, result, and timestamp/context when useful.
 5. Check CI/CD awareness: list relevant workflows/pipelines, required checks, latest known status, deploy preview URL or staging environment if available, and any checks not observable locally.
 6. Check package/release readiness when applicable: version, changelog, artifact names, package contents, checksums/digests, dry-run output, target registries/platforms, compatibility notes, migration steps, and signing/notarization needs.
 7. For multi-target releases, create one evidence row per target. A green web build does not prove a CLI package, Docker image, mobile binary, or plugin package is ready.
 8. Confirm rollback and recovery: revert plan, previous version, feature flag/kill switch, database rollback/migration constraints, artifact rollback, owner, and monitoring signals.
 9. Prepare PR handoff or release packet: concise summary, scope/non-scope, proof/review/shipping gates, risks, rollout, rollback, and next human actions.
-10. Evaluate `../_shared/gates/ship.md`. If it or a prerequisite gate fails, abort finalization, include the failed evidence, and route to the correct module.
+10. Evaluate `../_shared/gates/ship.md`.
+    - On a failed prerequisite, follow the review-enablement exception from `../_shared/gates/review.md` when it applies. Otherwise abort finalization, include the failed evidence, and route to the correct module.
 11. After every prerequisite gate passes, perform only actions in the user-authorized action set.
-    - Before a workspace mutation, load and pass `../_shared/gates/isolation.md`.
+    - Before each action, reconcile the effective action set with the latest explicit user instructions via `../_shared/handoff-packet.md`.
+    - Before a workspace mutation, load and pass `../_shared/gates/isolation.md`. For destructive cleanup, pass its Requested cleanup mode.
     - Resolve the exact targets before acting: repository, branch, remote, PR, tag, package, registry, release, environment, artifact, handoff recipient, or cleanup path as applicable.
     - For destructive cleanup, require target confirmation: re-confirm the exact paths, branches, or artifacts, the explicit request, and recoverability or rollback; prefer recoverable operations.
+    - When a package action creates or changes an artifact, inspect the actual artifact contents, checksum, signature, and target-specific checks. Re-run the applicable proof and ship gates before any dependent publish or release action; proceed only when both gates pass on that artifact.
     - Record each action and its result.
     - Stop when any action fails, report partial completion, and leave unauthorized or unattempted remaining actions untouched.
 12. Run the checkpoint gate and end with a clear verdict: Shipping, Do not ship, or Shipping with risk. If any gate is missing, the checkpoint action is not `stop`; route or prompt for the next required module/check.
@@ -94,7 +99,6 @@ Use subagents for bounded release-note drafting, checklist verification, artifac
 - No new implementation in shipping mode. Gate failures create a handoff, not stealth fixes.
 - Enforce proof, change-review, and shipping gates. Do not collapse them into one vague readiness statement.
 - Evidence before assertions: every readiness claim needs command output, artifact proof, CI/CD status, deploy preview/staging proof, or documented review.
-- No stealth fixes: if final checks fail, abort and route to `implementation`, `root-cause-analysis`, `change-review`, or `project-audit`.
 - Do not bypass review or package gates because the change “looks small.”
 - Keep changelog/release notes user- or operator-relevant; avoid dumping raw commit noise.
 - State branch name and working tree cleanliness when available.

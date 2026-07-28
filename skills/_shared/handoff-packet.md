@@ -15,7 +15,11 @@ Use this packet whenever `gates/checkpoint.md` selects another Keystone skill. T
 
 ## Rules
 
-- When the target skill is `shipping`, the `evidence` field carries the user's verbatim explicit delivery request and exact authorized action set; `evidence` remains the source of truth for Shipping authorization.
+- When the target skill is `shipping`, the `evidence` field is an authorization snapshot: it carries the user's verbatim explicit delivery request and exact authorized action set at handoff time.
+- Before a Shipping action, reconcile that snapshot with the latest explicit user instructions:
+  - Remove any action the user clearly narrows or revokes, and apply that restriction immediately.
+  - Add an action beyond the snapshot only when a new explicit user request names it.
+  - Ask for confirmation only when the current instruction cannot be mapped unambiguously to concrete actions.
 - Do not silently bypass protected files, secret handling, isolation requirements, destructive operations, or policy restrictions.
 - Treat subagent output as evidence to verify, not truth to repeat.
 - If the next step is unsafe or ambiguous, ask the smallest question that makes the handoff safe.
