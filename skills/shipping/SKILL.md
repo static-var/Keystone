@@ -81,7 +81,9 @@ Deliver a strict shipping packet that includes:
 8. Confirm rollback and recovery: revert plan, previous version, feature flag/kill switch, database rollback/migration constraints, artifact rollback, owner, and monitoring signals.
 9. Prepare PR handoff or release packet: concise summary, scope/non-scope, proof/review/shipping gates, risks, rollout, rollback, and next human actions.
 10. Evaluate `../_shared/gates/ship.md`.
-    - On a failed prerequisite, follow the review-enablement exception from `../_shared/gates/review.md` when it applies. Otherwise abort finalization, include the failed evidence, and route to the correct module.
+    - On pass, continue to step 11.
+    - If the review-enablement exception from `../_shared/gates/review.md` applies, execute that exception as the terminal delivery-action branch, skip step 11, and continue directly to step 12. After the checkpoint, stop with the pending Review Gate handoff.
+    - For any other failed prerequisite, follow its owning gate's fail action, include the failed evidence, and route to the correct module.
 11. After every prerequisite gate passes, perform only actions in the user-authorized action set.
     - Before each action, reconcile the effective action set with the latest explicit user instructions via `../_shared/handoff-packet.md`.
     - Before a workspace mutation, load and pass `../_shared/gates/isolation.md`. For destructive cleanup, pass its Requested cleanup mode.

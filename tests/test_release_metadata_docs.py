@@ -267,7 +267,26 @@ class ReleaseMetadataDocsTests(unittest.TestCase):
                 self.assertIsNotNone(
                     re.search(pattern, body, re.IGNORECASE | re.DOTALL)
                 )
-        self.assertIn("review-enablement exception", process.group("body"))
+        exception_branch = re.search(
+            r"^10\..*?(?P<body>review-enablement exception.*?)"
+            r"(?=^11\. |\Z)",
+            process.group("body"),
+            re.MULTILINE | re.DOTALL,
+        )
+        self.assertIsNotNone(exception_branch)
+        assert exception_branch is not None
+        self.assertIsNotNone(
+            re.search(
+                r"\b(?:execute|perform)\b.*\bexception\b.*"
+                r"\bterminal\b.*\bdelivery-action branch\b.*"
+                r"\bskip\b.*\bstep 11\b.*"
+                r"\b(?:continue|route)\b.*\bstep 12\b.*"
+                r"\bafter\b.*\bcheckpoint\b.*\bstop\b.*"
+                r"\bpending review gate handoff\b",
+                exception_branch.group("body"),
+                re.IGNORECASE | re.DOTALL,
+            )
+        )
         self.assertIsNotNone(
             re.search(
                 r"\bfollow\b.*\bowning gate\b.*\bfail action\b",
